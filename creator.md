@@ -16,7 +16,7 @@ tempo por semana: (por confirmar)
 presença: fala para a câmara
 edição: agente
 tom: ambicioso, direto, educativo
-estilo de edição: dinâmico (estilo Iman Gadzhi)
+estilo de edição: ritmo Iman Gadzhi com movimento leve (transições suaves só em momentos-chave); sistema em estrategia/sistema-design.md
 frequência: (por confirmar)
 limites: sem travessões em texto no ecrã
 provas confirmadas: nenhuma ainda
@@ -31,13 +31,13 @@ logo: assets/logo/logo.png (original, fundo branco), assets/logo/logo_borda.png 
 | Token | Valor |
 | --- | --- |
 | Fundo | #000000 |
-| Superfície | #222222 a #26282A |
+| Superfície | #222222 |
 | Painel | #4F4F4F |
 | Ink | #FFFFFF |
 | Secundário | #B3B3B3 |
 | Acento (único) | #FF2E00 (o vermelho do asterisco do logo) |
 | Display e legendas | Inter Display Bold |
-| Destaque | Instrument Serif Italic |
+| Destaque | Instrument Serif Italic (1 a 3 palavras por peça) |
 | Formato short | 1080x1920, 30 fps |
 | Motivo | linha fina horizontal no acento, e o asterisco do logo |
 

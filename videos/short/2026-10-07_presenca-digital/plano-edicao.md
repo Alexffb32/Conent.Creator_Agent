@@ -1,40 +1,47 @@
 # Plano de edição: presença digital
 
-Estilo: dinâmico (ritmo Iman Gadzhi) | Formato: 1080x1920 a 30 fps | Estado: APROVADO (2026-10-07)
+Estilo: ritmo Iman Gadzhi com movimento leve | Formato: 1080x1920 a 30 fps | Estado: v2 (feedback à v1 aplicado)
+Sistema de design: `estrategia/sistema-design.md`
 
 Fonte: `gravados/original.mov` (480x848, 58.2 s). Duração final: 48.8 s de fala + 2 s de frame final = 50.8 s. Cortei 16 % (menos de 25 %).
 Tempos abaixo na linha temporal já cortada.
 
-| Tempo | Corte | Zoom | B-roll | SFX | Legenda (destaque) | Motion graphic |
-| --- | --- | --- | --- | --- | --- | --- |
-| 0.0 a 2.6 | abre direto na fala | 112 % | não | não | outreach | Gancho: "Como fazer com que te *respondam*" |
-| 2.6 a 6.2 | pausa de 0.67 s removida | 123 % | não | whoosh 3.5 | resposta | Lower third 2.6 a 4.6 (logo, Alex, @alexffb_). Lista entra 3.5 com o item 1; o cartão cresce a cada item |
-| 6.2 a 9.3 | 2 pausas removidas | 112 %, depois 129 % | não | não | ghost | Lista: "Cold calls sem reuniões" 6.2, "DMs que dão em ghost" 7.8 (sai 10.0) |
-| 9.3 a 13.2 | 3 pausas removidas | 112 %, 123 %, 112 % | não | whoosh 10.3 | acontecer, presença digital | Palavra grande "Presença *digital*" 10.3 a 13.2 |
-| 13.2 a 17.9 | sai "Vou-te dar um exemplo muito simples" (2 s) | 115 %, 100 % | não | não | email, responder | nenhum |
-| 17.9 a 29.5 | 6 pausas removidas | 100 % a 115 % | não | whoosh 17.9, pop 24.1, pop 27.9 | pesquisar, encontrar, site, personal brand | Pesquisa: a barra escreve "Layout"; resultados Site 20.1, Funil 24.1, Personal brand 24.7, Instagram 26.9, LinkedIn 27.5, YouTube 27.9 |
-| 29.5 a 40.8 | 7 pausas removidas | alterna 100 %, 110 %, 115 % | não | não | úteis, óbvio, antes | nenhum (só legendas) |
-| 40.8 a 42.5 | sem corte | punch a 125 % | não | whoosh 40.8 | presença digital | Remate: "Tratar da tua *presença digital*" |
-| 42.5 a 48.8 | 3 pausas removidas | 100 %, 110 % | não | não | mensagem, resultados | CTA "Manda-me mensagem" 43.2, "ou comenta aqui em baixo" 44.5 |
-| 48.8 a 50.8 | frame final fixo e escurecido | não | não | whoosh 48.8 | não | Logo com borda branca, pill "Manda-me mensagem" com rim de acento, @alexffb_ |
+| Tempo | Corte | Enquadramento | SFX | Legenda (destaque) | Motion graphic |
+| --- | --- | --- | --- | --- | --- |
+| 0.0 a 2.6 | abre direto na fala | take largo, 106 % fixo | não | outreach | Gancho: "Como fazer com que te respondam" ("respondam" no acento) |
+| 2.6 a 10.2 | 4 pausas removidas, jump cuts no mesmo plano | 106 % fixo | pop 3.5 | resposta, ghost, acontecer | Lista 3.5 a 10.0: o painel cresce com cada item (3.6, 6.2, 7.8) |
+| 10.2 a 13.2 | 2 pausas removidas | **momento-chave:** aproximação suave para 113 % (450 ms) em "A tua presença digital não é forte" | não | presença digital | nenhum |
+| 13.2 a 17.9 | sai "Vou-te dar um exemplo muito simples"; muda de take | corte para o take próximo, 100 % fixo | não | email, responder | Lower third 13.3 a 15.3: "Alex" e "@alexffb_" |
+| 17.9 a 29.5 | 6 pausas removidas | 100 % fixo | whoosh 17.9 | pesquisar, encontrar, site, personal brand | Pesquisa: a barra escreve "Layout"; os resultados entram em chips e o painel cresce |
+| 29.5 a 33.2 | 3 pausas removidas | 100 % fixo | não | úteis | nenhum |
+| 33.2 a 40.8 | 4 pausas removidas | **momento-chave:** aproximação suave para 107 % (450 ms) em "Agora, se as pessoas…" | não | óbvio, antes | nenhum |
+| 40.8 a 42.6 | sem corte | **momento-chave:** aproximação suave para 112 % (450 ms) em "Tratar da tua presença digital" | não | presença digital | Remate: "Tratar da tua *presença digital*" (a única vez com Instrument Serif) |
+| 42.6 a 48.8 | 3 pausas removidas | volta suave a 100 % (500 ms) | pop 43.2 | mensagem, resultados | CTA "Manda-me mensagem" 43.2 e "ou comenta aqui em baixo" 44.5 |
+| 48.8 a 50.8 | frame final fixo e escurecido | fixo | whoosh 48.8 | não | Logo com borda branca, CTA, @alexffb_ |
 
-Barra de progresso: linha fina #FF2E00 a 240 px do topo, do início ao fim.
+Barra de progresso: linha fina #FF2E00 a 240 px do topo, com 72 px de margem de cada lado.
 
-## Regras de edição
-- Cortes: silêncios acima de 0.25 s, com 0.06 s de respiração de cada lado. Fica a pausa curta antes de "é forte" (ênfase).
-- Zoom: muda em cada corte (ciclo 100, 110, 100, 115 % sobre a base de cada take), 250 ms, easing cubic-bezier(.2,.8,.2,1). O take largo (até 13.2 s) tem base 112 % para a cara ficar do mesmo tamanho que no take próximo. Quando há cartão em cima, o zoom baixa para a cabeça não ficar tapada.
-- Olhos a cerca de 40 % da altura, não a 35 %: com uma fonte de 480x848, chegar aos 35 % obrigava a 125 % de zoom permanente e o vídeo ficava desfocado.
-- Legendas: 1 a 3 palavras, aparecem à hora exata de cada palavra (fade e subida de 8 px, 200 ms). Inter Bold 76 px branca com contorno preto; o destaque de cada frase vai em Instrument Serif Italic 96 px #FF2E00. Topo a 1170 px, por cima da t-shirt preta (contraste muito acima de 4.5:1).
-- Cartões: #121212 a 94 %, raio 24, borda superior branca a 50 %, sombra para baixo. Entrada de 300 ms com ease out, saída de 200 ms com ease in.
-- Zona segura: nada acima de 230 px nem abaixo de 1536 px; as legendas ficam entre 110 e 970 px na horizontal, longe dos botões do Reels.
+## Movimento (sistema de design, decisão 6)
+- Só 4 movimentos de câmara, todos em momentos-chave, de 450 a 500 ms com cubic-bezier(.2,.8,.2,1). Entre eles o plano não mexe.
+- Painéis e textos: fade e subida de 8 px em 300 ms, uma vez só; saída só com fade (200 ms, ease in). Sem escala, sem parallax.
+- Legendas: o bloco inteiro (1 a 3 palavras) aparece com fade de 200 ms, sem animação por palavra.
+- Único destaque com rim: o CTA (satin do acento, borda superior de 1 px, texto preto a 5.6:1).
+
+## Legendas
+Inter Bold 76 px branca com contorno preto de 14 px, sobre a t-shirt preta. O destaque de cada frase vai na cor de acento, na mesma fonte. Topo a 1170 px.
 
 ## Cor
-Contraste +8 %, saturação +5 %, brilho +1 %. Aumento de 480x848 para 1404x2480 com Lanczos e nitidez leve (unsharp 0.55). Sem LUT, porque `assets/lut/` está vazio.
+Contraste +8 %, saturação +5 %, brilho +1 %. Aumento de 480x848 para 1404x2480 com Lanczos e nitidez leve (unsharp 0.55). Sem LUT.
 
 ## Áudio
-- Voz: high-pass a 80 Hz, redução de ruído leve (afftdn), compressor suave, loudnorm a -14 LUFS (pico real -1 dBTP). Micro fades de 10 ms em cada corte para não haver cliques.
-- Música: base calma gerada por código (90 BPM, Am9, Fmaj7, Cmaj7, G6), a -26 LUFS antes do ducking. Com ducking (sidechain, rácio 2) desce para cerca de -31.5 LUFS quando falas, cerca de 17 LU abaixo da voz. Sai em fade no frame final.
-- SFX gerados por código: 5 whoosh e 2 pop, sempre com pelo menos 3 s entre eles (o pop dos 6.2 s saiu por ficar a menos de 3 s do whoosh dos 3.5 s).
+- Voz: high-pass a 80 Hz, redução de ruído leve (afftdn), compressor suave, -14 LUFS. Micro fades de 10 ms em cada corte.
+- Música: base calma gerada por código (90 BPM, Am9, Fmaj7, Cmaj7, G6), a -26 LUFS antes do ducking e cerca de -31.5 LUFS quando falas. Sai em fade no frame final.
+- SFX gerados por código: 2 pop e 2 whoosh, 4 dB mais baixos do que na v1, sempre com mais de 3 s entre eles.
+- Mistura final: -13.9 LUFS integrado, pico a -2.8 dBFS.
+
+## Histórico
+- v1: zoom em cada corte (100, 110, 115 %) e punch a 125 %, palavras a aparecer uma a uma, Instrument Serif em todos os destaques, cartão "Presença digital" aos 10 s, 7 SFX. Feedback: movimento forte demais.
+- v2: este plano.
 
 ## Exportar
-`editado/presenca-digital_v1.mp4` (H.264, CRF 18, AAC 192k), `editado/presenca-digital_preview.mp4` (540x960), `editado/presenca-digital_static.png` (frame do gancho).
+`editado/presenca-digital_v2.mp4` (H.264, CRF 18, AAC 192k), `editado/presenca-digital_v2_preview.mp4` (540x960), `editado/presenca-digital_static.png` (frame do gancho, versão estática).
