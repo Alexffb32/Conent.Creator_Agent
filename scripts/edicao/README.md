@@ -21,4 +21,4 @@ Ordem (a partir de uma pasta de trabalho com `gravados/original.*`):
 Estilo de legendas (estilo Iman): Montserrat em minúsculas, light para bold à medida que fala, sem sobreposições (ver `compor.py`).
 
 `logo_borda.py` faz o logo transparente com borda branca a partir de um PNG com fundo branco.
-O `config.json` de cada vídeo fica em `videos/<tipo>/<pasta>/edicao/`.
+O `config.json` de trabalho fica em `videos/<tipo>/<pasta>/edicao/` (com cortes, segmentos e rostos). Cada versão entregue vai para `editado/vN/` com o vídeo, a preview, o PNG estático, `qa.jpg` e uma cópia do `config.json` usado.

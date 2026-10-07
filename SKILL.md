@@ -56,7 +56,7 @@ historico/posts.csv              o que foi publicado e resultados
 videos/<tipo>/AAAA-MM-DD_slug/   tipo = short, long, podcast
     brief.md  guiao.md  roteiro.md  plano-edicao.md  meta.json
     gravados/   (sem cortes, nunca alterar)
-    editado/    (finais)
+    editado/    transcricao.json e uma pasta por versão (v1/, v2/…: vídeo, preview, estático, qa.jpg, config.json)
     adaptacoes/<plataforma>.md   título, legenda, hashtags, CTA, hora
 assets/                          logo, fontes, música, LUT, B-roll
 ~~~

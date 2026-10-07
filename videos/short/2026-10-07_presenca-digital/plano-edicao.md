@@ -48,4 +48,4 @@ Só 3 movimentos, todos lentos e contínuos: o zoom de entrada no gancho e dois 
 - v3: este plano.
 
 ## Exportar
-`editado/presenca-digital_v3.mp4` (H.264, CRF 19, AAC 192k), `editado/presenca-digital_v3_preview.mp4` (540x960), `editado/presenca-digital_static.png`.
+Uma pasta por versão em `editado/`: `v1/`, `v2/` e `v3/`, cada uma com o vídeo (`presenca-digital_vN.mp4`, H.264, AAC 192k), a preview a 540x960, o PNG estático do gancho, a folha de QA (`qa.jpg`) e a configuração usada (`config.json`). A transcrição fica em `editado/transcricao.json`. Versão atual: `editado/v3/presenca-digital_v3.mp4`.
