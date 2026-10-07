@@ -15,7 +15,7 @@
    "fw": 0.241
   }
  },
- "legenda_topo": 1170,
+ "legenda_topo": 1180,
  "cartoes_janelas": [
   [
    0,
@@ -23,14 +23,9 @@
    544
   ],
   [
-   3.5,
-   10.05,
-   560
-  ],
-  [
-   17.93,
+   24.57,
    29.5,
-   620
+   500
   ],
   [
    40.78,
@@ -134,9 +129,23 @@
    "nome": "Alex",
    "handle": "@alexffb_"
   },
-  "lista": {
-   "ini": 3.5,
-   "fim": 10.05,
+  "remate": {
+   "ini": 40.78,
+   "fim": 42.5,
+   "a": "Tratar da tua",
+   "b": "presença digital"
+  },
+  "cta": {
+   "ini": 43.2,
+   "texto": "Manda-me mensagem",
+   "sub": "ou comenta aqui em baixo",
+   "sub_t": 44.48,
+   "handle": "@alexffb_"
+  },
+  "cena_lista": {
+   "ini": 3.55,
+   "fim": 9.2667,
+   "titulo": "O teu outreach hoje",
    "itens": [
     {
      "t": 3.64,
@@ -152,20 +161,29 @@
     }
    ]
   },
-  "pesquisa": {
-   "ini": 17.93,
-   "fim": 29.5,
+  "cena_pesquisa": {
+   "ini": 17.9667,
+   "fim": 24.5667,
+   "titulo": "O que encontram quando pesquisam",
    "pesquisa": "Layout",
-   "escrever": 18.1,
+   "escrever": 18.15,
    "resultados": [
     {
      "t": 20.13,
-     "texto": "Site"
+     "titulo": "Site",
+     "desc": "No topo da página"
     },
     {
-     "t": 24.07,
-     "texto": "Funil"
-    },
+     "t": 22.9,
+     "titulo": "Funil",
+     "desc": "Com todas as informações, bem estruturado"
+    }
+   ]
+  },
+  "chips": {
+   "ini": 24.5667,
+   "fim": 29.5,
+   "itens": [
     {
      "t": 24.73,
      "texto": "Personal brand"
@@ -182,52 +200,53 @@
      "t": 27.89,
      "texto": "YouTube"
     }
-   ],
-   "linha2": 3
-  },
-  "remate": {
-   "ini": 40.78,
-   "fim": 42.5,
-   "a": "Tratar da tua",
-   "b": "presença digital"
-  },
-  "cta": {
-   "ini": 43.2,
-   "texto": "Manda-me mensagem",
-   "sub": "ou comenta aqui em baixo",
-   "sub_t": 44.48,
-   "handle": "@alexffb_"
+   ]
   }
  },
  "zoom_chave": [
   {
    "t": 0,
-   "mult": 1.0
+   "push": 2.5,
+   "de": 1.0,
+   "para": 1.07,
+   "ease": "power1.out"
+  },
+  {
+   "t": 2.6,
+   "mult": 1.0,
+   "ate": 3.55
+  },
+  {
+   "t": 9.2667,
+   "mult": 1.0,
+   "ate": 10.16
   },
   {
    "t": 10.1667,
-   "mult": 1.07,
-   "dur": 0.45
+   "push": 3.0,
+   "de": 1.0,
+   "para": 1.06
   },
   {
    "t": 13.2333,
    "mult": 1.0,
-   "dur": 0
+   "ate": 17.96
   },
   {
-   "t": 33.2,
-   "mult": 1.07,
-   "dur": 0.45
+   "t": 24.5667,
+   "mult": 1.0,
+   "ate": 33.06
   },
   {
-   "t": 40.78,
-   "mult": 1.12,
-   "dur": 0.45
+   "t": 33.0667,
+   "push": 9.4,
+   "de": 1.0,
+   "para": 1.1
   },
   {
    "t": 42.5667,
    "mult": 1.0,
-   "dur": 0.5
+   "ate": 48.83
   }
  ],
  "tokens": {
@@ -240,5 +259,10 @@
   "accent_top": "#FF481F",
   "accent_bottom": "#E02900",
   "accent_10": "#1A0500"
+ },
+ "legendas": {
+  "max_palavras": 5,
+  "max_caracteres": 24,
+  "tamanho": 60
  }
 }

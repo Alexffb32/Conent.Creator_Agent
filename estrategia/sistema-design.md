@@ -17,6 +17,7 @@ Preferência confirmada no feedback da v1: movimento leve, transições só em m
 | Texto secundário | #B3B3B3 |
 | Linha | #4F4F4F |
 | Display e corpo | Inter (Display Bold 800, corpo 500 a 600) |
+| Legendas | Montserrat Light 300 e Bold 700, minúsculas, brancas, 60 px (estilo Iman; exceção à maiúscula inicial pedida pelo Alex) |
 | Fonte de destaque | Instrument Serif Italic, no máximo 1 a 3 palavras por peça |
 | Motivo | linha fina no acento (divisor e barra de progresso) e o asterisco do logo |
 | Formatos | 1080x1920 a 30 fps (Reels, Shorts) |
