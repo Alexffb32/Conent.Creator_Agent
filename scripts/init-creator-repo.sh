@@ -3,9 +3,10 @@
 set -euo pipefail
 here="$(cd "$(dirname "$0")/.." && pwd)"
 dest="${1:-.}"
-mkdir -p "$dest"/{estrategia,referencias,calendario,historico,assets/{fonts,music,lut,broll,logo},videos/{short,long,podcast}}
+mkdir -p "$dest"/{estilo,estrategia,referencias,calendario,historico,assets/{fonts,music,lut,broll,logo},videos/{short,long,podcast}}
 for d in videos/short videos/long videos/podcast; do touch "$dest/$d/.gitkeep"; done
 [ -f "$dest/estrategia/aprendizagens.md" ] || printf '# Aprendizagens\n\n(data, conclusão, confiança)\n' > "$dest/estrategia/aprendizagens.md"
+[ -f "$dest/estilo/feedback.csv" ] || echo "data,video,categoria,tipo,regra,forte" > "$dest/estilo/feedback.csv"
 [ -f "$dest/calendario/agenda.csv" ] || echo "data,plataforma,tipo,fase,serie,tema,estado" > "$dest/calendario/agenda.csv"
 [ -f "$dest/historico/posts.csv" ] || echo "data,plataforma,tipo,fase,serie,tema,link,alcance,retencao_3s,partilhas,guardados,conversoes" > "$dest/historico/posts.csv"
 if [ ! -f "$dest/.gitattributes" ]; then

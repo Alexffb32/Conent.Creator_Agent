@@ -8,3 +8,5 @@ Pré-requisitos: intake feito. Ferramentas: FFmpeg, Whisper e HyperFrames (ver `
 4. **QA.** Vê frames de início, meio e fim (`ffmpeg` snapshots), confirma duração, loudness, legendas sem erros e dentro da zona segura. Corrige antes de entregar.
 5. **Entrega.** Exporta para `editado/` com nome `slug_v1.mp4`. Diz o que fizeste em 3 linhas e pede feedback (AskUserQuestion: Aprovar / Ajustar ritmo / Ajustar legendas / Ajustar gráficos). Itera em `v2`, `v3`.
 6. Atualiza `meta.json` (estado: editado).
+
+**Aprendizagem.** Antes do plano (passo 2), lê `estilo/estilo-criador.md` e aplica as regras de edição, legendas, motion e áudio, marcando as `hipotese` como "a testar". No passo 5, cada ajuste pedido pelo criador é registado com `scripts/registar-feedback.py` e aplicado na versão seguinte (`stages/10-learning.md`).

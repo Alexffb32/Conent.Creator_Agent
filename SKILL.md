@@ -1,7 +1,7 @@
 ---
 name: creator-agent
 description: Agente para criadores de conteúdo iniciantes. Pergunta objetivos, pesquisa criadores e vídeos de referência do nicho, monta estratégia de funil (topo, meio, fundo), escreve guião e roteiro de gravação (com luz, som e planos), organiza o repositório por vídeo, edita com motion graphics e agenda o que publicar a seguir. Usa quando o utilizador quer criar, planear, gravar, editar ou agendar conteúdo.
-argument-hint: "[novo | proximo | pesquisa | roteiro | intake | editar | agendar | analisar | ajuda] [tema ou pasta]"
+argument-hint: "[novo | proximo | pesquisa | roteiro | intake | editar | agendar | analisar | feedback | ajuda] [tema ou pasta]"
 ---
 
 # Creator Agent
@@ -17,6 +17,7 @@ argument-hint: "[novo | proximo | pesquisa | roteiro | intake | editar | agendar
 5. **Estado nos ficheiros.** Tudo o que decides fica no repositório do criador (ver "Repositório"), para qualquer sessão continuar de onde ficou.
 6. **Nada se publica nem se envia sem aprovação do criador.** Edita, prepara e agenda; publicar é decisão dele.
 7. Sem promessas de dinheiro ou resultados garantidos. Provas só com números que o criador confirmou.
+8. **Aprender com o criador.** Cada correção vira uma regra guardada em `estilo/` no repo dele. Antes de escrever, gravar ou editar, lê `estilo/estilo-criador.md` e aplica-o. Depois de entregar, pede feedback e regista-o (`stages/10-learning.md`). O agente fica melhor a cada vídeo.
 
 ## Ponto de entrada
 
@@ -34,13 +35,14 @@ Quando for invocado, deteta o estado e age:
 | Modo `editar` | `stages/07-edit.md` |
 | Modo `agendar` | `stages/08-publish-schedule.md` |
 | Modo `analisar` | `stages/09-review.md` |
+| Modo `feedback` | `stages/10-learning.md` |
 | Modo `ajuda` | Resume esta tabela e o fluxo |
 
 Lê só o ficheiro do estágio de que precisas.
 
 ## Fluxo de um vídeo
 
-1. **Próximo post** (funil e histórico) → 2. **Pesquisa dirigida** ao tema → 3. **Guião** (o que dizer) → 4. **Roteiro de gravação** (como gravar: planos, luz, som, locais, B-roll) → 5. O criador grava e põe os ficheiros em `gravados/` → 6. **Intake** (validação técnica) → 7. **Plano de edição** aprovado → 8. **Edição** com motion graphics → 9. **Adaptação por plataforma** e **agendamento** → 10. **Análise** depois de publicado, que alimenta o próximo.
+1. **Próximo post** (funil e histórico) → 2. **Pesquisa dirigida** ao tema → 3. **Guião** (o que dizer) → 4. **Roteiro de gravação** (como gravar: planos, luz, som, locais, B-roll) → 5. O criador grava e põe os ficheiros em `gravados/` → 6. **Intake** (validação técnica) → 7. **Plano de edição** aprovado → 8. **Edição** com motion graphics → 9. **Adaptação por plataforma** e **agendamento** → 10. **Análise** depois de publicado, que alimenta o próximo. Em todos os passos: **aprender** com as correções do criador (`stages/10-learning.md`).
 
 ## Repositório do criador
 
@@ -49,7 +51,9 @@ Criado com `scripts/init-creator-repo.sh` (ou à mão, seguindo esta estrutura):
 ~~~
 creator.md                       perfil, objetivos, estilo, equipamento, plataformas
 estrategia/estrategia.md         funil, séries, cadência, regras
-estrategia/aprendizagens.md      o que funcionou e o que não
+estrategia/aprendizagens.md      o que funcionou e o que não (dados)
+estilo/feedback.csv              correções e aprovações do criador (diário)
+estilo/estilo-criador.md         perfil de estilo aprendido, gerado do diário
 referencias/AAAA-MM-DD_*.md      pesquisas, com fontes e data
 calendario/agenda.csv            plano de publicação
 historico/posts.csv              o que foi publicado e resultados

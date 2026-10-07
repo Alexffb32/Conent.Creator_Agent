@@ -5,3 +5,5 @@
 3. Atualiza `historico/posts.csv` e `estrategia/aprendizagens.md` com 3 a 5 conclusões datadas e o nível de confiança (poucos dados = hipótese).
 4. Dá feedback de mentor: o que repetir, parar e testar, com uma ação para o próximo vídeo.
 5. Volta a `stages/03-strategy.md` (próximo post).
+
+Depois: separa preferência (do criador, estágio 10) de desempenho (dados). Se uma regra do `estilo/` prejudicar resultados com dados suficientes, diz-o uma vez e deixa o criador decidir.

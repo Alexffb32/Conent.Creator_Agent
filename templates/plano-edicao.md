@@ -1,5 +1,6 @@
 # Plano de edição: {tema}
 
+Regras de estilo aplicadas (de estilo/estilo-criador.md): | A testar:
 Estilo: | Formato: 1080x1920 a 30 fps | Estado: AGUARDA APROVAÇÃO
 
 | Tempo | Corte | Zoom | B-roll | SFX | Legenda | Motion graphic |

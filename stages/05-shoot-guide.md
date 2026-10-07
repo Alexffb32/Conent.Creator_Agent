@@ -12,3 +12,5 @@ Conteúdo obrigatório:
 7. **Como entregar**: pôr os ficheiros em `videos/.../gravados/` (instruções de upload no GitHub, ver README) e dizer ao agente "gravei".
 
 Mantém o tom de mentor: explica porquê em 1 linha por regra.
+
+Antes de escrever: lê `estilo/estilo-criador.md` (categorias roteiro e voz) e aplica-o. No fim, pede feedback e regista-o (`stages/10-learning.md`).

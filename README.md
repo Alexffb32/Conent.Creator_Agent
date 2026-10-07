@@ -40,6 +40,7 @@ bash .claude/skills/creator-agent/scripts/init-creator-repo.sh .
 | `/creator-agent editar <pasta>` | Plano de edição e edição |
 | `/creator-agent agendar <pasta>` | Adaptações por plataforma e calendário |
 | `/creator-agent analisar` | Métricas e aprendizagens |
+| `/creator-agent feedback` | Regista correções para o agente se adaptar ao teu estilo |
 
 ## Estrutura do teu repositório (privado)
 
