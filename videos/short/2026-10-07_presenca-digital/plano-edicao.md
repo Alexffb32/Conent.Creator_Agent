@@ -1,6 +1,6 @@
 # Plano de edição: presença digital
 
-Estilo: dinâmico (ritmo Iman Gadzhi) | Formato: 1080x1920 a 30 fps | Estado: AGUARDA APROVAÇÃO
+Estilo: dinâmico (ritmo Iman Gadzhi) | Formato: 1080x1920 a 30 fps | Estado: APROVADO (2026-10-07)
 
 Fonte: `gravados/original.mov` (480x848, 58.2 s). Duração final: 48.8 s de fala + 2 s de frame final = 50.8 s. Cortei 16 % (menos de 25 %).
 Tempos abaixo na linha temporal já cortada.
@@ -8,8 +8,8 @@ Tempos abaixo na linha temporal já cortada.
 | Tempo | Corte | Zoom | B-roll | SFX | Legenda (destaque) | Motion graphic |
 | --- | --- | --- | --- | --- | --- | --- |
 | 0.0 a 2.6 | abre direto na fala | 112 % | não | não | outreach | Gancho: "Como fazer com que te *respondam*" |
-| 2.6 a 6.2 | pausa de 0.67 s removida | 123 % | não | whoosh 3.3 | resposta | Lower third 2.6 a 4.6 (logo, Alex, @alexffb_). Lista entra 3.3, item 1 a 3.6 |
-| 6.2 a 9.3 | 2 pausas removidas | 112 %, depois 129 % | não | pop 6.2 | ghost | Lista: "Cold calls sem reuniões" 6.2, "DMs que dão em ghost" 7.8 (sai 10.0) |
+| 2.6 a 6.2 | pausa de 0.67 s removida | 123 % | não | whoosh 3.5 | resposta | Lower third 2.6 a 4.6 (logo, Alex, @alexffb_). Lista entra 3.5 com o item 1; o cartão cresce a cada item |
+| 6.2 a 9.3 | 2 pausas removidas | 112 %, depois 129 % | não | não | ghost | Lista: "Cold calls sem reuniões" 6.2, "DMs que dão em ghost" 7.8 (sai 10.0) |
 | 9.3 a 13.2 | 3 pausas removidas | 112 %, 123 %, 112 % | não | whoosh 10.3 | acontecer, presença digital | Palavra grande "Presença *digital*" 10.3 a 13.2 |
 | 13.2 a 17.9 | sai "Vou-te dar um exemplo muito simples" (2 s) | 115 %, 100 % | não | não | email, responder | nenhum |
 | 17.9 a 29.5 | 6 pausas removidas | 100 % a 115 % | não | whoosh 17.9, pop 24.1, pop 27.9 | pesquisar, encontrar, site, personal brand | Pesquisa: a barra escreve "Layout"; resultados Site 20.1, Funil 24.1, Personal brand 24.7, Instagram 26.9, LinkedIn 27.5, YouTube 27.9 |
@@ -33,8 +33,8 @@ Contraste +8 %, saturação +5 %, brilho +1 %. Aumento de 480x848 para 1404x2480
 
 ## Áudio
 - Voz: high-pass a 80 Hz, redução de ruído leve (afftdn), compressor suave, loudnorm a -14 LUFS (pico real -1 dBTP). Micro fades de 10 ms em cada corte para não haver cliques.
-- Música: base gerada por código, a -26 dB por baixo da voz, com ducking quando falas; sai em fade no frame final.
-- SFX gerados por código: 5 whoosh e 3 pop, sempre com pelo menos 3 s entre eles.
+- Música: base calma gerada por código (90 BPM, Am9, Fmaj7, Cmaj7, G6), a -26 LUFS antes do ducking. Com ducking (sidechain, rácio 2) desce para cerca de -31.5 LUFS quando falas, cerca de 17 LU abaixo da voz. Sai em fade no frame final.
+- SFX gerados por código: 5 whoosh e 2 pop, sempre com pelo menos 3 s entre eles (o pop dos 6.2 s saiu por ficar a menos de 3 s do whoosh dos 3.5 s).
 
 ## Exportar
 `editado/presenca-digital_v1.mp4` (H.264, CRF 18, AAC 192k), `editado/presenca-digital_preview.mp4` (540x960), `editado/presenca-digital_static.png` (frame do gancho).
