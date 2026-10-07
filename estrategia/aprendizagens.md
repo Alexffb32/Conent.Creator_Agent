@@ -1,0 +1,3 @@
+# Aprendizagens
+
+(data, conclusão, confiança)
