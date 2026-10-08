@@ -1,6 +1,6 @@
 # Plano de edição: presença digital
 
-Estilo: Iman Gadzhi (legendas, zooms lentos, cenas de grelha, componentes de interface) com o sistema de design alexffb | Formato: 1080x1920 a 30 fps | Estado: v4
+Estilo: Iman Gadzhi (legendas, zooms lentos, cenas de grelha, componentes de interface) com o sistema de design alexffb | Formato: 1080x1920 a 30 fps | Estado: v5
 Sistema de design: `estrategia/sistema-design.md`
 
 Fonte: `gravados/original.mov` (480x848, 58.2 s). Duração final: 48.8 s de fala + 2 s de frame final = 50.8 s. Cortei 16 %.
@@ -8,15 +8,15 @@ Tempos abaixo na linha temporal já cortada.
 
 | Tempo | Imagem | Câmara | SFX | Motion graphic |
 | --- | --- | --- | --- | --- |
-| 0.0 a 2.6 | tu (take largo) | zoom de entrada lento (106 % para 113 %) | pop | Gancho: painel de vidro escuro, "Como fazer com que te **respondam**", palavras a entrar com desfoque |
-| 3.55 a 9.27 | **cena** preto e vermelho com grelha | não se aplica | whoosh, 3 notif | "O teu outreach hoje / Sem qualquer resposta" e 3 notificações iOS: Email (Emails em bulk, Sem resposta), Chamadas (Cold calls, Sem reuniões), Mensagens (DMs, Dão em ghost) |
+| 0.0 a 2.6 | tu (take largo) | zoom de entrada lento (106 % para 113 %) | Bass Impact muito baixo e Pop | Gancho: painel de vidro escuro, "Como fazer com que te **respondam**", palavras a entrar com desfoque |
+| 3.55 a 9.27 | **cena** preto e vermelho com grelha | não se aplica | Swish Whoosh, 3 Bell Ding | "O teu outreach hoje / Sem qualquer resposta" e 3 notificações iOS: Email (Emails em bulk, Sem resposta), Chamadas (Cold calls, Sem reuniões), Mensagens (DMs, Dão em ghost) |
 | 9.27 a 13.23 | tu | zoom lento (106 % para 112 %) em "A tua presença digital não é forte" | não | nenhum |
-| 13.3 a 15.3 | tu (take próximo) | fixo | pop | Lower third de vidro: emblema com o asterisco da marca, Alex, @alexffb_ |
-| 17.97 a 24.57 | **cena** | não se aplica | whoosh, 6 teclas, 2 pop, clique | "Vão pesquisar sobre nós": browser de vidro, a barra escreve "Layout", entram os resultados Site e Funil, o cursor vai a Site e clica (destaque vermelho) |
-| 24.57 a 29.5 | tu | fixo | 4 tick | Mosaicos de vidro 2x2 com ícone: Personal brand, Instagram, LinkedIn, YouTube |
-| 33.07 a 42.47 | tu | zoom lento (100 % para 110 %) até ao remate | shimmer 40.8 | Remate 40.8 a 42.5: painel de vidro, "Tratar da tua" + "presença digital" em Instrument Serif com brilho |
-| 43.2 a 48.8 | tu | volta a 100 % no corte | notif | CTA: notificação de Mensagens que desce do topo, com contorno vermelho: "Manda-me mensagem / ou escreve aqui em baixo nos comentários" |
-| 48.8 a 50.8 | **frame final** com grelha e brilho vermelho | não se aplica | whoosh, shimmer | Logo com borda branca, botão "Manda-me mensagem", @alexffb_ |
+| 13.3 a 15.3 | tu (take próximo) | fixo | Pop | Lower third de vidro: emblema com o asterisco da marca, Alex, @alexffb_ |
+| 17.97 a 24.57 | **cena** | não se aplica | Swish Whoosh, 6 teclas do Keyboard Typing, 2 Pop, Click | "Vão pesquisar sobre nós": browser de vidro, a barra escreve "Layout", entram os resultados Site e Funil, o cursor vai a Site e clica (destaque vermelho) |
+| 24.57 a 29.5 | tu | fixo | 4 Pop mais agudos (2 a 7 meios-tons), alternando esquerda e direita | Mosaicos de vidro 2x2 com ícone: Personal brand, Instagram, LinkedIn, YouTube |
+| 33.07 a 42.47 | tu | zoom lento (100 % para 110 %) até ao remate | Metallic Riser que acaba no remate (40.8) | Remate 40.8 a 42.5: painel de vidro, "Tratar da tua" + "presença digital" em Instrument Serif com brilho |
+| 43.2 a 48.8 | tu | volta a 100 % no corte | Bell Ding | CTA: notificação de Mensagens que desce do topo, com contorno vermelho: "Manda-me mensagem / ou escreve aqui em baixo nos comentários" |
+| 48.8 a 50.8 | **frame final** com grelha e brilho vermelho | não se aplica | Swish Whoosh, Bass Impact | Logo com borda branca, botão "Manda-me mensagem", @alexffb_ |
 
 Sem barra de progresso no topo (removida a pedido).
 
@@ -36,14 +36,16 @@ Contraste +8 %, saturação +5 %, brilho +1 %, aumento com Lanczos; no fim, grã
 ## Áudio
 - Voz: WPE (remoção de reverberação) e redução de ruído leve, supressão da reverberação tardia (rt60 0.5). A cauda de eco depois de cada palavra desceu de -15 dB para -21.8 dB. Depois: high-pass a 85 Hz, -2.5 dB a 300 Hz (menos graves embrulhados), +2 dB a 3.5 kHz (presença), +1.5 dB acima de 10 kHz, de-esser, compressor 3:1 e -14 LUFS.
 - Música: composta em MIDI e tocada com instrumentos reais (FluidSynth, FluidR3_GM). Piano em arpejo, pad, cordas e violoncelo a partir dos 12 s, melodia e subida a partir dos 36 s, a 80 BPM em Am, F, C, G, com resolução no frame final. Fica a -23 LUFS e, com o ducking, cerca de -28.5 LUFS enquanto falas (14 LU abaixo da voz).
-- SFX gerados por código, um por animação, leves (picos 18 a 26 dB abaixo da voz): pop (painéis), whoosh (cenas), notif (notificações), type (teclas), click (cursor), tick (mosaicos), shimmer (remate e frame final).
+- SFX (v5): os sons do Alex, um por animação, cortados, alinhados pelo impacto (o pico do whoosh, o toque do sino e o fim do riser caem no fotograma em que a animação aparece) e normalizados pela sonoridade, de 15 a 27 dB abaixo da voz: Pop (painéis e resultados), Swish Whoosh (cenas), Bell Ding (notificações), Keyboard Typing (6 teclas soltas), Click (cursor), Pop mais agudo (mosaicos), Metallic Riser (remate), Bass Impact muito baixo (gancho e frame final). Mapa em `edicao/sfx_mapa.json`, tempos em `edicao/sfx_eventos.json`.
+- Sons não usados: Among Us, FAHHH, Vine Boom e Wrong (sons de meme, não combinam com o tom calmo), Glitch (ruído forte), Register, Right, Core, Riser 2 e Camera Flash (sem animação onde encaixem).
 - Mistura: -13.9 LUFS, pico a -2.8 dBFS.
 
 ## Histórico
 - v1: zoom em cada corte, palavras a aparecer uma a uma, 7 SFX. Feedback: movimento forte demais.
 - v2: zoom só em momentos-chave, legendas por bloco com fade. Feedback: legendas a sobrepor-se e a piscar; pedido estilo Iman.
 - v3: legendas Montserrat light para bold, zooms lentos, cenas de grelha. Feedback: tirar a linha do topo, melhorar muito os motion graphics (mais iguais ao Iman), voz sem eco, música leve e SFX nas animações.
-- v4: este plano.
+- v4: componentes de vidro ao estilo Iman, voz sem eco, música e SFX gerados por código. Feedback: usar os sons dele nos SFX, de forma leve.
+- v5: este plano (mesmo vídeo, SFX com os sons do Alex).
 
 ## Exportar
-Uma pasta por versão em `editado/` (`v1/` a `v4/`), cada uma com o vídeo, a preview a 540x960, o PNG estático, `qa.jpg` e o `config.json`. Versão atual: `editado/v4/presenca-digital_v4.mp4`.
+Uma pasta por versão em `editado/` (`v1/` a `v5/`), cada uma com o vídeo, a preview a 540x960, o PNG estático, `qa.jpg` e o `config.json`. Versão atual: `editado/v5/presenca-digital_v5.mp4`.

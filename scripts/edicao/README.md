@@ -17,7 +17,7 @@ Ordem (a partir de uma pasta de trabalho com `gravados/original.*`):
 8. `npx hyperframes render hf -o render_video.mp4 --crf 18`.
 9. Voz: `voz_crua.py` (corte sem tratamento), `dereverb.py` (WPE + redução de ruído leve), `reverb_tardia.py` (supressão da reverberação tardia, rt60 0.5), depois EQ, de-esser, compressor e `loudnorm2.py` a -14 LUFS (comando no plano do vídeo).
 10. Música: `musica_midi.py` compõe o MIDI e renderiza com FluidSynth (FluidR3_GM); normalizar a -23 LUFS e fazer ducking com `sidechaincompress` (rácio 2).
-11. SFX: `compor.py` escreve `sfx_eventos.json` com o tempo de cada animação; `sfx.py` gera o som de cada uma.
+11. SFX: `compor.py` escreve `sfx_eventos.json` com o tempo de cada animação. Com os sons do Alex: `sfx_amostras.py <duracao> sfx_eventos.json sfx_mapa.json <pasta_dos_sons> sfx.wav` corta cada som, alinha o impacto ao tempo da animação e normaliza pela sonoridade (LUFS momentâneo); o mapa diz que som usar em cada tipo de animação. Os sons estão no Google Drive do Alex e não ficam no repositório (são de terceiros e o repositório é público). Sem sons, `sfx.py` gera-os por código. Na mistura, os SFX entram com +4 dB, o que os põe 15 a 27 dB abaixo da voz.
 12. Junta vídeo e áudio com grão leve e vinheta: `ffmpeg -i render.mp4 -i mix.wav -vf "noise=alls=3:allf=t,vignette=angle=PI/7" -c:v libx264 -crf 19 -c:a aac -b:a 192k`.
 
 Estilo de legendas (estilo Iman): Montserrat em minúsculas, light para bold à medida que fala, sem sobreposições (ver `compor.py`).
