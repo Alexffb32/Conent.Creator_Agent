@@ -297,5 +297,22 @@
   "max_palavras": 5,
   "max_caracteres": 24,
   "tamanho": 60
+ },
+ "sfx": {
+  "extra": [
+   [
+    0.0,
+    "boom",
+    -2
+   ]
+  ],
+  "trocar": {
+   "40.78": "riser",
+   "49.033": "boom"
+  },
+  "remover": []
+ },
+ "marca": {
+  "nome": "alexffb"
  }
 }

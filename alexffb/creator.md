@@ -16,7 +16,7 @@ tempo por semana: (por confirmar)
 presença: fala para a câmara
 edição: agente
 tom: ambicioso, direto, educativo
-estilo de edição: Iman Gadzhi (legendas Montserrat minúsculas light para bold, zooms lentos, cenas de grelha, componentes de interface em vidro fosco, notificações iOS, grão leve) com movimento leve, música de piano e cordas muito baixa e SFX leves em cada animação, com os sons do Alex em `assets/sons/` (usados: Pop, Swish Whoosh, Bell Ding, Keyboard Typing, Click, Metallic Riser, Bass Impact; sem sons de meme); sistema em estrategia/sistema-design.md
+estilo de edição: Iman Gadzhi (legendas Montserrat minúsculas light para bold, zooms lentos, cenas de grelha, componentes de interface em vidro fosco, notificações iOS, grão leve) com movimento leve, música de piano e cordas muito baixa e SFX leves em cada animação, com os sons do Alex em `assets/sons/` (usados: Pop, Swish Whoosh, Bell Ding, Keyboard Typing, Click, Metallic Riser, Bass Impact; sem sons de meme); sistema em estrategia/sistema-design.md e regras aprendidas em estrategia/estilo-edicao.md
 frequência: (por confirmar)
 limites: sem travessões em texto no ecrã
 entrega: enviar sempre o vídeo final no chat (cópia 1080x1920 com menos de 30 MB), além de o pôr no GitHub
