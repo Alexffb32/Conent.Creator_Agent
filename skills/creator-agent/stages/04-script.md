@@ -9,3 +9,5 @@ Entrada: `brief.md`, `creator.md`, `referencias/` mais recente, `references/hook
 5. Duração estimada (palavras por segundo do criador, por defeito 2,5) e ajuste ao formato.
 6. Verifica: gancho em menos de 3 s, sem enchimento, sem afirmações sem prova, sem números inventados.
 7. Mostra o guião e pede feedback (AskUserQuestion: Aprovar / Mais direto / Mais pessoal / Mudar o gancho). Itera até aprovar, no máximo 3 rondas.
+
+Antes de escrever: lê `estilo/estilo-criador.md` (categorias guião e voz) e aplica-o. No fim, pede feedback e regista-o (`stages/10-learning.md`).

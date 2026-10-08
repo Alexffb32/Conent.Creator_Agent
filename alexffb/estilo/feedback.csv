@@ -1,0 +1,20 @@
+data,video,categoria,tipo,regra,forte
+2026-10-07,2026-10-07_presenca-digital,edicao,pedido,Todo o texto no ecrã em português europeu,1
+2026-10-07,2026-10-07_presenca-digital,edicao,pedido,Sem travessões em nenhum texto do ecrã,1
+2026-10-07,2026-10-07_presenca-digital,edicao,pedido,"Estilo de edição do Iman Gadzhi: ritmo rápido, direto, premium, educativo, pensado para ver sem som",0
+2026-10-07,2026-10-07_presenca-digital,motion,correcao,"Motion leve: transições e zooms suaves só em momentos-chave, não em todos os cortes",0
+2026-10-07,2026-10-07_presenca-digital,motion,correcao,Motion segue o sistema de design das seis decisões (estrategia/sistema-design.md),0
+2026-10-07,2026-10-07_presenca-digital,legendas,correcao,"Legendas iguais às do Iman Gadzhi no Instagram, sem sobreposições nem falhas",0
+2026-10-07,2026-10-07_presenca-digital,edicao,pedido,"Uma pasta por versão dentro do vídeo (v1/, v2/…)",0
+2026-10-08,2026-10-07_presenca-digital,legendas,aprovacao,"Legendas iguais às do Iman Gadzhi no Instagram, sem sobreposições nem falhas",0
+2026-10-08,2026-10-07_presenca-digital,motion,aprovacao,"Motion leve: transições e zooms suaves só em momentos-chave, não em todos os cortes",0
+2026-10-08,2026-10-07_presenca-digital,edicao,correcao,Sem barra de progresso no topo,0
+2026-10-08,2026-10-07_presenca-digital,motion,pedido,"Componentes de motion quase idênticos aos do Iman Gadzhi, com pesquisa de referências antes de os desenhar",0
+2026-10-08,2026-10-07_presenca-digital,audio,pedido,Voz sem eco,0
+2026-10-08,2026-10-07_presenca-digital,audio,pedido,Música de fundo muito leve que combine com o vídeo,0
+2026-10-08,2026-10-07_presenca-digital,audio,pedido,SFX leves nas animações de motion,0
+2026-10-08,2026-10-07_presenca-digital,edicao,pedido,"Enviar sempre o vídeo no chat, além do GitHub",1
+2026-10-08,2026-10-07_presenca-digital,audio,pedido,SFX leves nas animações de motion,0
+2026-10-08,2026-10-07_presenca-digital,audio,pedido,Usar os sons do Alex (assets/sons) nos SFX,0
+2026-10-08,2026-10-07_presenca-digital,edicao,pedido,Commit de cada versão com o título vN - o que mudou,0
+2026-10-08,2026-10-07_presenca-digital,edicao,pedido,Organização das pastas simples no GitHub,0

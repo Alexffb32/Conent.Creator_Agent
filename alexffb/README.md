@@ -15,6 +15,7 @@ Tudo o que é teu está nesta pasta. O resto do repositório é o agente que faz
 | `creator.md` | O teu perfil e a marca |
 | `videos/` | Uma pasta por vídeo e, dentro dela, uma pasta por versão |
 | `assets/` | Logo e sons para os efeitos sonoros |
-| `estrategia/` | O teu estilo de edição (`estilo-edicao.md`, o que o agente aprendeu com o teu feedback), o sistema de design, as aprendizagens e as lições técnicas |
+| `estilo/` | O que o agente aprendeu com o teu feedback: o diário (`feedback.csv`), as tuas regras (`estilo-criador.md`) e os valores da edição (`estilo-edicao.md`) |
+| `estrategia/` | O sistema de design, as aprendizagens e as lições técnicas |
 | `calendario/` | Plano de publicação |
 | `historico/` | O que foi publicado e os resultados |

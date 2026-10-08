@@ -1,7 +1,7 @@
 ---
 name: creator-agent
 description: Agente para criadores de conteúdo iniciantes. Pergunta objetivos, pesquisa criadores e vídeos de referência do nicho, monta estratégia de funil (topo, meio, fundo), escreve guião e roteiro de gravação (com luz, som e planos), organiza o repositório por vídeo, edita shorts com legendas, motion graphics, música e SFX, aprende o estilo de edição de cada criador com o feedback e agenda o que publicar a seguir. Usa quando o utilizador quer criar, planear, gravar, editar ou agendar conteúdo, ou analisar o estilo de um criador de referência.
-argument-hint: "[novo | proximo | pesquisa | estilo | roteiro | intake | editar | agendar | analisar | ajuda] [tema ou pasta]"
+argument-hint: "[novo | proximo | pesquisa | estilo | roteiro | intake | editar | agendar | analisar | feedback | ajuda] [tema ou pasta]"
 ---
 
 # Creator Agent
@@ -17,7 +17,7 @@ argument-hint: "[novo | proximo | pesquisa | estilo | roteiro | intake | editar 
 5. **Estado nos ficheiros.** Tudo o que decides fica no repositório do criador (ver "Repositório"), para qualquer sessão continuar de onde ficou.
 6. **Nada se publica nem se envia sem aprovação do criador.** Edita, prepara e agenda; publicar é decisão dele.
 7. Sem promessas de dinheiro ou resultados garantidos. Provas só com números que o criador confirmou.
-8. **Aprender sempre.** Antes de cada trabalho lês o que já se aprendeu (`estrategia/estilo-edicao.md`, `estrategia/aprendizagens.md`, `references/licoes-tecnicas.md`); depois de cada feedback, escreves o que mudou (estágio 7, passo 8). Nunca repitas um erro que já está registado.
+8. **Aprender sempre.** Antes de cada trabalho lês o que já se aprendeu: `estilo/estilo-criador.md` (as regras do criador, geradas do diário `estilo/feedback.csv`), `estilo/estilo-edicao.md` (os valores da edição), `estrategia/aprendizagens.md` e `references/licoes-tecnicas.md`. Depois de entregar, pedes feedback e registas cada correção no diário (`stages/10-learning.md`); cada erro técnico vira uma lição. Nunca repitas um erro que já está registado.
 9. **Adaptar ao criador e ao objetivo.** As regras do criador ganham às gerais; as gerais vêm da fase do funil (`references/edicao-por-objetivo.md`) e do estilo de referência (`biblioteca/estilos/`).
 10. **Usar a biblioteca e as ferramentas, não improvisar.** Componentes, estilos, sons, música, ideias e prompts estão em `biblioteca/`; a edição corre com `scripts/edicao/pipeline.py`. Se faltar algo, cria-o de forma reutilizável e acrescenta-o à biblioteca.
 
@@ -38,13 +38,14 @@ Quando for invocado, deteta o estado e age:
 | Modo `editar` | `stages/07-edit.md` |
 | Modo `agendar` | `stages/08-publish-schedule.md` |
 | Modo `analisar` | `stages/09-review.md` |
+| Modo `feedback` | `stages/10-learning.md` |
 | Modo `ajuda` | Resume esta tabela e o fluxo |
 
 Lê só o ficheiro do estágio de que precisas.
 
 ## Fluxo de um vídeo
 
-1. **Próximo post** (funil e histórico) → 2. **Pesquisa dirigida** ao tema → 3. **Guião** (o que dizer) → 4. **Roteiro de gravação** (como gravar: planos, luz, som, locais, B-roll) → 5. O criador grava e põe os ficheiros em `gravados/` → 6. **Intake** (validação técnica) → 7. **Plano de edição** aprovado → 8. **Edição** com motion graphics → 9. **Adaptação por plataforma** e **agendamento** → 10. **Análise** depois de publicado, que alimenta o próximo.
+1. **Próximo post** (funil e histórico) → 2. **Pesquisa dirigida** ao tema → 3. **Guião** (o que dizer) → 4. **Roteiro de gravação** (como gravar: planos, luz, som, locais, B-roll) → 5. O criador grava e põe os ficheiros em `gravados/` → 6. **Intake** (validação técnica) → 7. **Plano de edição** aprovado → 8. **Edição** com motion graphics → 9. **Adaptação por plataforma** e **agendamento** → 10. **Análise** depois de publicado, que alimenta o próximo. Em todos os passos: **aprender** com as correções do criador (`stages/10-learning.md`).
 
 ## Repositório do criador
 
@@ -54,9 +55,11 @@ Criado com `scripts/init-creator-repo.sh` (ou à mão, seguindo esta estrutura).
 creator.md                       perfil, objetivos, estilo, equipamento, plataformas
 estrategia/estrategia.md         funil, séries, cadência, regras
 estrategia/sistema-design.md     cores, fontes e regras visuais da marca
-estrategia/estilo-edicao.md      o estilo de edição do criador, aprendido com o feedback
-estrategia/aprendizagens.md      o que funcionou e o que não (log datado)
+estrategia/aprendizagens.md      o que funcionou e o que não (dados, log datado)
 estrategia/licoes-tecnicas.md    erros técnicos deste criador e a regra que os evita
+estilo/feedback.csv              correções e aprovações do criador (diário, todas as fases)
+estilo/estilo-criador.md         as regras do criador, geradas do diário (não editar à mão)
+estilo/estilo-edicao.md          os valores atuais da edição (legendas, movimento, música, SFX, look) e hipóteses a testar
 referencias/AAAA-MM-DD_*.md      pesquisas, com fontes e data
 referencias/estilos/<nome>.md    fichas de estilo de criadores de referência
 calendario/agenda.csv            plano de publicação
@@ -81,6 +84,7 @@ Cada versão de um vídeo entra num commit só seu, com o título `vN - o que mu
 - `scripts/edicao/pipeline.py`: a edição em 4 comandos (`preparar`, `render`, `audio`, `exportar`). Detalhes em `scripts/edicao/README.md`.
 - `scripts/edicao/catalogar_sons.py` e `gerar_sons.py`: os sons do criador (ou um kit gerado) e o mapa de SFX.
 - `scripts/analisar_referencia.py`: ritmo, paleta, sonoridade e fotogramas de um vídeo de referência.
+- `scripts/registar-feedback.py`: regista cada correção ou aprovação do criador no diário e gera `estilo/estilo-criador.md` (estágio 10).
 - `biblioteca/`: componentes de motion com exemplos de config, fichas de estilo, sons, música, ideias de formato e prompts.
 - `references/licoes-tecnicas.md` e `references/edicao-por-objetivo.md`: o que já correu mal e como a edição muda com o objetivo.
 

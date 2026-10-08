@@ -12,7 +12,7 @@ Um agente open source para o Claude Code que faz por um criador de conteúdo **i
 4. **Escreve o guião** e o **roteiro de gravação** (planos, luz, som, B-roll).
 5. Tu **gravas** e pões os ficheiros em `gravados/`.
 6. **Edita** num pipeline de 4 comandos: cortes, legendas, zooms, componentes de motion, voz sem eco, música e os teus sons. Entrega uma pasta por versão, num commit com o título `vN - o que mudou`, e manda-te o vídeo no chat.
-7. **Aprende**: cada feedback vira regra no teu `estilo-edicao.md` ("motion leve", "sem barra de progresso", "SFX baixos"), e cada erro técnico vira uma lição que não se repete.
+7. **Aprende**: cada correção tua vira uma regra no teu diário de estilo (`estilo/`: "motion leve", "sem barra de progresso", "SFX baixos"), que ganha força quando a repetes ou aprovas, e cada erro técnico vira uma lição que não se repete.
 8. **Adapta**, **agenda** e, depois de publicares, **analisa** os resultados para o próximo.
 
 ## Instalar
@@ -33,9 +33,11 @@ Depois, no teu repositório privado de criador, escreve `/creator-agent:creator-
 | `... pesquisa` | Pesquisa de referências do nicho |
 | `... estilo <criador ou vídeo>` | Ficha de estilo de edição com dados |
 | `... roteiro <pasta>` | Guião e roteiro de gravação |
+| `... intake <pasta>` | Valida os vídeos gravados |
 | `... editar <pasta>` | Plano de edição, edição e entrega da versão |
 | `... agendar <pasta>` | Adaptações por plataforma e calendário |
 | `... analisar` | Métricas e aprendizagens |
+| `... feedback` | Regista correções para o agente se adaptar ao teu estilo |
 
 Também funciona em linguagem natural: "edita o vídeo que gravei no meu estilo", "na v2 baixa os sons", "analisa o estilo do Iman Gadzhi".
 
@@ -44,7 +46,7 @@ Também funciona em linguagem natural: "edita o vídeo que gravei no meu estilo"
 | Pasta | O que tem |
 | --- | --- |
 | `skills/creator-agent/SKILL.md` | O agente: princípios, ponto de entrada, estrutura do repositório do criador |
-| `stages/` | Os 9 estágios (onboarding, pesquisa, estratégia, guião, roteiro, intake, edição, publicação, análise) |
+| `stages/` | Os 10 estágios (onboarding, pesquisa, estratégia, guião, roteiro, intake, edição, publicação, análise, aprendizagem) |
 | `scripts/edicao/` | O pipeline de edição (`pipeline.py`) e os scripts por dentro |
 | `scripts/` | `verificar.py` (dependências), `analisar_referencia.py`, estrutura e próximo post |
 | `biblioteca/` | Componentes de motion, fichas de estilo, sons, música, formatos de vídeo e prompts |

@@ -15,13 +15,13 @@ para pôr o agente a trabalhar; os de "para o agente" são o checklist mental do
 ## Para o agente
 
 ### Antes de planear uma edição
-"Qual é a fase do funil e o objetivo deste vídeo? O que diz o `estilo-edicao.md` do criador (regras confirmadas e 'não voltar a fazer')?
+"Qual é a fase do funil e o objetivo deste vídeo? Que regras do `estilo/estilo-criador.md` se aplicam (dura, confirmada, hipotese) e que valores tem o `estilo/estilo-edicao.md`?
 Que lições técnicas se aplicam? Que componentes da biblioteca contam a história deste guião, um por ideia? Onde está o gancho visual nos primeiros 3 s?
 O CTA tem 2 s ou mais? Há algum texto no ecrã que fuja aos limites do criador (travessões, palavrões, dados não confirmados)?"
 
 ### Ao interpretar feedback
 "O que o criador pediu exatamente? É uma preferência que vale para todos os vídeos, um erro técnico meu, ou um gosto só deste vídeo?
-Que regra escrevo no `estilo-edicao.md`, com a versão e a data? Há algo no pedido que contradiz uma regra anterior? Se sim, a nova ganha e a antiga vai para 'não voltar a fazer'."
+Que regra curta e testável registo no diário (`registar-feedback.py`, categoria e tipo)? Há algo no pedido que contradiz uma regra anterior? Se sim, a nova ganha e pergunto uma vez ao criador para a fixar."
 
 ### Ao pesquisar um estilo
 "Que vídeos recentes posso analisar com ficheiro? Que páginas abri de facto? O que medi, o que li e o que deduzi?

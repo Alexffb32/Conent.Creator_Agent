@@ -21,7 +21,7 @@ Valores afinados num vídeo de autoridade com SFX "leves" (pedido do criador). P
 1. O criador dá os seus sons (pasta, zip, Drive) e ficam em `assets/sons/`. Só sons que ele tem direito de usar.
 2. `python3 scripts/edicao/catalogar_sons.py assets/sons` mede cada som, sugere o tipo (pelo nome e pela forma de onda), marca os de meme como excluídos e propõe o `mapa.json`.
 3. Mostra o mapa ao criador numa frase por som e o que ficou de fora; ajusta se ele quiser.
-4. Depois do render, mede a distância de cada SFX à voz e afina a `lufs` no mapa. O feedback ("sons altos", "não se ouvem") vai para o `estilo-edicao.md`.
+4. Depois do render, mede a distância de cada SFX à voz e afina a `lufs` no mapa. O feedback ("sons altos", "não se ouvem") vira regra no diário (estágio 10) e o nível novo fica no `estilo/estilo-edicao.md`.
 
 Sem sons: `python3 scripts/edicao/gerar_sons.py assets/sons` cria um kit gerado por código (pop, whoosh, sino, teclas, clique, tick, shimmer, riser, boom) e o mapa.
 

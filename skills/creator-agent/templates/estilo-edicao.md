@@ -1,12 +1,7 @@
 # Estilo de edição: {nome}
 
-O perfil de edição do criador, aprendido com o feedback a cada versão. O agente lê-o antes de cada plano e atualiza-o depois de cada feedback.
-Cada regra tem a origem (versão e data) e a confiança: **confirmada** (o criador pediu ou aprovou) ou **hipótese** (deduzida, a testar).
-
-## Regras confirmadas
-| Regra | Origem | Notas |
-| --- | --- | --- |
-| (ex.: movimento leve, transições só em momentos-chave) | (ex.: feedback à v1, 2026-10-07) | |
+Os valores atuais da edição deste criador: o que o agente usa no `config.json` de cada vídeo.
+As regras (o que o criador pediu, corrigiu ou aprovou) ficam no diário `estilo/feedback.csv` e no perfil gerado `estilo/estilo-criador.md` (ver `stages/10-learning.md`). Quando uma regra nova muda um valor, atualiza-o aqui com a origem.
 
 ## Parâmetros atuais
 | Parâmetro | Valor | Origem |
@@ -32,8 +27,6 @@ Cada regra tem a origem (versão e data) e a confiança: **confirmada** (o criad
 | Commits | uma versão por commit, título `vN - o que mudou` |
 
 ## Hipóteses a testar
+Ideias do agente ou dos dados (estágio 9) que o criador ainda não pediu nem aprovou.
 | Hipótese | Como testar | Resultado |
 | --- | --- | --- |
-
-## Não voltar a fazer
-- (o que o criador rejeitou, com a versão)

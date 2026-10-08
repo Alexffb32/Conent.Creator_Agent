@@ -1,19 +1,7 @@
 # Estilo de edição: Alex (alexffb)
 
-O perfil de edição do Alex, aprendido com o feedback do short "presença digital" (v1 a v5). O agente lê-o antes de cada plano e atualiza-o depois de cada feedback.
-
-## Regras confirmadas
-| Regra | Origem | Notas |
-| --- | --- | --- |
-| Movimento leve; transições e zooms só em momentos-chave | feedback à v1, 2026-10-07 | zoom em cada corte e palavras a saltar ficaram fortes demais |
-| Legendas ao estilo Iman Gadzhi: Montserrat em minúsculas, brancas, de light para bold à medida que fala | feedback à v2, 2026-10-07 | nunca sobrepostas nem a piscar |
-| Sem barra de progresso no topo | feedback à v3, 2026-10-08 | |
-| Componentes de motion muito parecidos com os do Iman: vidro fosco escuro, notificações iOS, browser com cursor, mosaicos, lower third | feedback à v3, aprovado na v4 | pesquisa de referências antes de desenhar componentes novos |
-| Voz sem eco | feedback à v3, 2026-10-08 | WPE e supressão da reverberação tardia (rt60 0,5) |
-| Música de fundo muito leve que combine (piano e cordas, calma) | feedback à v3, 2026-10-08 | -23 LUFS com ducking |
-| SFX leves em cada animação, com os sons do Alex | pedido depois da v4, 2026-10-08 | sons em `assets/sons/`, mapa em `assets/sons/mapa.json` |
-| Sem travessões no texto do ecrã | perfil, 2026-10-07 | |
-| Nome da empresa nos exemplos: Layout | aprovação do plano, 2026-10-07 | |
+Os valores atuais da edição do Alex, afinados da v1 à v5 do short "presença digital". O agente usa-os no `config.json` de cada vídeo.
+As regras (o que o Alex pediu, corrigiu ou aprovou) estão no diário `feedback.csv` e no perfil gerado `estilo-criador.md`, nesta pasta.
 
 ## Parâmetros atuais
 | Parâmetro | Valor | Origem |
@@ -37,13 +25,8 @@ O perfil de edição do Alex, aprendido com o feedback do short "presença digit
 | Organização | uma pasta por versão, commit `vN - o que mudou`, README do vídeo com a tabela de versões |
 
 ## Hipóteses a testar
+Ideias do agente ou dos dados que o Alex ainda não pediu nem aprovou.
 | Hipótese | Como testar | Resultado |
 | --- | --- | --- |
 | Os sinos das notificações podem estar altos demais quando há três seguidos | perguntar no feedback da v5 | |
 | Legendas `destaque` (palavra a vermelho) podem render mais em vídeos de topo de funil | um vídeo de topo com `destaque` e comparar a retenção aos 3 s | |
-
-## Não voltar a fazer
-- Zoom em cada corte e palavras a aparecer uma a uma (v1).
-- Legendas por bloco com fade de 200 ms (v2: piscavam e sobrepunham-se).
-- Barra de progresso (v3).
-- Sons de meme (Among Us, FAHHH, Vine Boom, Wrong) em vídeos de autoridade.

@@ -7,7 +7,8 @@ Fase: (topo, meio, fundo) | Objetivo: | Duração alvo:
 - (4 a 6 decisões de `references/edicao-por-objetivo.md`, ajustadas pelo estilo do criador)
 
 ## Regras do estilo do criador aplicadas
-- (as regras de `estrategia/estilo-edicao.md` que contam neste vídeo)
+- (as regras de `estilo/estilo-criador.md` que contam neste vídeo, com o nível: dura, confirmada ou hipotese)
+- A testar: (as `hipotese` aplicadas, para o criador confirmar ou corrigir)
 
 ## Linha temporal
 | Tempo | Imagem | Câmara | SFX | Componente (tipo, texto) |

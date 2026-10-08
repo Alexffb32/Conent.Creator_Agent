@@ -42,4 +42,4 @@ Regras: máximo de 4 perguntas por chamada, 2 a 4 opções, a recomendada primei
 - **Ligações**: "Queres ligar o Instagram e o YouTube para eu ler a tua audiência?" Ligar agora / Prefiro dar capturas ou CSV / Não por agora.
 - **Prova**: "Tens resultados que posso usar como prova?" Sim (escreve-os, só uso o que confirmares) / Ainda não.
 - **Fim de cada guião**: Aprovar / Mais direto / Mais pessoal / Mudar o gancho.
-- **Fim de cada edição**: Aprovar / Ajustar ritmo / Ajustar legendas / Ajustar gráficos / Ajustar som. Cada resposta vai para o `estilo-edicao.md` (ver estágio 7, passo 8).
+- **Fim de cada edição**: Aprovar / Ajustar ritmo / Ajustar legendas / Ajustar gráficos / Ajustar som. Cada resposta vira uma regra no diário de estilo (estágio 7, passo 8, e estágio 10).

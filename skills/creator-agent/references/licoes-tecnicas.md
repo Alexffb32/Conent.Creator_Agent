@@ -40,4 +40,4 @@ Formato: sintoma, causa, regra.
 
 ## Entrega e organização
 25. **O criador não percebe as pastas.** Regra: cada vídeo com um `README.md` que diz a versão atual e a tabela de versões; uma pasta por versão (`v1/`, `v2/`…), cada uma num commit só seu com o título `vN - o que mudou`; ficheiros técnicos em `trabalho/`.
-26. **Travessões no texto do ecrã.** Alguns criadores pedem que não haja; confirmar em `creator.md` (limites) e no `estilo-edicao.md`.
+26. **Travessões no texto do ecrã.** Alguns criadores pedem que não haja; confirmar em `creator.md` (limites) e no `estilo/estilo-criador.md`.

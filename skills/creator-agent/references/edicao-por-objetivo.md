@@ -1,7 +1,7 @@
 # Edição por objetivo
 
 Ponto de partida para decidir a edição a partir da fase do funil (`meta.json`) e do objetivo do criador (`creator.md`).
-O `estilo-edicao.md` do criador tem prioridade: estas são regras gerais, as do criador foram confirmadas por ele.
+As regras do criador (`estilo/estilo-criador.md`) têm prioridade: estas são gerais, as dele vêm do que pediu ou aprovou.
 Última revisão: 2026-10-08 (confirmar com pesquisa do nicho, ver `research-playbook.md`).
 
 | Decisão | Topo (alcance) | Meio (confiança) | Fundo (conversão) |
@@ -24,4 +24,4 @@ O `estilo-edicao.md` do criador tem prioridade: estas são regras gerais, as do 
 - **Parcerias e clientes:** mostrar processo e resultados de clientes (com autorização), o nome do serviço ou da empresa no ecrã.
 
 ## Como usar no plano
-No `plano-edicao.md`, a secção "Objetivo e decisões" diz a fase, o objetivo e as 4 a 6 decisões que saem desta tabela, ajustadas pelo `estilo-edicao.md`. Quando o feedback do criador contradiz a tabela, ganha o criador, e a preferência vai para o `estilo-edicao.md` dele.
+No `plano-edicao.md`, a secção "Objetivo e decisões" diz a fase, o objetivo e as 4 a 6 decisões que saem desta tabela, ajustadas pelas regras e valores do criador (`estilo/`). Quando o feedback do criador contradiz a tabela, ganha o criador, e a preferência vai para o diário dele (estágio 10).
