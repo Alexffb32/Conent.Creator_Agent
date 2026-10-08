@@ -1,0 +1,19 @@
+# Estágio 7: Edição com motion graphics
+
+Pré-requisitos: intake feito, `python3 scripts/verificar.py` sem faltas. Os comandos abaixo são do `scripts/edicao/pipeline.py` (ver `scripts/edicao/README.md`).
+Sem HyperFrames, usa FFmpeg e legendas ASS e diz ao criador o que ficou mais simples.
+
+1. **Memória primeiro.** Lê `estrategia/estilo-edicao.md` (as regras do criador ganham sempre), `estrategia/sistema-design.md`, `references/licoes-tecnicas.md` e `estrategia/licoes-tecnicas.md` do criador, `references/edicao-por-objetivo.md` para a fase do funil, e a ficha do estilo de referência em `biblioteca/estilos/` ou `referencias/estilos/`. Se o estilo for novo ou a ficha tiver mais de 60 dias, faz a pesquisa de estilo do estágio 2.
+2. **Preparar.** `pipeline.py preparar <pasta_do_video> [--cortes-manuais "[[ini,fim]]"] [--vocabulario "nomes, termos"]`. Lê `trabalho/frases_cortadas.json`, corrige nomes e termos (em `correcoes`), e confirma os takes sugeridos no `trabalho/config.json`.
+3. **Plano.** Escreve `plano-edicao.md` (template) com: objetivo e decisões (da tabela por objetivo, ajustadas pelo estilo), as regras do `estilo-edicao.md` que se aplicam, e a tabela por tempo (corte, câmara, SFX, componente com texto). Os componentes vêm de `biblioteca/componentes.md`. Mostra um resumo e pede aprovação com AskUserQuestion. Sem aprovação, não renderizes.
+4. **Config.** Passa o plano para `trabalho/config.json`: `graficos` (lista de componentes com tempos e textos), `destaques`, `zoom_chave`, legendas, `frame_final` e ajustes de SFX (`sfx.extra`, `sfx.trocar`, `sfx.remover`). Os tempos vêm de `frases_cortadas.json` (o componente entra com a palavra que o anuncia).
+5. **Render e áudio.** `pipeline.py render <pasta>` e `pipeline.py audio <pasta>`. O `compor.py` tem de dizer "sobreposições: 0". Os SFX usam `assets/sons/mapa.json` (os sons do criador, ver `biblioteca/sons.md`); sem sons, gera o kit com `gerar_sons.py`.
+6. **QA.** Corre a lista de `licoes-tecnicas.md` que se aplica e vê fotogramas de início, meio, fim e de cada componente (cara tapada, texto cortado, contraste, zona segura). Confirma -14 LUFS e a distância dos SFX à voz. Corrige antes de entregar.
+7. **Entrega.** `pipeline.py exportar <pasta> vN --titulo "o que mudou"`: cria `vN/` (vídeo, `capa.png`, `qa.jpg`, `config.json`), a cópia para o chat se passar o limite, e atualiza `meta.json` e a tabela do `README.md` do vídeo. Faz commit só de `vN/` com o título `vN - o que mudou`, e o resto num commit à parte. Envia o vídeo no chat. Diz o que fizeste em 3 linhas e pede feedback (AskUserQuestion: Aprovar / Ajustar ritmo / Ajustar legendas / Ajustar gráficos / Ajustar som).
+8. **Aprender com o feedback.** Para cada ponto do feedback:
+   - preferência do criador (vale para os próximos vídeos) vai para `estrategia/estilo-edicao.md`, com a versão e a data;
+   - erro técnico que causaste vai para `estrategia/licoes-tecnicas.md` do criador (sintoma, causa, regra) e, se for geral, propõe-o para `references/licoes-tecnicas.md` do agente;
+   - gosto só deste vídeo fica no plano;
+   - regista em `estrategia/aprendizagens.md` (data, conclusão, confiança) e na coluna de feedback do `README.md` do vídeo.
+   Depois faz a versão seguinte (`v2/`, `v3/`…), sem mexer nas anteriores.
+9. Atualiza `meta.json` (estado: editado, versão atual) quando o criador aprovar.

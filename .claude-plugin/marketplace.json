@@ -1,0 +1,12 @@
+{
+  "name": "alexffb",
+  "description": "Plugins do Alex (alexffb) para criadores de conteúdo",
+  "owner": { "name": "Alex (alexffb)" },
+  "plugins": [
+    {
+      "name": "creator-agent",
+      "source": "./",
+      "description": "Agente para criadores de conteúdo: estratégia, guiões, roteiros de gravação e edição de shorts com motion graphics, que aprende o estilo de cada criador."
+    }
+  ]
+}
