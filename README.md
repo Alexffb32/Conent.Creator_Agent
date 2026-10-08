@@ -9,7 +9,7 @@ Um agente open source para o Claude Code que ajuda criadores de conteúdo **inic
 3. **Monta o funil** (topo, meio, fundo) e um calendário. Sabe o que publicaste da última vez e diz-te o que publicar a seguir para manter o rumo.
 4. **Escreve o guião** (o que dizer) e o **roteiro de gravação** (como gravar: planos, luz, som, B-roll, checklist).
 5. Tu **gravas** e pões os ficheiros na pasta `gravados/` do vídeo.
-6. Ele **valida** os ficheiros, faz o **plano de edição**, **edita** com legendas e motion graphics e entrega em `editado/`.
+6. Ele **valida** os ficheiros, faz o **plano de edição**, **edita** com legendas e motion graphics e entrega uma pasta por versão (`v1/`, `v2/`…).
 7. **Adapta** a peça a cada plataforma (Instagram, YouTube, TikTok, podcast), **agenda** e, depois de publicares, **analisa** os resultados para melhorar o próximo.
 
 Lê a audiência real (a que tens e a que queres atingir) através das ligações a Instagram e YouTube, ou de exportações dos teus insights.
@@ -43,7 +43,7 @@ bash .claude/skills/creator-agent/scripts/init-creator-repo.sh .
 
 ## Estrutura do teu repositório (privado)
 
-Ver `SKILL.md`. Cada vídeo fica em `videos/<short|long|podcast>/AAAA-MM-DD_slug/` com `brief`, `guiao`, `roteiro`, `plano-edicao`, `gravados/`, `editado/` e `adaptacoes/<plataforma>.md`.
+Ver `SKILL.md`. Cada vídeo fica em `videos/AAAA-MM-DD_slug/` com `README.md` (versões), `brief`, `guiao`, `roteiro`, `plano-edicao`, `gravados/`, uma pasta por versão (`v1/`, `v2/`…), `trabalho/` e `adaptacoes/<plataforma>.md`.
 
 ## Privacidade
 

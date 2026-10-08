@@ -17,7 +17,7 @@
 7. **Ligações (opcional)**: liga Instagram e YouTube nas definições de conectores do Claude para o agente ler a tua audiência. Sem isso, dá-lhe capturas ou exportações dos insights.
 
 ## Como carregar os vídeos
-Depois de o agente te dar o roteiro: no GitHub abre a pasta `videos/<tipo>/<data_slug>/gravados/`, carrega os ficheiros (Add file, Upload files) ou faz `git add` e `git push`. Acima de 100 MB por ficheiro, usa Git LFS. Depois diz ao agente "gravei".
+Depois de o agente te dar o roteiro: no GitHub abre a pasta `videos/<data_slug>/gravados/`, carrega os ficheiros (Add file, Upload files) ou faz `git add` e `git push`. Acima de 100 MB por ficheiro, usa Git LFS. Depois diz ao agente "gravei".
 
 ## Atualizar a skill
 `git submodule update --remote .claude/skills/creator-agent` e commit.

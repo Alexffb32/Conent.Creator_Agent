@@ -44,7 +44,7 @@ Lê só o ficheiro do estágio de que precisas.
 
 ## Repositório do criador
 
-Criado com `scripts/init-creator-repo.sh` (ou à mão, seguindo esta estrutura):
+Criado com `scripts/init-creator-repo.sh` (ou à mão, seguindo esta estrutura). Fica na raiz do repositório ou numa pasta indicada no `CLAUDE.md` (neste repositório, `alexffb/`); os caminhos abaixo são relativos a essa pasta.
 
 ~~~
 creator.md                       perfil, objetivos, estilo, equipamento, plataformas
@@ -53,15 +53,19 @@ estrategia/aprendizagens.md      o que funcionou e o que não
 referencias/AAAA-MM-DD_*.md      pesquisas, com fontes e data
 calendario/agenda.csv            plano de publicação
 historico/posts.csv              o que foi publicado e resultados
-videos/<tipo>/AAAA-MM-DD_slug/   tipo = short, long, podcast
+videos/AAAA-MM-DD_slug/          um por vídeo (o tipo, short, long ou podcast, fica no meta.json)
+    README.md   estado e tabela de versões
     brief.md  guiao.md  roteiro.md  plano-edicao.md  meta.json
     gravados/   (sem cortes, nunca alterar)
-    editado/    transcricao.json e uma pasta por versão (v1/, v2/…: vídeo, preview, estático, qa.jpg, config.json)
+    v1/ v2/ …   uma pasta por versão: vídeo, capa.png, qa.jpg, config.json
+    trabalho/   transcrição e ficheiros de edição (cortes, enquadramento, SFX)
     adaptacoes/<plataforma>.md   título, legenda, hashtags, CTA, hora
-assets/                          logo, fontes, música, LUT, B-roll
+assets/                          logo, sons (SFX), fontes, música, LUT, B-roll
 ~~~
 
-`meta.json` guarda: estado (ideia, guiao, roteiro, gravado, editado, agendado, publicado), funil (topo, meio, fundo), série, plataformas.
+`meta.json` guarda: tipo, estado (ideia, guiao, roteiro, gravado, editado, agendado, publicado), funil (topo, meio, fundo), série, plataformas e a versão atual.
+
+Cada versão de um vídeo entra num commit só seu, com o título `vN - o que mudou`: é o que o GitHub mostra ao lado da pasta da versão. Depois disso, essa pasta não volta a ser alterada.
 
 ## Ligações (conectores)
 

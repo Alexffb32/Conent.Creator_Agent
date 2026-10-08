@@ -36,7 +36,7 @@ Contraste +8 %, saturação +5 %, brilho +1 %, aumento com Lanczos; no fim, grã
 ## Áudio
 - Voz: WPE (remoção de reverberação) e redução de ruído leve, supressão da reverberação tardia (rt60 0.5). A cauda de eco depois de cada palavra desceu de -15 dB para -21.8 dB. Depois: high-pass a 85 Hz, -2.5 dB a 300 Hz (menos graves embrulhados), +2 dB a 3.5 kHz (presença), +1.5 dB acima de 10 kHz, de-esser, compressor 3:1 e -14 LUFS.
 - Música: composta em MIDI e tocada com instrumentos reais (FluidSynth, FluidR3_GM). Piano em arpejo, pad, cordas e violoncelo a partir dos 12 s, melodia e subida a partir dos 36 s, a 80 BPM em Am, F, C, G, com resolução no frame final. Fica a -23 LUFS e, com o ducking, cerca de -28.5 LUFS enquanto falas (14 LU abaixo da voz).
-- SFX (v5): os sons do Alex, um por animação, cortados, alinhados pelo impacto (o pico do whoosh, o toque do sino e o fim do riser caem no fotograma em que a animação aparece) e normalizados pela sonoridade, de 15 a 27 dB abaixo da voz: Pop (painéis e resultados), Swish Whoosh (cenas), Bell Ding (notificações), Keyboard Typing (6 teclas soltas), Click (cursor), Pop mais agudo (mosaicos), Metallic Riser (remate), Bass Impact muito baixo (gancho e frame final). Mapa em `edicao/sfx_mapa.json`, tempos em `edicao/sfx_eventos.json`.
+- SFX (v5): os sons do Alex, um por animação, cortados, alinhados pelo impacto (o pico do whoosh, o toque do sino e o fim do riser caem no fotograma em que a animação aparece) e normalizados pela sonoridade, de 15 a 27 dB abaixo da voz: Pop (painéis e resultados), Swish Whoosh (cenas), Bell Ding (notificações), Keyboard Typing (6 teclas soltas), Click (cursor), Pop mais agudo (mosaicos), Metallic Riser (remate), Bass Impact muito baixo (gancho e frame final). Os sons estão em `assets/sons/`; mapa em `trabalho/sfx_mapa.json`, tempos em `trabalho/sfx_eventos.json`.
 - Sons não usados: Among Us, FAHHH, Vine Boom e Wrong (sons de meme, não combinam com o tom calmo), Glitch (ruído forte), Register, Right, Core, Riser 2 e Camera Flash (sem animação onde encaixem).
 - Mistura: -13.9 LUFS, pico a -2.8 dBFS.
 
@@ -48,4 +48,4 @@ Contraste +8 %, saturação +5 %, brilho +1 %, aumento com Lanczos; no fim, grã
 - v5: este plano (mesmo vídeo, SFX com os sons do Alex).
 
 ## Exportar
-Uma pasta por versão em `editado/` (`v1/` a `v5/`), cada uma com o vídeo, a preview a 540x960, o PNG estático, `qa.jpg` e o `config.json`. Versão atual: `editado/v5/presenca-digital_v5.mp4`.
+Uma pasta por versão (`v1/` a `v5/`), cada uma com o vídeo, `capa.png`, `qa.jpg` e o `config.json`. Versão atual: `v5/presenca-digital_v5.mp4`.

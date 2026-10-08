@@ -3,8 +3,8 @@
 set -euo pipefail
 here="$(cd "$(dirname "$0")/.." && pwd)"
 dest="${1:-.}"
-mkdir -p "$dest"/{estrategia,referencias,calendario,historico,assets/{fonts,music,lut,broll,logo},videos/{short,long,podcast}}
-for d in videos/short videos/long videos/podcast; do touch "$dest/$d/.gitkeep"; done
+mkdir -p "$dest"/{estrategia,referencias,calendario,historico,assets/{fonts,music,lut,broll,logo,sons},videos}
+touch "$dest/videos/.gitkeep"
 [ -f "$dest/estrategia/aprendizagens.md" ] || printf '# Aprendizagens\n\n(data, conclusão, confiança)\n' > "$dest/estrategia/aprendizagens.md"
 [ -f "$dest/calendario/agenda.csv" ] || echo "data,plataforma,tipo,fase,serie,tema,estado" > "$dest/calendario/agenda.csv"
 [ -f "$dest/historico/posts.csv" ] || echo "data,plataforma,tipo,fase,serie,tema,link,alcance,retencao_3s,partilhas,guardados,conversoes" > "$dest/historico/posts.csv"
