@@ -11,20 +11,22 @@ Preferência confirmada no feedback da v1: movimento leve, transições só em m
 | Acento principal | #FF2E00 (asterisco do logo) |
 | Acento, satin do CTA | topo #FF481F (+6 % de luminosidade), base #E02900 (−6 %) |
 | Acento a 10 % (chips) | #1A0500 (10 % de acento sobre #000000) |
+| Acento claro / escuro (paleta à Iman) | #FF7A52 / #5A1000 |
+| Vidro fosco | blur 18 px, saturação 160 %, borda 1 px a branco 14 % (42 % em cima); sobre vídeo: fundo escuro a 80 a 86 % |
 | Ink / texto | #FFFFFF |
 | Fundo | #000000 |
 | Superfície | #222222 |
 | Texto secundário | #B3B3B3 |
 | Linha | #4F4F4F |
-| Display e corpo | Inter (Display Bold 800, corpo 500 a 600) |
+| Display e corpo | Montserrat (800 títulos, 500 a 700 corpo), no lugar da Proxima Nova usada pelo Iman; o Inter fica para o site |
 | Legendas | Montserrat Light 300 e Bold 700, minúsculas, brancas, 60 px (estilo Iman; exceção à maiúscula inicial pedida pelo Alex) |
 | Fonte de destaque | Instrument Serif Italic, no máximo 1 a 3 palavras por peça |
-| Motivo | linha fina no acento (divisor e barra de progresso) e o asterisco do logo |
+| Motivo | o asterisco do logo (emblema do lower third) e o brilho vermelho; sem barra de progresso (pedido do Alex) |
 | Formatos | 1080x1920 a 30 fps (Reels, Shorts) |
 | Espaçamento | 4, 8, 12, 16, 24, 32, 48, 64, 96, 128 (a 1080 px de lado curto) |
 | Raios | 8 badges, 16 cartões, 24 painéis, pill = altura ÷ 2 |
 | Sombra | md 0 8 24 a 14 %, sempre para baixo; borda superior de 1 px a branco 50 % |
-| Movimento | fast 100 ms, base 200 ms, slow 300 ms, cubic-bezier(.2,.8,.2,1); transições de cena 300 a 500 ms |
+| Movimento | fast 100 ms, base 200 ms, slow 300 ms, cubic-bezier(.2,.8,.2,1); componentes de interface em mola (94 % para 100 %, cerca de 5 % de ultrapassagem, 450 ms, desfoque 10 px para 0); transições de cena 150 a 500 ms |
 | Margens | ≥ 6 % do lado curto (72 px); 9:16 sem conteúdo nos 12 % de cima nem nos 20 % de baixo |
 | Texto mínimo | 32 px (3 % de 1080) |
 

@@ -20,17 +20,22 @@
   [
    0,
    2.6,
-   544
+   523
   ],
   [
    24.57,
    29.5,
-   500
+   532
   ],
   [
    40.78,
    42.5,
-   571
+   559
+  ],
+  [
+   43.2,
+   48.83,
+   482
   ]
  ],
  "correcoes": [
@@ -137,67 +142,93 @@
   },
   "cta": {
    "ini": 43.2,
-   "texto": "Manda-me mensagem",
-   "sub": "ou comenta aqui em baixo",
-   "sub_t": 44.48,
+   "app": "Mensagens",
+   "titulo": "Manda-me mensagem",
+   "texto": "ou escreve aqui em baixo nos comentários",
+   "botao": "Manda-me mensagem",
    "handle": "@alexffb_"
   },
   "cena_lista": {
    "ini": 3.55,
    "fim": 9.2667,
-   "titulo": "O teu outreach hoje",
+   "eyebrow": "O teu outreach hoje",
+   "titulo": "Sem qualquer *resposta*",
    "itens": [
     {
      "t": 3.64,
-     "texto": "Emails em bulk sem resposta"
+     "icone": "mail",
+     "app": "Email",
+     "titulo": "Emails em bulk",
+     "texto": "Sem resposta"
     },
     {
      "t": 6.16,
-     "texto": "Cold calls sem reuniões"
+     "icone": "phone",
+     "app": "Chamadas",
+     "titulo": "Cold calls",
+     "texto": "Sem reuniões"
     },
     {
      "t": 7.84,
-     "texto": "DMs que dão em ghost"
+     "icone": "chat",
+     "app": "Mensagens",
+     "titulo": "DMs",
+     "texto": "Dão em ghost"
     }
    ]
   },
   "cena_pesquisa": {
    "ini": 17.9667,
    "fim": 24.5667,
-   "titulo": "O que encontram quando pesquisam",
+   "eyebrow": "O que encontram quando pesquisam",
+   "titulo": "Vão *pesquisar* sobre nós",
    "pesquisa": "Layout",
-   "escrever": 18.15,
+   "escrever": 18.3,
    "resultados": [
     {
      "t": 20.13,
+     "icone": "globe",
      "titulo": "Site",
      "desc": "No topo da página"
     },
     {
      "t": 22.9,
+     "icone": "funnel",
      "titulo": "Funil",
      "desc": "Com todas as informações, bem estruturado"
     }
-   ]
+   ],
+   "cursor": {
+    "t": 21.0,
+    "x0": 640,
+    "y0": 720,
+    "x1": 520,
+    "y1": 330,
+    "res": 0
+   }
   },
-  "chips": {
+  "mosaicos": {
    "ini": 24.5667,
    "fim": 29.5,
    "itens": [
     {
      "t": 24.73,
+     "icone": "user",
      "texto": "Personal brand"
     },
     {
      "t": 26.87,
+     "icone": "camera",
      "texto": "Instagram"
     },
     {
      "t": 27.45,
+     "icone": "brief",
      "texto": "LinkedIn"
     },
     {
      "t": 27.89,
+     "icone": "play",
      "texto": "YouTube"
     }
    ]
@@ -258,7 +289,9 @@
   "accent": "#FF2E00",
   "accent_top": "#FF481F",
   "accent_bottom": "#E02900",
-  "accent_10": "#1A0500"
+  "accent_10": "#1A0500",
+  "accent_light": "#FF7A52",
+  "accent_dark": "#5A1000"
  },
  "legendas": {
   "max_palavras": 5,

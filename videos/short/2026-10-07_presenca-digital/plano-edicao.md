@@ -1,51 +1,49 @@
 # Plano de edição: presença digital
 
-Estilo: Iman Gadzhi (legendas, zooms lentos, cenas de grelha) com o sistema de design alexffb | Formato: 1080x1920 a 30 fps | Estado: v3
+Estilo: Iman Gadzhi (legendas, zooms lentos, cenas de grelha, componentes de interface) com o sistema de design alexffb | Formato: 1080x1920 a 30 fps | Estado: v4
 Sistema de design: `estrategia/sistema-design.md`
 
-Fonte: `gravados/original.mov` (480x848, 58.2 s). Duração final: 48.8 s de fala + 2 s de frame final = 50.8 s. Cortei 16 % (menos de 25 %).
+Fonte: `gravados/original.mov` (480x848, 58.2 s). Duração final: 48.8 s de fala + 2 s de frame final = 50.8 s. Cortei 16 %.
 Tempos abaixo na linha temporal já cortada.
 
 | Tempo | Imagem | Câmara | SFX | Motion graphic |
 | --- | --- | --- | --- | --- |
-| 0.0 a 2.6 | tu (take largo) | zoom de entrada lento: 106 % para 113 % em 2.5 s | não | Gancho: "Como fazer com que te respondam" |
-| 2.6 a 3.55 | tu | fixo | não | nenhum |
-| 3.55 a 9.27 | **cena de grelha** (ecrã inteiro) | não se aplica | whoosh 3.55 | "O teu outreach hoje": Emails em bulk sem resposta (3.6), Cold calls sem reuniões (6.2), DMs que dão em ghost (7.8) |
-| 9.27 a 10.17 | tu | fixo | não | nenhum |
-| 10.17 a 13.23 | tu | zoom lento: 106 % para 112 % em 3 s ("A tua presença digital não é forte") | não | nenhum |
-| 13.23 a 17.97 | tu (take próximo) | fixo | não | Lower third 13.3 a 15.3: Alex, @alexffb_ |
-| 17.97 a 24.57 | **cena de grelha** | não se aplica | whoosh 17.97 | "O que encontram quando pesquisam": a barra escreve "Layout"; resultados Site (20.1) e Funil (22.9) |
-| 24.57 a 33.07 | tu | fixo | não | Chips: Personal brand (24.7), Instagram (26.9), LinkedIn (27.5), YouTube (27.9), até 29.5 |
-| 33.07 a 42.47 | tu | zoom lento: 100 % para 110 % em 9.4 s ("Agora, se as pessoas…" até ao remate) | não | Remate 40.8 a 42.5: "Tratar da tua *presença digital*" |
-| 42.57 a 48.8 | tu | volta a 100 % no corte | pop 43.2 | CTA "Manda-me mensagem" 43.2, "ou comenta aqui em baixo" 44.5 |
-| 48.8 a 50.8 | frame final | fixo | whoosh 48.8 | Logo com borda branca, CTA, @alexffb_ |
+| 0.0 a 2.6 | tu (take largo) | zoom de entrada lento (106 % para 113 %) | pop | Gancho: painel de vidro escuro, "Como fazer com que te **respondam**", palavras a entrar com desfoque |
+| 3.55 a 9.27 | **cena** preto e vermelho com grelha | não se aplica | whoosh, 3 notif | "O teu outreach hoje / Sem qualquer resposta" e 3 notificações iOS: Email (Emails em bulk, Sem resposta), Chamadas (Cold calls, Sem reuniões), Mensagens (DMs, Dão em ghost) |
+| 9.27 a 13.23 | tu | zoom lento (106 % para 112 %) em "A tua presença digital não é forte" | não | nenhum |
+| 13.3 a 15.3 | tu (take próximo) | fixo | pop | Lower third de vidro: emblema com o asterisco da marca, Alex, @alexffb_ |
+| 17.97 a 24.57 | **cena** | não se aplica | whoosh, 6 teclas, 2 pop, clique | "Vão pesquisar sobre nós": browser de vidro, a barra escreve "Layout", entram os resultados Site e Funil, o cursor vai a Site e clica (destaque vermelho) |
+| 24.57 a 29.5 | tu | fixo | 4 tick | Mosaicos de vidro 2x2 com ícone: Personal brand, Instagram, LinkedIn, YouTube |
+| 33.07 a 42.47 | tu | zoom lento (100 % para 110 %) até ao remate | shimmer 40.8 | Remate 40.8 a 42.5: painel de vidro, "Tratar da tua" + "presença digital" em Instrument Serif com brilho |
+| 43.2 a 48.8 | tu | volta a 100 % no corte | notif | CTA: notificação de Mensagens que desce do topo, com contorno vermelho: "Manda-me mensagem / ou escreve aqui em baixo nos comentários" |
+| 48.8 a 50.8 | **frame final** com grelha e brilho vermelho | não se aplica | whoosh, shimmer | Logo com borda branca, botão "Manda-me mensagem", @alexffb_ |
 
-Barra de progresso: linha fina #FF2E00 a 240 px do topo, 72 px de margem.
+Sem barra de progresso no topo (removida a pedido).
 
-## Legendas (estilo Iman)
-- Montserrat, tudo em minúsculas (menos siglas como DMs), só branco, sem palavras coloridas.
-- A linha aparece inteira em Light (300); cada palavra passa a Bold (700) no momento em que a dizes. A largura do Bold fica reservada, por isso nada salta.
-- Linhas de 1 a 5 palavras (até 24 a 29 caracteres), partidas pelas vírgulas e pontos, sem separar "presença digital" nem "personal brand", sem palavra funcional sozinha no fim.
-- Troca de linha seca (sem fade), sem sobreposições: cada linha acaba quando a seguinte começa.
-- 60 px, centro a 1180 px, sombra suave e um gradiente escuro leve atrás da zona das legendas, para o texto Light se ler por cima do sofá.
+## Componentes (pesquisa: Iman Gadzhi, UI ao estilo Apple, Ali Abdaal, Dan Koe)
+- Paleta à Iman: a cor de acento do vídeo (#FF2E00) com uma variante clara (#FF7A52) e uma escura (#5A1000); fundo preto.
+- Vidro fosco: blur de 18 px, saturação a 160 %, borda de 1 px (mais clara em cima). Sobre o vídeo usa a variante escura (80 a 86 % de opacidade) para o texto ter contraste por cima da parede clara.
+- Ícones em squircle (raio de 22 px) com gradiente vermelho, traço de 2 px.
+- Entrada em mola: escala de 94 % para 100 % com cerca de 5 % de ultrapassagem (back.out 1.25), subida de 18 px e desfoque de 10 px para 0, em 450 ms. As palavras entram com desfoque e 60 ms de intervalo. Saída com desfoque em 250 ms.
+- Cenas: fundo preto com brilho vermelho que respira devagar e grelha de 72 px com máscara.
 
-## Câmara
-Só 3 movimentos, todos lentos e contínuos: o zoom de entrada no gancho e dois zooms de tensão. O enquadramento só volta atrás num corte, por isso nunca se vê um zoom out.
+## Legendas (iguais à v3)
+Montserrat em minúsculas, brancas, de Light para Bold à medida que falas, sem sobreposições, a 60 px, com gradiente escuro leve atrás.
 
 ## Look
-- Base: contraste +8 %, saturação +5 %, brilho +1 %; aumento de 480x848 com Lanczos e nitidez leve.
-- Final: grão de filme leve (temporal, força 3) e vinheta suave (PI/7).
+Contraste +8 %, saturação +5 %, brilho +1 %, aumento com Lanczos; no fim, grão de filme leve e vinheta suave.
 
 ## Áudio
-- Voz: high-pass a 80 Hz, afftdn leve, compressor suave, -14 LUFS, micro fades de 10 ms.
-- Música: base calma gerada por código (90 BPM), a -26 LUFS antes do ducking e cerca de -31.5 LUFS quando falas.
-- SFX gerados por código (4 dB abaixo do v1): whoosh na entrada das 2 cenas de grelha e no frame final, pop no CTA.
+- Voz: WPE (remoção de reverberação) e redução de ruído leve, supressão da reverberação tardia (rt60 0.5). A cauda de eco depois de cada palavra desceu de -15 dB para -21.8 dB. Depois: high-pass a 85 Hz, -2.5 dB a 300 Hz (menos graves embrulhados), +2 dB a 3.5 kHz (presença), +1.5 dB acima de 10 kHz, de-esser, compressor 3:1 e -14 LUFS.
+- Música: composta em MIDI e tocada com instrumentos reais (FluidSynth, FluidR3_GM). Piano em arpejo, pad, cordas e violoncelo a partir dos 12 s, melodia e subida a partir dos 36 s, a 80 BPM em Am, F, C, G, com resolução no frame final. Fica a -23 LUFS e, com o ducking, cerca de -28.5 LUFS enquanto falas (14 LU abaixo da voz).
+- SFX gerados por código, um por animação, leves (picos 18 a 26 dB abaixo da voz): pop (painéis), whoosh (cenas), notif (notificações), type (teclas), click (cursor), tick (mosaicos), shimmer (remate e frame final).
 - Mistura: -13.9 LUFS, pico a -2.8 dBFS.
 
 ## Histórico
-- v1: zoom em cada corte, palavras a aparecer uma a uma, Instrument Serif em todos os destaques, 7 SFX. Feedback: movimento forte demais.
-- v2: zoom só em momentos-chave, legendas por bloco com fade. Feedback: as legendas às vezes sobrepunham-se (blocos com menos de 0.3 s eram esticados) e piscavam com o fade; pedido estilo Iman praticamente igual.
-- v3: este plano.
+- v1: zoom em cada corte, palavras a aparecer uma a uma, 7 SFX. Feedback: movimento forte demais.
+- v2: zoom só em momentos-chave, legendas por bloco com fade. Feedback: legendas a sobrepor-se e a piscar; pedido estilo Iman.
+- v3: legendas Montserrat light para bold, zooms lentos, cenas de grelha. Feedback: tirar a linha do topo, melhorar muito os motion graphics (mais iguais ao Iman), voz sem eco, música leve e SFX nas animações.
+- v4: este plano.
 
 ## Exportar
-Uma pasta por versão em `editado/`: `v1/`, `v2/` e `v3/`, cada uma com o vídeo (`presenca-digital_vN.mp4`, H.264, AAC 192k), a preview a 540x960, o PNG estático do gancho, a folha de QA (`qa.jpg`) e a configuração usada (`config.json`). A transcrição fica em `editado/transcricao.json`. Versão atual: `editado/v3/presenca-digital_v3.mp4`.
+Uma pasta por versão em `editado/` (`v1/` a `v4/`), cada uma com o vídeo, a preview a 540x960, o PNG estático, `qa.jpg` e o `config.json`. Versão atual: `editado/v4/presenca-digital_v4.mp4`.

@@ -1,7 +1,7 @@
 # Pipeline de edição (short 9:16)
 
 Scripts usados no estágio 7 (`stages/07-edit.md`). Só ferramentas livres: FFmpeg, faster-whisper, OpenCV, HyperFrames.
-Pré-requisitos: `pip install faster-whisper "opencv-python-headless<5" --break-system-packages`, Node 22 e `npx hyperframes`.
+Pré-requisitos: `pip install faster-whisper "opencv-python-headless<5" nara_wpe noisereduce soundfile scipy mido --break-system-packages`, `apt-get install fluidsynth fluid-soundfont-gm`, Node 22 e HyperFrames (fixar a versão: `npx hyperframes@0.8.140`).
 Na nuvem do Claude Code, o HyperFrames usa o Chromium da máquina:
 `export HYPERFRAMES_BROWSER_PATH=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell`.
 
@@ -15,8 +15,10 @@ Ordem (a partir de uma pasta de trabalho com `gravados/original.*`):
 6. `base.py <video> segmentos.json frames_pts.txt base.mp4`: vídeo cortado, com cor, aumentado.
 7. `compor.py <work> config.json`: gera `hf/index.html` (zooms, legendas, cartões, CTA, frame final).
 8. `npx hyperframes render hf -o render_video.mp4 --crf 18`.
-9. `voz.py`, `musica_sfx.py`, `loudnorm2.py` e a mistura com `sidechaincompress` (ver o plano do vídeo).
-10. Junta vídeo e áudio com grão leve e vinheta: `ffmpeg -i render.mp4 -i mix.wav -vf "noise=alls=3:allf=t,vignette=angle=PI/7" -c:v libx264 -crf 19 -c:a aac -b:a 192k`.
+9. Voz: `voz_crua.py` (corte sem tratamento), `dereverb.py` (WPE + redução de ruído leve), `reverb_tardia.py` (supressão da reverberação tardia, rt60 0.5), depois EQ, de-esser, compressor e `loudnorm2.py` a -14 LUFS (comando no plano do vídeo).
+10. Música: `musica_midi.py` compõe o MIDI e renderiza com FluidSynth (FluidR3_GM); normalizar a -23 LUFS e fazer ducking com `sidechaincompress` (rácio 2).
+11. SFX: `compor.py` escreve `sfx_eventos.json` com o tempo de cada animação; `sfx.py` gera o som de cada uma.
+12. Junta vídeo e áudio com grão leve e vinheta: `ffmpeg -i render.mp4 -i mix.wav -vf "noise=alls=3:allf=t,vignette=angle=PI/7" -c:v libx264 -crf 19 -c:a aac -b:a 192k`.
 
 Estilo de legendas (estilo Iman): Montserrat em minúsculas, light para bold à medida que fala, sem sobreposições (ver `compor.py`).
 

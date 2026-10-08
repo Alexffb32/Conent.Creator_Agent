@@ -16,7 +16,7 @@ tempo por semana: (por confirmar)
 presença: fala para a câmara
 edição: agente
 tom: ambicioso, direto, educativo
-estilo de edição: Iman Gadzhi (legendas Montserrat minúsculas light para bold, zooms lentos, cenas de grelha, grão leve) com movimento leve; sistema em estrategia/sistema-design.md
+estilo de edição: Iman Gadzhi (legendas Montserrat minúsculas light para bold, zooms lentos, cenas de grelha, componentes de interface em vidro fosco, notificações iOS, grão leve) com movimento leve, música de piano e cordas muito baixa e SFX leves em cada animação; sistema em estrategia/sistema-design.md
 frequência: (por confirmar)
 limites: sem travessões em texto no ecrã
 provas confirmadas: nenhuma ainda
@@ -36,7 +36,7 @@ logo: assets/logo/logo.png (original, fundo branco), assets/logo/logo_borda.png 
 | Ink | #FFFFFF |
 | Secundário | #B3B3B3 |
 | Acento (único) | #FF2E00 (o vermelho do asterisco do logo) |
-| Display (gráficos) | Inter Display Bold |
+| Display (gráficos) | Montserrat ExtraBold (o site usa Inter) |
 | Legendas | Montserrat Light e Bold, minúsculas, brancas (estilo Iman) |
 | Destaque | Instrument Serif Italic (1 a 3 palavras por peça) |
 | Formato short | 1080x1920, 30 fps |
