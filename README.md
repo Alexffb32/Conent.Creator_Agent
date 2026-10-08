@@ -1,5 +1,7 @@
 # Creator Agent
 
+> **Alex:** o teu conteúdo (vídeos, versões, marca e sons) está em [`alexffb/`](alexffb/). O resto do repositório é o agente.
+
 Um agente open source para o Claude Code que ajuda criadores de conteúdo **iniciantes** a fazer o que normalmente exige uma equipa: estratégia, pesquisa de referências, guiões, instruções de gravação, edição com motion graphics, agendamento e análise. Sem pagar a editor, videógrafo ou argumentista, e sem perder horas a pesquisar.
 
 ## O que faz
