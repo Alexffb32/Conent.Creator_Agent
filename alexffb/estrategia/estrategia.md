@@ -39,3 +39,19 @@ mix: 60/25/15
 - Um vídeo = uma ideia = um CTA.
 - Sem travessões, texto no ecrã em português europeu, vídeo enviado sempre no chat (ver `estilo/estilo-criador.md`).
 - Antes de cada vídeo novo o agente audita o que já foi publicado (`scripts/proximo-post.py --raiz alexffb --escrever`) e sugere a fase, a série e o formato seguintes.
+
+## Growth inspirado no Nik Setting (hipóteses, confiança baixa a média)
+Fonte: `biblioteca/pesquisa/nik-setting-growth.md`. O Nik fala a coaches e infoprodutores com margens altas e equipas de setters; o Alex vende a negócios que ainda não conhecem o serviço. Transpõe-se o método, não a escala nem a retórica de dinheiro. Nada do que ele alega de receita serve de meta.
+
+Ações por ordem (as marcadas ◆ dependem de uma decisão do Alex):
+1. ◆ Posicionamento numa frase: para quem és (o tipo de negócio) e que problema resolves. Hoje o alvo é "donos de negócio e quem faz prospeção"; escolher um nicho concreto (por exemplo restauração, clínicas, ginásios, oficinas) torna o conteúdo, a bio e a prova mais fortes. O agente não decide isto por ti.
+2. O perfil como funil: bio com para quem és, o resultado que entregas e um único passo seguinte (mensagem ou marcar conversa); 3 posts fixados (quem és, um caso ou processo, como trabalhas).
+3. Meta de poucas conversas qualificadas por mês (ponto de partida: 3 a 5), medidas em `historico/dms.csv`, em vez de perseguir seguidores.
+4. CTA por palavra-chave respondido à mão ("comenta SITE e envio-te a checklist"). Sem automação até confirmar as regras da Meta.
+5. Lead magnet pequeno: uma checklist de uma página (por exemplo "o que o site de um [tipo de negócio] precisa") ou uma mini-auditoria de 5 pontos.
+6. Fluxo de DMs registado em `historico/dms.csv` (novo, qualificado, conversa marcada, proposta, ganho ou perdido) e resposta em horas.
+7. Outreach pontual e personalizado a poucos negócios por semana, com algo específico que observaste e a oferecer ajuda; para além do conteúdo enquanto a audiência é pequena. Antes de escalar, confirmar o RGPD e as regras de comunicações não solicitadas.
+8. ◆ Uma oferta clara (site simples + perfil arranjado, preço fixo) e 2 a 3 primeiros clientes com testemunho e autorização para mostrar o caso. Sem casos, a prova é o processo; nunca prometer resultados.
+9. Medir todos os meses: alcance dos Reels, comentários com palavra-chave, DMs iniciadas, conversas qualificadas, propostas, clientes.
+10. Anúncios só depois de haver clientes e um conteúdo que já funciona.
+11. ◆ Antes de faturar: confirmar com as Finanças a atividade aberta e os recibos.

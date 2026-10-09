@@ -1,7 +1,7 @@
 # Estilo do criador
 
 Gerado por `scripts/registar-feedback.py` a partir de `estilo/feedback.csv`. Não editar à mão.
-Atualizado: 2026-10-09 · 19 registos
+Atualizado: 2026-10-09 · 21 registos
 
 ## Edição
 - [dura] Enviar sempre o vídeo no chat, além do GitHub (vídeos com pedido 1, com aprovação 0, última 2026-10-08)
@@ -9,6 +9,7 @@ Atualizado: 2026-10-09 · 19 registos
 - [dura] Todo o texto no ecrã em português europeu (vídeos com pedido 1, com aprovação 0, última 2026-10-07)
 - [hipotese] Commit de cada versão com o título vN - o que mudou (vídeos com pedido 1, com aprovação 0, última 2026-10-08)
 - [hipotese] Estilo de edição do Iman Gadzhi: ritmo rápido, direto, premium, educativo, pensado para ver sem som (vídeos com pedido 1, com aprovação 0, última 2026-10-07)
+- [hipotese] Misturar o estilo do Iman Gadzhi com o do Nik Setting nos conteúdos (vídeos com pedido 1, com aprovação 0, última 2026-10-09)
 - [hipotese] Organização das pastas simples no GitHub (vídeos com pedido 1, com aprovação 0, última 2026-10-08)
 - [hipotese] Sem barra de progresso no topo (vídeos com pedido 1, com aprovação 0, última 2026-10-08)
 - [hipotese] Uma pasta por versão dentro do vídeo (v1/, v2/…) (vídeos com pedido 1, com aprovação 0, última 2026-10-07)
@@ -26,3 +27,6 @@ Atualizado: 2026-10-09 · 19 registos
 - [hipotese] SFX leves nas animações de motion (vídeos com pedido 1, com aprovação 0, última 2026-10-08)
 - [hipotese] Usar os sons do Alex (assets/sons) nos SFX (vídeos com pedido 1, com aprovação 0, última 2026-10-08)
 - [hipotese] Voz sem eco (vídeos com pedido 1, com aprovação 0, última 2026-10-08)
+
+## Estratégia
+- [hipotese] Aprender as dicas de growth do Nik Setting e adaptá-las (vídeos com pedido 1, com aprovação 0, última 2026-10-09)

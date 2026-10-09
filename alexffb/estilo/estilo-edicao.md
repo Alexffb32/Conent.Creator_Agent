@@ -6,7 +6,7 @@ As regras (o que o Alex pediu, corrigiu ou aprovou) estão no diário `feedback.
 ## Parâmetros atuais
 | Parâmetro | Valor | Origem |
 | --- | --- | --- |
-| Estilo de referência | Iman Gadzhi (ficha em `biblioteca/estilos/iman-gadzhi.md` do agente) | onboarding e v3 |
+| Estilo de referência | Iman Gadzhi no acabamento (ficha `biblioteca/estilos/iman-gadzhi.md`) e Nik Setting na estrutura e no conteúdo: mistura em `biblioteca/estilos/iman-x-nik.md` (hipótese a testar em 3 a 5 vídeos) | onboarding e v3; pedido de 2026-10-09 |
 | Legendas | `iman`, 60 px, topo a 1180 px, até 4 palavras e 22 caracteres por linha | v3 a v5 |
 | Movimento | leve: zoom de entrada no gancho e 3 a 4 pushes lentos por vídeo | v2 a v5 |
 | Componentes preferidos | gancho em painel de vidro, cenas de ecrã inteiro com grelha e brilho vermelho, notificações, browser, mosaicos, remate com Instrument Serif, CTA em notificação, frame final com logo | v4 |

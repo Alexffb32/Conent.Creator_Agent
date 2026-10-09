@@ -1,4 +1,4 @@
-# Pesquisa de 2026-10-09
+# Pesquisa de 2026-10-09 (e Nik Setting)
 
 Pesquisa feita com páginas abertas a 2026-10-09 (cada ficheiro lista as fontes abertas e as que não abriram). Cada afirmação traz a etiqueta MEDIDO/OFICIAL (fonte primária), OPINIÃO/TERCEIROS ou DEDUZIDO, e a confiança. Hipótese não é facto: testa-se com os dados do criador e regista-se no `estilo/`.
 
@@ -11,3 +11,5 @@ Pesquisa feita com páginas abertas a 2026-10-09 (cada ficheiro lista as fontes 
 | `melhorar-agente.md` | Como melhorar este agente | 15 melhorias priorizadas, com teste | Âmbitos OAuth do YouTube Analytics, `claude plugin eval` na tua conta |
 
 Para medir a edição de um criador de referência, dá ao agente o vídeo (ficheiro) e corre `scripts/analisar_referencia.py`: o agente não contorna bloqueios das plataformas.
+| `nik-setting-medicoes.md` | Estilo de conteúdo do Nik Setting | Títulos do YouTube e o site dele, lidos nas páginas | Edição (cortes, legendas, zooms, música): nenhum vídeo abriu; Instagram devolveu 429 |
+| `nik-setting-growth.md` | Dicas de growth do Nik Setting e tradução para um criador pequeno | O que ele diz em fontes dele (site, podcast, YouTube) e o plano de 11 passos | Táticas de conteúdo reais (formatos, ganchos, cadência); alegações de receita dele não são verificáveis |
