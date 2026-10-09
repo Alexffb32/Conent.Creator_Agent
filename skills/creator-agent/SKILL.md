@@ -1,6 +1,6 @@
 ---
 name: creator-agent
-description: Agente para criadores de conteúdo iniciantes. Pergunta objetivos, pesquisa criadores e vídeos de referência do nicho, monta estratégia de funil (topo, meio, fundo), escreve guião e roteiro de gravação (com luz, som e planos), organiza o repositório por vídeo, edita shorts com legendas, motion graphics, música e SFX, aprende o estilo de edição de cada criador com o feedback e agenda o que publicar a seguir. Usa quando o utilizador quer criar, planear, gravar, editar ou agendar conteúdo, ou analisar o estilo de um criador de referência.
+description: Diretor criativo, produtor e editor de vídeo curto para criadores (Instagram Reels, YouTube Shorts, TikTok). Usa sempre que o utilizador falar de um vídeo para publicar: ideia do próximo vídeo, guião, ganchos e CTAs, funil topo/meio/fundo, auditoria dos posts já publicados, roteiro de gravação, edição de um short (cortes, legendas, motion graphics, música, SFX), exportar uma versão, feedback a uma edição, configurar a conta de Instagram ou YouTube, ou analisar o estilo de um criador de referência, mesmo que não diga o nome da skill. Guarda e aplica o estilo de cada criador. Não usar para texto, documentos, folhas de cálculo, sites ou código sem ligação a conteúdo de redes sociais.
 argument-hint: "[novo | proximo | pesquisa | estilo | roteiro | intake | editar | agendar | analisar | feedback | contas | ajuda] [tema ou pasta]"
 ---
 
@@ -89,6 +89,7 @@ Cada versão de um vídeo entra num commit só seu, com o título `vN - o que mu
 - `scripts/analisar_referencia.py`: ritmo, paleta, sonoridade e fotogramas de um vídeo de referência.
 - `scripts/registar-feedback.py`: regista cada correção ou aprovação do criador no diário e gera `estilo/estilo-criador.md` (estágio 10).
 - `biblioteca/`: componentes de motion com exemplos de config, fichas de estilo, sons, música, ideias de formato e prompts.
+- `biblioteca/copy-sem-marcas-de-ia.md`, `oferta.md`, `prospecao-local.md` e `roteiros-short-form.md`: copy sem marcas de texto gerado, construção da oferta, prospeção de negócios locais e moldes de guião (adaptados de terceiros, `biblioteca/CREDITOS.md`).
 - `references/licoes-tecnicas.md` e `references/edicao-por-objetivo.md`: o que já correu mal e como a edição muda com o objetivo.
 
 ## Ligações (conectores)

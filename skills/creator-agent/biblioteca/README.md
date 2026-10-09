@@ -15,3 +15,9 @@ Para acrescentar: segue o formato do ficheiro, põe data e fontes no que for "o 
 
 ## Pesquisa
 `pesquisa/` guarda a pesquisa de 2026-10-09 com fontes, datas e confiança (ganchos e CTAs, funil e auditoria, roadmap das contas, medições do Iman Gadzhi, melhorias do próprio agente). Ver `pesquisa/README.md`.
+
+## Notas de marketing (adaptadas de terceiros, ver `CREDITOS.md`)
+- `copy-sem-marcas-de-ia.md`: padrões que fazem o texto soar a máquina e como os reescrever.
+- `oferta.md`: equação de valor e checklist de uma oferta de serviço.
+- `prospecao-local.md`: qualificar negócios locais pelo estado da presença online e como contactar.
+- `roteiros-short-form.md`: famílias de gancho, molde de guião e arco de história.
