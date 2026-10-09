@@ -13,3 +13,4 @@ Pesquisa feita com páginas abertas a 2026-10-09 (cada ficheiro lista as fontes 
 Para medir a edição de um criador de referência, dá ao agente o vídeo (ficheiro) e corre `scripts/analisar_referencia.py`: o agente não contorna bloqueios das plataformas.
 | `nik-setting-medicoes.md` | Estilo de conteúdo do Nik Setting | Títulos do YouTube e o site dele, lidos nas páginas | Edição (cortes, legendas, zooms, música): nenhum vídeo abriu; Instagram devolveu 429 |
 | `nik-setting-growth.md` | Dicas de growth do Nik Setting e tradução para um criador pequeno | O que ele diz em fontes dele (site, podcast, YouTube) e o plano de 11 passos | Táticas de conteúdo reais (formatos, ganchos, cadência); alegações de receita dele não são verificáveis |
+| `repos-uteis.md` | Repositórios e skills com mais de 10 mil estrelas úteis ao agente | Licenças dos pacotes npm (FACTO) e o teste do Silero VAD nos nossos cortes | Estrelas não confirmadas (github.com bloqueado nesta sessão) |
