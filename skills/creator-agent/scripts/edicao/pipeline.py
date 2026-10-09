@@ -343,6 +343,13 @@ def exportar(v, a):
         readme.write_text(txt)
     else:
         readme.write_text(f"# {v.slug}\n\nVersão atual: [{a.versao}]({a.versao}/{mp4.name})\n\n## Versões\n\n| Versão | O que mudou | O teu feedback |\n| --- | --- | --- |\n{linha}\n")
+    print("\nQA automático:")
+    qa_cmd = [PY, AQUI / "qa_entrega.py", mp4, out_dir / "config.json", "--saida", out_dir / "qa.json", "--chat-mb", str(a.chat_mb)]
+    if v.criador: qa_cmd += ["--criador", v.criador]
+    if chat: qa_cmd += ["--chat", chat]
+    qa_ok = subprocess.run([str(c) for c in qa_cmd]).returncode == 0
+    if not qa_ok and not a.ignorar_qa:
+        sys.exit(f"QA falhou: corrige o que está em {out_dir / 'qa.json'} e volta a exportar com --forcar (ou --ignorar-qa se for deliberado). Não faças commit desta versão.")
     i, p = lufs(mp4)
     print(f"\nEntregue: {mp4} ({tam:.1f} MB, {d:.2f} s, {i} LUFS, pico {p} dBFS)")
     if chat: print(f"Cópia para o chat: {chat} ({chat.stat().st_size / 2**20:.1f} MB)")
@@ -362,6 +369,7 @@ def main():
     for nome in ("exportar", "tudo"):
         p = sub.add_parser(nome); p.add_argument("pasta"); p.add_argument("versao"); p.add_argument("--titulo", required=True)
         p.add_argument("--chat-mb", type=float, default=30); p.add_argument("--capa-t", type=float, default=1.4); p.add_argument("--forcar", action="store_true")
+        p.add_argument("--ignorar-qa", action="store_true", help="exporta mesmo que o QA automático falhe")
         if nome == "tudo": p.add_argument("--sem-musica", action="store_true"); p.add_argument("--rt60", type=float, default=0.5)
     a = ap.parse_args(); v = Video(a.pasta)
     if a.cmd == "preparar": preparar(v, a)

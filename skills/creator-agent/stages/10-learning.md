@@ -24,12 +24,16 @@ Erros técnicos do agente (eco, legendas sobrepostas, SFX fora de tempo) não s�
 4. Aprovação sem alterações também se regista (tipo `aprovacao`): confirma as regras aplicadas. Usa o mesmo texto da regra, para contar como a mesma.
 5. Aplica a correção a esta versão (v2) antes de passar ao próximo vídeo.
 
+## Medir se o agente melhora
+
+No fim de cada vídeo, acrescenta uma linha a `historico/qualidade.csv` (cabeçalho: `data,video,versoes_ate_aprovar,correcoes,reincidencias,falhas_do_qa,falhas_apanhadas_pelo_criador`). Reincidência é voltar a falhar uma regra já registada (a meta é zero). `falhas_apanhadas_pelo_criador` é o que o QA automático (`scripts/edicao/qa_entrega.py`) e o teu QA deixaram passar: cada uma vira uma regra no diário, uma lição técnica e, se der, uma verificação automática. Com menos de 3 vídeos não tires conclusões de tendência.
+
 ## Como uma regra ganha força
 
 | Estado | Condição |
 | --- | --- |
-| hipotese | Pedida 1 vez |
-| confirmada | Pedida 2 vezes, ou aprovada em 2 vídeos seguidos |
+| hipotese | Pedida num só vídeo |
+| confirmada | Pedida em 2 vídeos diferentes, ou pedida num e aprovada em 2 outros vídeos (várias versões do mesmo vídeo contam como um só) |
 | dura | O criador disse "sempre" ou "nunca", ou usou `--forte` |
 
 Se duas regras se contradizem, ganha a mais recente, e perguntas ao criador uma vez para fixar. Se uma regra `confirmada` for corrigida, volta a `hipotese` com a nova versão.

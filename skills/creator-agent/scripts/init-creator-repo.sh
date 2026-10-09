@@ -10,6 +10,7 @@ touch "$dest/videos/.gitkeep"
 [ -f "$dest/estrategia/licoes-tecnicas.md" ] || printf '# Lições técnicas deste criador\n\n(sintoma, causa, regra; as gerais estão em references/licoes-tecnicas.md do agente)\n' > "$dest/estrategia/licoes-tecnicas.md"
 [ -f "$dest/estilo/feedback.csv" ] || echo "data,video,categoria,tipo,regra,forte" > "$dest/estilo/feedback.csv"
 [ -f "$dest/estilo/estilo-edicao.md" ] || cp "$here/templates/estilo-edicao.md" "$dest/estilo/estilo-edicao.md"
+[ -f "$dest/historico/qualidade.csv" ] || echo "data,video,versoes_ate_aprovar,correcoes,reincidencias,falhas_do_qa,falhas_apanhadas_pelo_criador" > "$dest/historico/qualidade.csv"
 [ -f "$dest/calendario/agenda.csv" ] || echo "data,plataforma,tipo,fase,serie,tema,estado" > "$dest/calendario/agenda.csv"
 [ -f "$dest/historico/posts.csv" ] || echo "data,plataforma,tipo,fase,serie,tema,link,alcance,retencao_3s,partilhas,guardados,conversoes" > "$dest/historico/posts.csv"
 if [ ! -f "$dest/.gitattributes" ]; then

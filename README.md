@@ -38,6 +38,7 @@ Depois, no teu repositório privado de criador, escreve `/creator-agent:creator-
 | `... agendar <pasta>` | Adaptações por plataforma e calendário |
 | `... analisar` | Métricas e aprendizagens |
 | `... feedback` | Regista correções para o agente se adaptar ao teu estilo |
+| `... contas` | Roadmap e configuração do Instagram e do YouTube |
 
 Também funciona em linguagem natural: "edita o vídeo que gravei no meu estilo", "na v2 baixa os sons", "analisa o estilo do Iman Gadzhi".
 
@@ -46,10 +47,10 @@ Também funciona em linguagem natural: "edita o vídeo que gravei no meu estilo"
 | Pasta | O que tem |
 | --- | --- |
 | `skills/creator-agent/SKILL.md` | O agente: princípios, ponto de entrada, estrutura do repositório do criador |
-| `stages/` | Os 10 estágios (onboarding, pesquisa, estratégia, guião, roteiro, intake, edição, publicação, análise, aprendizagem) |
+| `stages/` | Os 11 estágios (onboarding, pesquisa, estratégia e auditoria, guião, roteiro, intake, edição, publicação, análise, aprendizagem, configuração das contas) |
 | `scripts/edicao/` | O pipeline de edição (`pipeline.py`) e os scripts por dentro |
 | `scripts/` | `verificar.py` (dependências), `analisar_referencia.py`, estrutura e próximo post |
-| `biblioteca/` | Componentes de motion, fichas de estilo, sons, música, formatos de vídeo e prompts |
+| `biblioteca/` | Componentes de motion, fichas de estilo, sons, música, formatos de vídeo, prompts e a pesquisa de 2026-10-09 (`pesquisa/`: ganchos e CTAs, funil, roadmap das contas, medições do Iman Gadzhi) |
 | `references/` | Funil, ganchos, CTAs, plataformas, pesquisa, edição por objetivo e lições técnicas |
 | `templates/` | Perfil, estilo de edição, sistema de design, guiões, roteiro, plano de edição |
 

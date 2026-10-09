@@ -1,7 +1,14 @@
 # Estilo: Iman Gadzhi (shorts e reels)
 
-Última verificação: 2026-10-08 | Confiança: média | Vídeos analisados diretamente: 0 (Instagram e as páginas dos guias estavam bloqueados na rede da sessão)
+Última verificação: 2026-10-09 | Confiança: média no que o criador aprovou, baixa no que é de terceiros | Vídeos dele analisados diretamente: 0 (o YouTube bloqueou o descarregamento e o Instagram devolveu 429; o agente não contorna bloqueios). Para medir a edição dele, dá ao agente um vídeo dele como ficheiro e corre `scripts/analisar_referencia.py`.
 Base: guias de ferramentas de legendas (listados em Fontes, não abertos), pesquisa de 2026-10-07 e o que um criador aprovou numa edição feita neste estilo (v3 a v5 do short "presença digital").
+
+## O que está medido nas páginas dele (2026-10-09, ver `pesquisa/iman-gadzhi-medicoes.md`)
+- Canal YouTube: 6,2 M de subscritores, 483 vídeos. Os 30 mais recentes têm mediana de cerca de 20 min (8:48 a mais de 3 h): o YouTube dele é longo, os shorts e reels são outro formato.
+- Títulos recentes (texto exato) repetem dois padrões: prazo + promessa ("Give me 28 minutes, I'll give you 10,000 hours of ChatGPT knowledge") e resultado com número e ano ("Laziest one-person business model to start in 2026 ($100/day+)"). O título já é o gancho e dita a duração.
+- O canal serve de aquisição para ofertas pagas (opinião de terceiros). A edição (cortes, legendas, zooms, música, cores, miniaturas) NÃO está medida.
+- Não copiar: promessas de dinheiro e rendimento, montras de riqueza, linguagem de guru, ensinar a montar agência quando o criador ainda está a começar.
+- O que se transpõe sem exagero: título com prazo e resultado concreto e verdadeiro; falar de frente e responder a uma pergunta clara nos primeiros segundos; texto grande e uma só cor de acento; mostrar trabalho real em vez de luxo.
 
 ## Ritmo
 - Cortes secos nas pausas (pausas acima de 0,25 s fora), ritmo rápido mas sem saltos visuais a cada corte. *Hipótese, a medir com `analisar_referencia.py`.*

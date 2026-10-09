@@ -12,3 +12,6 @@ O que o agente reutiliza em todos os criadores. Só conteúdo geral: nada de dad
 | [prompts.md](prompts.md) | Pedidos prontos para o criador e checklists do agente em cada momento |
 
 Para acrescentar: segue o formato do ficheiro, põe data e fontes no que for "o que funciona", e propõe por pull request (ver `CONTRIBUTING.md`).
+
+## Pesquisa
+`pesquisa/` guarda a pesquisa de 2026-10-09 com fontes, datas e confiança (ganchos e CTAs, funil e auditoria, roadmap das contas, medições do Iman Gadzhi, melhorias do próprio agente). Ver `pesquisa/README.md`.
