@@ -126,7 +126,7 @@
   "gancho": {
    "ini": 0.0,
    "fim": 2.6,
-   "texto": "Como fazer com que te *respondam*"
+   "texto": "O teu outreach não *funciona*?"
   },
   "lower_third": {
    "ini": 13.3,
@@ -308,7 +308,8 @@
   ],
   "trocar": {
    "40.78": "riser",
-   "49.033": "boom"
+   "49.033": "boom",
+   "7.84": "pop"
   },
   "remover": []
  },

@@ -187,12 +187,18 @@ SVG = {
 def icon(name, cls="ico"): return f'<span class="{cls}"><svg viewBox="0 0 24 24">{SVG.get(name, SVG["star"])}</svg></span>'
 def appicon(name): return f'<span class="appicon">{icon(name)}</span>'
 def words_html(text, cls="wd"):
-    out = []
+    """Palavras em spans. O texto entre *asteriscos* leva o acento. A pontuação colada ao que a precede
+    (por exemplo `*funciona*?`) fica colada: em português não há espaço antes de ? ! , . : ;"""
+    out = []  # (html, colar_ao_anterior)
     for part in re.split(r"(\*[^*]+\*)", text):
         if not part: continue
         acc = part.startswith("*")
-        out += [f'<span class="{cls}{" acc" if acc else ""}">{E(w)}</span>' for w in part.strip("*").split()]
-    return " ".join(out)
+        raw = part.strip("*")
+        ws = raw.split()
+        for k, w in enumerate(ws):
+            colar = (k == 0 and bool(out) and not raw[:1].isspace() and not acc and w[:1] in "?!,.:;")
+            out.append((f'<span class="{cls}{" acc" if acc else ""}">{E(w)}</span>', colar))
+    return "".join(h if (c or i == 0) else " " + h for i, (h, c) in enumerate(out))
 dur = lambda a, b: f'data-start="{a:.3f}" data-duration="{b - a:.3f}"'
 POINTER = '<svg viewBox="0 0 28 36"><path d="M3 2l20 19h-10l6 12-4 2-6-12-6 7z" fill="#fff" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg>'
 

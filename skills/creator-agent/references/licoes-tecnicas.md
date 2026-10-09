@@ -41,3 +41,4 @@ Formato: sintoma, causa, regra.
 ## Entrega e organização
 25. **O criador não percebe as pastas.** Regra: cada vídeo com um `README.md` que diz a versão atual e a tabela de versões; uma pasta por versão (`v1/`, `v2/`…), cada uma num commit só seu com o título `vN - o que mudou`; ficheiros técnicos em `trabalho/`.
 26. **Travessões no texto do ecrã.** Alguns criadores pedem que não haja; confirmar em `creator.md` (limites) e no `estilo/estilo-criador.md`.
+27. **Espaço antes do "?" depois de uma palavra a cor.** Causa: o `compor.py` juntava todas as palavras com espaço, e `*funciona*?` virava `funciona ?`. Em português não há espaço antes de ? ! , . : ;. Regra: a pontuação colada à palavra anterior fica colada (corrigido em `words_html`); confirmar no fotograma do gancho antes de exportar.

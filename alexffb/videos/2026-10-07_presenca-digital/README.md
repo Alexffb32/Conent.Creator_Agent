@@ -1,12 +1,13 @@
 # Presença digital
 
 Short para Instagram Reels e YouTube Shorts, fase meio do funil (educar e criar autoridade).
-Estado: editado, à espera do teu feedback | Versão atual: [v5](v5/presenca-digital_v5.mp4) | 1080x1920, 30 fps, 50.8 s
+Estado: editado, à espera do teu feedback | Versão atual: [v6](v6/presenca-digital_v6.mp4) | 1080x1920, 30 fps, 50.8 s
 
 ## Versões
 
 | Versão | O que mudou | O teu feedback |
 | --- | --- | --- |
+| [v6](v6/) | v6 - gancho alinhado com a fala, terceiro sino mais leve e QA automático | (a aguardar) |
 | [v5](v5/) | v5 - adicionar SFX com os sons do Alex | (a aguardar) |
 | [v4](v4/) | v4 - motion em vidro, voz sem eco, música e SFX | Usar os teus sons nos SFX, de forma leve |
 | [v3](v3/) | v3 - legendas e ritmo ao estilo Iman Gadzhi | Gostaste; tirar a linha do topo, motion mais parecido com o do Iman, voz sem eco, música e SFX |

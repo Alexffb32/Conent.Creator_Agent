@@ -28,5 +28,6 @@ As regras (o que o Alex pediu, corrigiu ou aprovou) estão no diário `feedback.
 Ideias do agente ou dos dados que o Alex ainda não pediu nem aprovou.
 | Hipótese | Como testar | Resultado |
 | --- | --- | --- |
-| Os sinos das notificações podem estar altos demais quando há três seguidos | perguntar no feedback da v5 | |
+| Os sinos das notificações podem estar altos demais quando há três seguidos | v6 troca o terceiro sino por um pop; perguntar no feedback da v6 se ficou melhor | v6 enviada, a aguardar |
+| O gancho em painel deve repetir o problema que o Alex diz ("O teu outreach não funciona?") e não uma promessa nova | comparar a retenção aos 3 s da v6 com a de um vídeo anterior, se for publicada | v6 enviada, a aguardar |
 | Legendas `destaque` (palavra a vermelho) podem render mais em vídeos de topo de funil | um vídeo de topo com `destaque` e comparar a retenção aos 3 s | |
