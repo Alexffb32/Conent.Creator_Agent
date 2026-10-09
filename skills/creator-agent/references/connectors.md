@@ -15,6 +15,9 @@ Como verificar: `claude mcp list` e `/mcp`. Não inventes URLs de MCP: procura a
 
 ## Skills opcionais de terceiros
 
+Código de terceiros: lê-o antes de instalar, não o metas dentro da pasta de um criador e nunca guardes chaves em ficheiros versionados.
+
 | Skill | Para quê | Instalação |
 | --- | --- | --- |
-| [instagram-skills](https://github.com/sergebulaev/instagram-skills) (MIT, em inglês) | Legendas, carrosséis, hashtags, planeamento semanal, auditoria de perfil | Copiar `skills/` e `references/` para `.claude/skills/instagram-skills/` no repo do criador. Lê o código antes. Usa só o modo rascunho (as partes Publora e Apify são opcionais e a pasta `lib/` não vem no repo). Cria um `OVERRIDES` com as tuas regras de língua e voz. |
+| [instagram-skills](https://github.com/sergebulaev/instagram-skills) (MIT, em inglês) | Legendas com gancho nos primeiros 125 caracteres, carrosséis, hashtags (3 a 5), planeamento semanal, auditoria de perfil | Plugin: `claude plugin marketplace add sergebulaev/instagram-skills --scope project` e `claude plugin install instagram-skills@instagram-skills --scope project`. Usa só o modo rascunho (as partes Publora e Apify são opcionais e pedem chaves). As legendas saem em `videos/<pasta>/adaptacoes/instagram.md`, em português europeu e sem travessões. |
+| [OpenMontage](https://github.com/calesthio/OpenMontage) (AGPLv3, em inglês) | Análise de vídeos de referência (cenas, ritmo, transcrição, níveis de áudio) e produção com geração de clips por IA, que precisa de chaves de API pagas | Fora deste repositório, por causa da licença AGPLv3 e do tamanho (cerca de 90 MB): clonar, `python3 -m venv .venv`, `.venv/bin/pip install -r requirements.txt` e `npm install --ignore-scripts` em `remotion-composer/`. As ferramentas locais (`tools/analysis/`) funcionam sem chaves. A edição dos shorts do criador continua a ser feita pelo `pipeline.py` deste agente. |
