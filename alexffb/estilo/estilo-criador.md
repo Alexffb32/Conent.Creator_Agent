@@ -1,7 +1,7 @@
 # Estilo do criador
 
 Gerado por `scripts/registar-feedback.py` a partir de `estilo/feedback.csv`. Não editar à mão.
-Atualizado: 2026-10-09 · 21 registos
+Atualizado: 2026-10-09 · 22 registos
 
 ## Edição
 - [dura] Enviar sempre o vídeo no chat, além do GitHub (vídeos com pedido 1, com aprovação 0, última 2026-10-08)
@@ -30,3 +30,4 @@ Atualizado: 2026-10-09 · 21 registos
 
 ## Estratégia
 - [hipotese] Aprender as dicas de growth do Nik Setting e adaptá-las (vídeos com pedido 1, com aprovação 0, última 2026-10-09)
+- [hipotese] Trabalhar como diretor e editor: sistema com ideias de dados reais, SOP, listas de pré e pós-produção e hora fixa de publicação (vídeos com pedido 1, com aprovação 0, última 2026-10-09)

@@ -3,6 +3,7 @@
 Pré-requisitos: intake feito, `python3 scripts/verificar.py` sem faltas. Os comandos abaixo são do `scripts/edicao/pipeline.py` (ver `scripts/edicao/README.md`).
 Sem HyperFrames, usa FFmpeg e legendas ASS e diz ao criador o que ficou mais simples.
 
+0. **SOP e lista de pré-produção.** O editor segue `estrategia/sop-conteudo.md` (o manual de conteúdo do criador, que reúne estilo, sistema de design e regras). Antes de gravar ou editar, corre `python3 scripts/checklist.py <pasta do vídeo> --fase pre`: se faltar um ponto, resolve-o ou diz ao criador. Se o `sop-conteudo.md` não existir ou tiver "por decidir", pergunta uma vez e preenche-o.
 1. **Memória primeiro.** Lê `estilo/estilo-criador.md` (as regras do criador ganham sempre: `dura` e `confirmada` aplicam-se sem perguntar, `hipotese` aplica-se e fica marcada "a testar"; ver `stages/10-learning.md`), `estilo/estilo-edicao.md` (os valores atuais da edição), `estrategia/sistema-design.md`, `references/licoes-tecnicas.md` e `estrategia/licoes-tecnicas.md` do criador, `references/edicao-por-objetivo.md` para a fase do funil, e a ficha do estilo de referência em `biblioteca/estilos/` ou `referencias/estilos/`. Se o estilo for novo ou a ficha tiver mais de 60 dias, faz a pesquisa de estilo do estágio 2.
 2. **Preparar.** `pipeline.py preparar <pasta_do_video> [--cortes-manuais "[[ini,fim]]"] [--vocabulario "nomes, termos"]`. Lê `trabalho/frases_cortadas.json`, corrige nomes e termos (em `correcoes`), e confirma os takes sugeridos no `trabalho/config.json`.
 3. **Plano.** Escreve `plano-edicao.md` (template) com: objetivo e decisões (da tabela por objetivo, ajustadas pelo estilo), as regras do `estilo/estilo-criador.md` que se aplicam (e as que ficam "a testar"), e a tabela por tempo (corte, câmara, SFX, componente com texto). Os componentes vêm de `biblioteca/componentes.md`. Mostra um resumo e pede aprovação com AskUserQuestion. Sem aprovação, não renderizes.
@@ -17,4 +18,5 @@ Sem HyperFrames, usa FFmpeg e legendas ASS e diz ao criador o que ficou mais sim
    - gosto só deste vídeo fica no plano;
    - resume o feedback na coluna de feedback do `README.md` do vídeo (o `estrategia/aprendizagens.md` fica para os resultados depois de publicar, estágio 9).
    Depois faz a versão seguinte (`v2/`, `v3/`…), sem mexer nas anteriores.
-9. Atualiza `meta.json` (estado: editado, versão atual) quando o criador aprovar.
+9. Corre `python3 scripts/checklist.py <pasta do vídeo> --fase pos`: só está pronto a publicar quando tudo estiver marcado, a parte automática vem do QA e o resto confirma o criador.
+10. Atualiza `meta.json` (estado: editado, versão atual) quando o criador aprovar.

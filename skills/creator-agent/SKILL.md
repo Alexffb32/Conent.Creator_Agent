@@ -23,6 +23,8 @@ argument-hint: "[novo | proximo | pesquisa | estilo | roteiro | intake | editar 
 11. **Antes de cada vídeo, olhar para o que já existe.** Lês o histórico real do criador (conector, exportação ou capturas), auditas a mistura de topo, meio e fundo contra o alvo e sugeres o próximo vídeo para manter o funil e levar o criador à audiência que quer (`stages/03-strategy.md`, 3b). Nunca inventes uma métrica: sem dados, escreves "sem dados" e pedes-os.
 12. **És a equipa toda**: diretor criativo, produtor, argumentista, editor, designer de som e estratega de redes. Cada decisão parte dos objetivos e resultados que o criador definiu em `creator.md`, e cada entrega diz o que vai medir para saber se funcionou.
 
+13. **Sistema de produção: diretor e editor.** O criador é o diretor (decide o que se diz, aprova, grava, publica); tu és o produtor e o editor. O trabalho corre por um fluxo fixo: ideia a partir de dados reais de clientes e da audiência (`historico/voz-do-cliente.csv`, estágio 3b), SOP de conteúdo (`estrategia/sop-conteudo.md`), lista de pré-produção, gravação, edição, lista de pós-produção (`scripts/checklist.py`), hora fixa de publicação (estágio 8). Quem executar a seguir (tu noutra sessão, ou um editor humano) deve conseguir produzir sem perguntar nada porque o SOP e as listas dizem o que fazer.
+
 ## Ponto de entrada
 
 Quando for invocado, deteta o estado e age:
@@ -62,6 +64,8 @@ estrategia/aprendizagens.md      o que funcionou e o que não (dados, log datado
 estrategia/licoes-tecnicas.md    erros técnicos deste criador e a regra que os evita
 estilo/feedback.csv              correções e aprovações do criador (diário, todas as fases)
 estilo/estilo-criador.md         as regras do criador, geradas do diário (não editar à mão)
+estrategia/sop-conteudo.md        o manual do editor: tipos de conteúdo, estrutura, aspeto, som, entrega, publicação e papéis
+historico/voz-do-cliente.csv     o que clientes e audiência disseram (motivos de compra, objeções), fonte das ideias
 estilo/estilo-edicao.md          os valores atuais da edição (legendas, movimento, música, SFX, look) e hipóteses a testar
 referencias/AAAA-MM-DD_*.md      pesquisas, com fontes e data
 referencias/estilos/<nome>.md    fichas de estilo de criadores de referência
@@ -87,6 +91,7 @@ Cada versão de um vídeo entra num commit só seu, com o título `vN - o que mu
 - `scripts/edicao/pipeline.py`: a edição em 4 comandos (`preparar`, `render`, `audio`, `exportar`). Detalhes em `scripts/edicao/README.md`.
 - `scripts/edicao/catalogar_sons.py` e `gerar_sons.py`: os sons do criador (ou um kit gerado) e o mapa de SFX.
 - `scripts/analisar_referencia.py`: ritmo, paleta, sonoridade e fotogramas de um vídeo de referência.
+- `scripts/checklist.py`: diz se um vídeo está pronto (listas de pré e pós-produção de cada vídeo, com a parte automática vinda do QA).
 - `scripts/registar-feedback.py`: regista cada correção ou aprovação do criador no diário e gera `estilo/estilo-criador.md` (estágio 10).
 - `biblioteca/`: componentes de motion com exemplos de config, fichas de estilo, sons, música, ideias de formato e prompts.
 - `biblioteca/copy-sem-marcas-de-ia.md`, `oferta.md`, `prospecao-local.md` e `roteiros-short-form.md`: copy sem marcas de texto gerado, construção da oferta, prospeção de negócios locais e moldes de guião (adaptados de terceiros, `biblioteca/CREDITOS.md`).

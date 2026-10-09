@@ -12,4 +12,9 @@ mkdir -p "$dir/gravados"
 touch "$dir/gravados/.gitkeep"
 printf '# Brief: %s\n\nTipo: %s | Data: %s | Fase: %s\n\n(objetivo, público, ângulo, referências)\n' "$tema" "$tipo" "$data" "$fase" > "$dir/brief.md"
 printf '{ "tema": "%s", "tipo": "%s", "data": "%s", "estado": "ideia", "fase": "%s", "serie": "", "plataformas": [] }\n' "$tema" "$tipo" "$data" "$fase" > "$dir/meta.json"
+here="$(cd "$(dirname "$0")/.." && pwd)"
+for t in pre pos; do
+  f="$here/templates/checklist-${t}-producao.md"
+  [ -f "$f" ] && sed "s/{tema}/$tema/" "$f" > "$dir/checklist-${t}-producao.md"
+done
 echo "$dir"

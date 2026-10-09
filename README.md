@@ -13,7 +13,8 @@ Um agente open source para o Claude Code que faz por um criador de conteúdo **i
 5. Tu **gravas** e pões os ficheiros em `gravados/`.
 6. **Edita** num pipeline de 4 comandos: cortes, legendas, zooms, componentes de motion, voz sem eco, música e os teus sons. Entrega uma pasta por versão, num commit com o título `vN - o que mudou`, e manda-te o vídeo no chat.
 7. **Aprende**: cada correção tua vira uma regra no teu diário de estilo (`estilo/`: "motion leve", "sem barra de progresso", "SFX baixos"), que ganha força quando a repetes ou aprovas, e cada erro técnico vira uma lição que não se repete.
-8. **Adapta**, **agenda** e, depois de publicares, **analisa** os resultados para o próximo.
+8. **Trabalha como diretor e editor**: tu decides e aprovas; o agente produz com um SOP de conteúdo (`estrategia/sop-conteudo.md`), listas de pré e pós-produção por vídeo (`scripts/checklist.py` diz se está pronto), ideias tiradas do que clientes e audiência dizem (`historico/voz-do-cliente.csv`) e uma hora fixa de publicação.
+9. **Adapta**, **agenda** e, depois de publicares, **analisa** os resultados para o próximo.
 
 ## Instalar
 

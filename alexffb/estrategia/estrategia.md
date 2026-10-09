@@ -55,3 +55,9 @@ Ações por ordem (as marcadas ◆ dependem de uma decisão do Alex):
 9. Medir todos os meses: alcance dos Reels, comentários com palavra-chave, DMs iniciadas, conversas qualificadas, propostas, clientes.
 10. Anúncios só depois de haver clientes e um conteúdo que já funciona.
 11. ◆ Antes de faturar: confirmar com as Finanças a atividade aberta e os recibos.
+
+## Sistema de produção (diretor e editor)
+Papéis: o Alex é o diretor (escolhe a ideia, aprova, grava, decide a oferta e a hora); o agente é produtor e editor. O manual está em `estrategia/sop-conteudo.md` e as listas em cada vídeo (`checklist-pre-producao.md`, `checklist-pos-producao.md`).
+Fluxo de cada vídeo: 1) ideia a partir de gente real (`historico/voz-do-cliente.csv`), 2) auditoria e escolha da fase (`proximo-post.py`), 3) lista de pré-produção, 4) gravar, 5) edição com QA automático, 6) lista de pós-produção (`checklist.py`), 7) publicar na hora fixa, 8) medir ao fim de 24 h e de 7 dias.
+Para a ideia, o que falta (◆ do Alex): registar em `voz-do-cliente.csv` as perguntas, objeções e motivos que ouves em DMs, comentários e conversas de prospeção (com autorização de quem as disse), ou, quando houver clientes, os formulários de início e as chamadas.
+
