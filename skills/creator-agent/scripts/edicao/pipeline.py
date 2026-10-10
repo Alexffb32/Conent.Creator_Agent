@@ -100,7 +100,9 @@ def preparar(v, a):
     print(f"Origem: {orig.name} {info.get('width')}x{info.get('height')} a {info.get('avg_frame_rate')} fps")
     # 1) 30 fps constantes (iPhone grava a 60 ou com fps variável; os cortes contam fotogramas a 30)
     if not v.fonte.exists() or a.refazer:
-        sh(["ffmpeg", "-v", "error", "-y", "-i", orig, "-vf", "fps=30", "-c:v", "libx264", "-preset", "medium", "-crf", "14",
+        # fontes 4K: reduzir já para 2560 px de altura (o base.mp4 usa 2480), em vez de recodificar 4K inteiro (lição 28)
+        vf = "fps=30" + (",scale=-2:2560:flags=lanczos" if int(info.get("height") or 0) > 2560 else "")
+        sh(["ffmpeg", "-v", "error", "-y", "-i", orig, "-vf", vf, "-c:v", "libx264", "-preset", "medium", "-crf", "14",
             "-c:a", "aac", "-b:a", "256k", "-ar", "48000", v.fonte])
     perfil = v.perfil()
     # 2) transcrição com tempos por palavra
@@ -117,7 +119,8 @@ def preparar(v, a):
     py("segmentos.py", v.trab / "cortes.json", v.tmp / "frames_pts.txt", v.trab / "segmentos.json")
     py("mapear.py", v.trab / "segmentos.json", tr, v.trab / "frases_cortadas.json", v.trab / "cortes.json")
     py("rostos.py", v.fonte, v.trab / "cortes.json", v.trab / "rostos.json")
-    py("base.py", v.fonte, v.trab / "segmentos.json", v.tmp / "frames_pts.txt", v.tmp / "base.mp4")
+    look = json.load(open(v.cfg_path)).get("look") if v.cfg_path.exists() else None
+    py("base.py", v.fonte, v.trab / "segmentos.json", v.tmp / "frames_pts.txt", v.tmp / "base.mp4", json.dumps(look) if look else "")
     # 4) resumo e config inicial
     segs = json.load(open(v.trab / "segmentos.json"))
     cortes = json.load(open(v.trab / "cortes.json"))
@@ -308,8 +311,9 @@ def exportar(v, a):
     for f in (render_mp4, mix):
         if not f.exists(): sys.exit(f"Falta {f}: corre 'render' e 'audio' primeiro.")
     mp4 = out_dir / f"{v.slug}_{a.versao}.mp4"
+    look_exp = {"grao": 3, "vinheta": "PI/7", **(v.cfg().get("look") or {})}
     sh(["ffmpeg", "-v", "error", "-y", "-i", render_mp4, "-i", mix, "-map", "0:v", "-map", "1:a",
-        "-vf", "noise=alls=3:allf=t,vignette=angle=PI/7,format=yuv420p", "-c:v", "libx264", "-crf", "19", "-preset", "medium", "-r", "30",
+        "-vf", f"noise=alls={look_exp.get('grao', 3)}:allf=t," + (f"vignette=angle={look_exp['vinheta']}," if look_exp.get('vinheta', 'PI/7') else "") + "format=yuv420p", "-c:v", "libx264", "-crf", "19", "-preset", "medium", "-r", "30",
         "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-shortest", "-movflags", "+faststart", mp4])
     sh(["ffmpeg", "-v", "error", "-y", "-ss", str(a.capa_t), "-i", mp4, "-frames:v", "1", out_dir / "capa.png"])
     d = duracao(mp4); qa = v.tmp / "qa"; shutil.rmtree(qa, ignore_errors=True); qa.mkdir()

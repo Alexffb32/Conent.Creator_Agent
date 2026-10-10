@@ -68,6 +68,7 @@ tapam o vídeo, usa-as no máximo 1 a 2 vezes por 30 s.
 - **destaques:** pares de palavras que não se separam entre linhas de legenda.
 - **zoom_chave:** `push` lento de `de` para `para` (multiplicadores do zoom de base), ou corte seco com `mult` e `ate`.
 - **sfx:** `extra` acrescenta eventos (`[t, tipo, ajuste_dB]`), `trocar` muda o tipo de um evento pelo tempo, `remover` tira por tipo ou tempo.
+- **look:** cor do vídeo base e acabamento, por vídeo: `{"contraste": 1.08, "saturacao": 1.05, "brilho": 0.01, "gama": 1.0, "vinheta": "PI/7", "grao": 3}` (os valores por defeito). Cenas escuras pedem menos contraste e gama acima de 1 (por exemplo 1.03, 1.03, 0, 1.12, vinheta "PI/9"); mede a luminância da cara num fotograma antes e depois. O `preparar` aplica a cor ao gerar o `base.mp4`; o `exportar` aplica a vinheta e o grão.
 - **frame_final:** logo de `assets/logo/` (ou o nome da marca, se não houver), botão e handle; `end_card: 0` tira-o.
 
 ## Criar um componente novo
