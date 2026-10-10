@@ -14,41 +14,186 @@
  "legendas": {
   "estilo": "iman",
   "tamanho": 60,
-  "max_palavras": 4,
-  "max_caracteres": 22
+  "max_palavras": 5,
+  "max_caracteres": 24
  },
- "correcoes": [],
- "destaques": [],
+ "correcoes": [
+  {
+   "de": [
+    "alexffb",
+    ".com."
+   ],
+   "para": [
+    "alexffb.com"
+   ]
+  }
+ ],
+ "destaques": [
+  "marca pessoal",
+  "fiquem atentos",
+  "próximas semanas",
+  "primeiro lançamento",
+  "algumas pessoas",
+  "muito polémico"
+ ],
  "zoom_chave": [
   {
-   "t": 0.0,
+   "t": 0,
    "push": 2.6,
-   "de": 1.0,
-   "para": 1.07
+   "de": 1,
+   "para": 1.07,
+   "ease": "power1.out"
+  },
+  {
+   "t": 3.3,
+   "mult": 1,
+   "ate": 8.4
+  },
+  {
+   "t": 12.7,
+   "push": 11.92,
+   "de": 1,
+   "para": 1.08
   }
  ],
  "tokens": {
-  "accent": "#FF2E00"
+  "accent": "#FF2E00",
+  "accent_top": "#FF481F",
+  "accent_bottom": "#E02900",
+  "accent_light": "#FF7A52",
+  "accent_dark": "#5A1000",
+  "ink": "#FFFFFF",
+  "muted": "#B3B3B3"
  },
  "marca": {
-  "nome": "@alexffb_"
+  "nome": "alexffb"
  },
- "graficos": [],
+ "graficos": [
+  {
+   "tipo": "gancho",
+   "ini": 0,
+   "fim": 3.06,
+   "topo": 240,
+   "fundo": 466,
+   "texto": "Hoje apresento-te o *alexffb.com*"
+  },
+  {
+   "tipo": "lower_third",
+   "ini": 1.08,
+   "fim": 3.06,
+   "nome": "Alex",
+   "handle": "@alexffb_",
+   "emblema": "*"
+  },
+  {
+   "tipo": "pesquisa",
+   "ini": 3.06,
+   "fim": 8.4,
+   "eyebrow": "O meu projeto",
+   "titulo": "Mais do que um *site*",
+   "pesquisa": "alexffb.com",
+   "escrever": 3.3,
+   "resultados": [
+    {
+     "t": 5.38,
+     "icone": "globe",
+     "titulo": "Site",
+     "desc": "alexffb.com"
+    },
+    {
+     "t": 6.74,
+     "icone": "user",
+     "titulo": "Marca pessoal",
+     "desc": "Todo um projeto"
+    }
+   ],
+   "cursor": {
+    "t": 7.2,
+    "x0": 700,
+    "y0": 700,
+    "x1": 400,
+    "y1": 540,
+    "res": 1
+   }
+  },
+  {
+   "tipo": "mosaicos",
+   "ini": 8.4,
+   "fim": 12.52,
+   "topo": 240,
+   "fundo": 477,
+   "itens": [
+    {
+     "t": 8.82,
+     "icone": "play",
+     "texto": "Conteúdo"
+    },
+    {
+     "t": 9.3,
+     "icone": "star",
+     "texto": "Eventos"
+    },
+    {
+     "t": 10.22,
+     "icone": "shirt",
+     "texto": "Merch"
+    },
+    {
+     "t": 11,
+     "icone": "users",
+     "texto": "Comunidades"
+    }
+   ]
+  },
+  {
+   "tipo": "cta",
+   "ini": 15.2,
+   "fim": 17.88,
+   "topo": 240,
+   "fundo": 432,
+   "app": "alexffb.com",
+   "icone": "bolt",
+   "titulo": "Fiquem atentos",
+   "texto": "Lançamento nas próximas semanas"
+  },
+  {
+   "tipo": "remate",
+   "ini": 19.87,
+   "fim": 22.45,
+   "topo": 240,
+   "fundo": 502,
+   "a": "Incentivar a mentalidade",
+   "b": "empreendedora"
+  }
+ ],
  "frame_final": {
   "botao": "",
   "handle": "@alexffb_"
  },
  "sfx": {
-  "extra": [],
-  "trocar": {},
+  "extra": [
+   [
+    0,
+    "boom",
+    -2
+   ]
+  ],
+  "trocar": {
+   "19.87": "riser",
+   "24.933": "boom"
+  },
   "remover": []
  },
  "look": {
-  "contraste": 1.03,
-  "saturacao": 1.03,
+  "contraste": 1.04,
+  "saturacao": 1.02,
   "brilho": 0.0,
-  "gama": 1.12,
-  "vinheta": "PI/9",
+  "gama": 1.04,
+  "vinheta": "PI/8",
   "grao": 3
+ },
+ "musica": {
+  "ativa": true,
+  "lufs": -23
  }
 }

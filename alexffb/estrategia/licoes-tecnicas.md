@@ -5,3 +5,4 @@
 - **Vídeo chegou a 480x848.** O original veio pelo chat, comprimido. Regra: pedir ao Alex o ficheiro original da câmara (carregado em `gravados/` no GitHub) antes de editar.
 - **Eco na voz.** Grava no sofá, numa sala com eco. Regra: tratamento de voz completo do pipeline (WPE e reverberação tardia, rt60 0,5); sugerir gravar perto de tecidos ou com microfone de lapela.
 - **Termos mal transcritos.** O Whisper ouviu "Melsenburg" e "Malzambuco" em vez de "emails em bulk". Regra: `--vocabulario "emails em bulk, outreach, cold calls, DMs, ghost, Layout"` e rever as frases antes do plano.
+- **Gravação em HDR no iPhone.** O vídeo "Apresentação alexffb.com" veio em HLG (BT.2020, 10 bits) e ficava baço. Regra: o `preparar` converte para SDR; para gravar, desligar "Vídeo HDR" em Definições, Câmara, Gravar vídeo poupa este passo.
