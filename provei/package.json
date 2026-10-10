@@ -1,0 +1,22 @@
+{
+  "name": "provei",
+  "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "pnpm --filter @provei/web dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:rls": "pnpm --filter @provei/rls-tests test",
+    "test:e2e": "pnpm --filter @provei/web test:e2e",
+    "seed": "pnpm --filter @provei/web seed",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "turbo": "^2.1.3",
+    "typescript": "^5.6.3"
+  }
+}

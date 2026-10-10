@@ -1,0 +1,1 @@
+{ "expo": { "name": "Provei", "slug": "provei", "scheme": "provei", "version": "0.0.1", "orientation": "portrait", "ios": { "bundleIdentifier": "pt.provei.app", "supportsTablet": false }, "plugins": ["expo-router"] } }

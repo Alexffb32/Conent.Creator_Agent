@@ -1,0 +1,23 @@
+:root {
+  --pv-branco: #ffffff;
+  --pv-nevoa: #f4f9ee;
+  --pv-verde: #2d7f1a;
+  --pv-verde-escuro: #0a3d1c;
+  --pv-verde-fresco: #7bc62d;
+  --pv-verde-tinta: #e7f5df;
+  --pv-amarelo: #ffd60a;
+  --pv-amarelo-tinta: #fff4b8;
+  --pv-tinta: #0f2a17;
+  --pv-tinta-2: #4a5d4f;
+  --pv-linha: #dde8d5;
+  --pv-erro: #c0392b;
+  --pv-radius-s: 8px;
+  --pv-radius-m: 16px;
+  --pv-radius-l: 28px;
+  --pv-radius-pill: 999px;
+  --pv-space: 4px;
+  --pv-fast: 150ms;
+  --pv-base: 250ms;
+  --pv-slow: 400ms;
+  --pv-ease: ease-out;
+}
