@@ -18,7 +18,7 @@ Os SFX saem sozinhos de cada componente (coluna SFX) e o mapa de sons decide que
 | `remate` | Painel com frase e 1 a 3 palavras em Instrument Serif com brilho | A ideia principal, perto do fim | shimmer (ou riser) |
 | `cta` | Notificação com contorno de acento que desce do topo até ao fim | Chamada para ação falada | notif |
 
-Ícones disponíveis: `x`, `ok`, `mail`, `phone`, `chat`, `send`, `search`, `globe`, `funnel`, `user`, `camera`, `brief`, `play`, `chart`, `money`, `clock`, `star`, `heart`, `bolt`, `target`, `check`.
+Ícones disponíveis: `x`, `ok`, `mail`, `phone`, `chat`, `send`, `search`, `globe`, `funnel`, `user`, `camera`, `brief`, `play`, `chart`, `money`, `clock`, `star`, `heart`, `bolt`, `target`, `check`, `shirt` (merch, roupa), `users` (comunidade, equipa).
 Destaque no texto: `*palavra*` fica na cor de acento com brilho (gancho, títulos, listas, remate).
 
 ## Exemplos

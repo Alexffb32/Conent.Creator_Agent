@@ -183,6 +183,8 @@ SVG = {
     "bolt": '<path d="M13 2.5L5 13.5h6l-1 8 8-11h-6z"/>',
     "target": '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/>',
     "check": '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M8 12.3l2.8 2.8L16.5 9"/>',
+    "shirt": '<path d="M9 3.5L3.5 6.5l2 4.2 2.2-1.1v10.9h8.6V9.6l2.2 1.1 2-4.2L15 3.5c-.6 1.4-1.6 2.2-3 2.2s-2.4-.8-3-2.2z"/>',
+    "users": '<circle cx="9" cy="9" r="3.3"/><path d="M3 19.5c.9-3.1 3.2-4.8 6-4.8s5.1 1.7 6 4.8M15.5 5.9a3.3 3.3 0 0 1 0 6.3M17.8 14.9c1.6.6 2.7 2.2 3.2 4.6"/>',
 }
 def icon(name, cls="ico"): return f'<span class="{cls}"><svg viewBox="0 0 24 24">{SVG.get(name, SVG["star"])}</svg></span>'
 def appicon(name): return f'<span class="appicon">{icon(name)}</span>'
@@ -213,7 +215,12 @@ for k, c in enumerate(COMP):
         cards.append((ini, fim if tipo != "cta" else TOTAL_VIDEO, c.get("fundo") if isinstance(c.get("fundo"), (int, float)) else FUNDO[tipo] + (topo - 300)))
     if tipo == "gancho":
         layers_over.append(f'<div id="{p}" class="panel glass dark clip gancho" style="top:{topo}px" {dur(ini, fim)}><h1>{words_html(c["texto"])}</h1></div>')
-        js.append(f'pop("#{p}", {ini:.3f}); words("#{p} .wd", {ini + 0.12:.3f}); out("#{p}", {fim - 0.25:.3f});'); S(ini, "pop")
+        if ini < 0.05:  # gancho do início: legível já no primeiro fotograma (o Reels começa aí e a capa pode vir daí), lição 31
+            js.append(f'tl.fromTo("#{p}", {{ scale: 1.035 }}, {{ scale: 1, ease: "power2.out", duration: 0.6 }}, 0); '
+                      f'tl.fromTo("#{p} .acc", {{ y: 5 }}, {{ y: 0, ease: "power3.out", duration: 0.45 }}, 0); out("#{p}", {fim - 0.25:.3f});')
+        else:
+            js.append(f'pop("#{p}", {ini:.3f}); words("#{p} .wd", {ini + 0.12:.3f}); out("#{p}", {fim - 0.25:.3f});')
+        S(ini, "pop")
     elif tipo == "palavra":
         layers_over.append(f'<div id="{p}" class="clip palavra" style="top:{topo}px" {dur(ini, fim)}><div class="pw">{words_html(c["texto"])}</div></div>')
         js.append(f'pop("#{p} .pw", {ini:.3f}, {{ s0: 0.9, y0: 10, d: 0.4 }}); out("#{p}", {fim - 0.25:.3f});'); S(ini, "pop")

@@ -96,13 +96,22 @@ class Video:
 def preparar(v, a):
     orig = v.fonte_original(a.fonte)
     (v.trab / "fonte.txt").write_text(os.path.relpath(orig, v.dir))
-    info = probe(orig, "stream=width,height,avg_frame_rate,r_frame_rate:stream_tags=rotate")["streams"][0]
-    print(f"Origem: {orig.name} {info.get('width')}x{info.get('height')} a {info.get('avg_frame_rate')} fps")
+    info = probe(orig, "stream=width,height,avg_frame_rate,r_frame_rate,color_transfer:stream_tags=rotate")["streams"][0]
+    hdr = info.get("color_transfer") in ("arib-std-b67", "smpte2084")
+    print(f"Origem: {orig.name} {info.get('width')}x{info.get('height')} a {info.get('avg_frame_rate')} fps"
+          + (f", HDR ({info['color_transfer']}): converte para SDR BT.709" if hdr else ""))
     # 1) 30 fps constantes (iPhone grava a 60 ou com fps variável; os cortes contam fotogramas a 30)
     if not v.fonte.exists() or a.refazer:
         # fontes 4K: reduzir já para 2560 px de altura (o base.mp4 usa 2480), em vez de recodificar 4K inteiro (lição 28)
         vf = "fps=30" + (",scale=-2:2560:flags=lanczos" if int(info.get("height") or 0) > 2560 else "")
-        sh(["ffmpeg", "-v", "error", "-y", "-i", orig, "-vf", vf, "-c:v", "libx264", "-preset", "medium", "-crf", "14",
+        # iPhone grava em HDR (HLG, BT.2020, 10 bits). Lido como SDR fica baço e rosado, e o HyperFrames passa a exportar
+        # HEVC 10 bits. Converte-se aqui para BT.709 com tonemap (lição 29).
+        cor = []
+        if hdr:
+            vf += (f",zscale=tin={info['color_transfer']}:pin=bt2020:min=bt2020nc:rin=tv:t=linear:npl=100,format=gbrpf32le,"
+                   "zscale=p=bt709,tonemap=mobius:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p")
+            cor = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"]
+        sh(["ffmpeg", "-v", "error", "-y", "-i", orig, "-vf", vf, "-c:v", "libx264", "-preset", "medium", "-crf", "14", *cor,
             "-c:a", "aac", "-b:a", "256k", "-ar", "48000", v.fonte])
     perfil = v.perfil()
     # 2) transcrição com tempos por palavra
@@ -303,7 +312,8 @@ def audio(v, a):
 # ---------------------------------------------------------------- exportar
 def exportar(v, a):
     if not re.fullmatch(r"v\d+", a.versao): sys.exit("A versão tem de ser v1, v2, v3…")
-    if not a.titulo: sys.exit("Falta --titulo (é o título do commit e da tabela de versões: 'vN - o que mudou').")
+    if not a.titulo: sys.exit("Falta --titulo (só 'o que mudou'; o commit e a tabela de versões ficam 'vN - o que mudou').")
+    a.titulo = re.sub(rf"^\s*{re.escape(a.versao)}\s*[-:]\s*", "", a.titulo)  # quem passa "v1 - ..." não fica com "v1 - v1 - ..."
     out_dir = v.dir / a.versao
     if out_dir.exists() and not a.forcar: sys.exit(f"{out_dir} já existe: as versões anteriores ficam intactas. Usa a versão seguinte.")
     out_dir.mkdir(exist_ok=True)
@@ -318,7 +328,8 @@ def exportar(v, a):
     sh(["ffmpeg", "-v", "error", "-y", "-ss", str(a.capa_t), "-i", mp4, "-frames:v", "1", out_dir / "capa.png"])
     d = duracao(mp4); qa = v.tmp / "qa"; shutil.rmtree(qa, ignore_errors=True); qa.mkdir()
     for k in range(12):
-        sh(["ffmpeg", "-v", "error", "-y", "-ss", f"{(k + 0.5) * d / 12:.2f}", "-i", mp4, "-frames:v", "1", "-vf", "scale=270:480", qa / f"f{k:02d}.png"])
+        t = 0 if k == 0 else (k + 0.5) * d / 12  # o primeiro é o fotograma 0: é aí que o Reels começa (lição 31)
+        sh(["ffmpeg", "-v", "error", "-y", "-ss", f"{t:.2f}", "-i", mp4, "-frames:v", "1", "-vf", "scale=270:480", qa / f"f{k:02d}.png"])
     sh(["ffmpeg", "-v", "error", "-y", "-i", qa / "f%02d.png", "-vf", "tile=6x2", "-frames:v", "1", "-q:v", "3", out_dir / "qa.jpg"])
     cfg = v.cfg(); cfg["sfx_eventos"] = json.load(open(v.trab / "sfx_eventos.json"))
     mapa, _ = mapa_sfx(v)
@@ -350,7 +361,7 @@ def exportar(v, a):
     print("\nQA automático:")
     qa_cmd = [PY, AQUI / "qa_entrega.py", mp4, out_dir / "config.json", "--saida", out_dir / "qa.json", "--chat-mb", str(a.chat_mb)]
     if v.criador: qa_cmd += ["--criador", v.criador]
-    if chat: qa_cmd += ["--chat", chat]
+    qa_cmd += ["--chat", chat or mp4]  # sem cópia, o que se envia no chat é o próprio vídeo
     qa_ok = subprocess.run([str(c) for c in qa_cmd]).returncode == 0
     if not qa_ok and not a.ignorar_qa:
         sys.exit(f"QA falhou: corrige o que está em {out_dir / 'qa.json'} e volta a exportar com --forcar (ou --ignorar-qa se for deliberado). Não faças commit desta versão.")

@@ -19,4 +19,5 @@ Marca com [x] cada ponto antes de gravar. `python3 scripts/checklist.py <pasta d
 - [ ] Luz de frente e fundo limpo
 - [ ] Teste de áudio de 10 s ouvido no telemóvel
 - [ ] Gravar o original da câmara (não reenviar pelo chat, que baixa a resolução)
+- [ ] iPhone: "Vídeo HDR" desligado em Definições, Câmara, Gravar vídeo (se ficar ligado, o `preparar` converte, mas perde-se tempo e alguma cor)
 - [ ] Ficheiros em `gravados/`
