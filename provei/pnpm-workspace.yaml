@@ -1,4 +1,6 @@
 packages:
-  - "apps/*"
+  - "apps/web"
   - "packages/*"
   - "supabase/tests"
+# apps/mobile fica fora do workspace por agora (dependências Expo/React Native pesadas):
+# instalar à parte com `cd apps/mobile && pnpm install --ignore-workspace` (ver docs/MOBILE.md).

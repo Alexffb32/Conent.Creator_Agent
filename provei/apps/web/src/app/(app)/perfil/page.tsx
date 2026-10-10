@@ -6,6 +6,9 @@ import { Avatar, Badge, Button, Card, CardTitle, EmptyState, LinkButton } from '
 import { getMyRestaurants, requireUser } from '@/server/auth';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { formatDateTime } from '@/lib/media';
+import { getFlags } from '@/lib/flags';
+import { eur, pricing } from '@/lib/pricing';
+import { AdFreeButton } from '@/components/shell/AdFreeButton';
 
 export const metadata: Metadata = { title: 'O meu perfil' };
 export const dynamic = 'force-dynamic';
@@ -18,6 +21,7 @@ export default async function PerfilPage() {
     getMyRestaurants(),
     sb.from('visits').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
   ]);
+  const flags = await getFlags();
   const level = DEFAULT_LEVELS.find((l) => l.key === me.level) ?? DEFAULT_LEVELS[0]!;
   const next = nextLevel({ visits: count ?? 0, points: me.pointsTotal });
   return (
@@ -40,6 +44,7 @@ export default async function PerfilPage() {
         <LinkButton href="/cartao" variant="secondary">Cartões</LinkButton>
         {me.isAdmin ? <LinkButton href="/admin" variant="accent">Administração</LinkButton> : null}
       </div>
+      {flags.ad_free_subscription && flags.payments && !me.isAdFree ? <AdFreeButton price={eur(pricing.adFreeEur)} /> : null}
       <section aria-labelledby="meus-restaurantes" className="flex flex-col gap-2">
         <h2 id="meus-restaurantes" className="pv-title text-2xl text-verde-escuro">Modo restaurante</h2>
         {restaurants.length === 0 ? (
