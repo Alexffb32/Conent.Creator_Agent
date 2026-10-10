@@ -216,7 +216,7 @@ for k, c in enumerate(COMP):
     if tipo == "gancho":
         layers_over.append(f'<div id="{p}" class="panel glass dark clip gancho" style="top:{topo}px" {dur(ini, fim)}><h1>{words_html(c["texto"])}</h1></div>')
         if ini < 0.05:  # gancho do início: legível já no primeiro fotograma (o Reels começa aí e a capa pode vir daí), lição 31
-            js.append(f'tl.fromTo("#{p}", {{ scale: 1.035 }}, {{ scale: 1, ease: "power2.out", duration: 0.6 }}, 0); '
+            js.append(f'tl.fromTo("#{p}", {{ opacity: 1, scale: 1.035 }}, {{ opacity: 1, scale: 1, ease: "power2.out", duration: 0.6 }}, 0); '
                       f'tl.fromTo("#{p} .acc", {{ y: 5 }}, {{ y: 0, ease: "power3.out", duration: 0.45 }}, 0); out("#{p}", {fim - 0.25:.3f});')
         else:
             js.append(f'pop("#{p}", {ini:.3f}); words("#{p} .wd", {ini + 0.12:.3f}); out("#{p}", {fim - 0.25:.3f});')

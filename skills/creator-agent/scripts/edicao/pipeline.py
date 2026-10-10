@@ -1,6 +1,7 @@
 # Pipeline de edição de um short 9:16, em quatro comandos. Corre a partir de qualquer pasta.
 #
 #   python3 pipeline.py preparar <pasta_do_video> [--modelo large-v3] [--cortes-manuais "[[15.2,16.98]]"] [--limiar -40] [--fonte gravados/x.mov]
+#   python3 pipeline.py previa   <pasta_do_video> [--at 0,1.9,8]   (fotogramas da composição em segundos, sem render)
 #   python3 pipeline.py render   <pasta_do_video>
 #   python3 pipeline.py audio    <pasta_do_video> [--sem-musica] [--rt60 0.5]
 #   python3 pipeline.py exportar <pasta_do_video> <vN> --titulo "o que mudou" [--chat-mb 30] [--capa-t 1.4]
@@ -233,7 +234,8 @@ def eventos_sfx(auto, cfg):
     return sorted(ev, key=lambda e: e[0])
 
 
-def render(v, a):
+def montar(v):
+    """Projeto HyperFrames em trabalho/tmp/hf, com o compor.py corrido. Devolve (pasta, config)."""
     cfg = v.cfg()
     if not (v.tmp / "base.mp4").exists(): sys.exit("Falta trabalho/tmp/base.mp4: corre 'preparar'.")
     if not cfg.get("graficos"): print("AVISO: config sem componentes em 'graficos' (só legendas e zooms).")
@@ -247,6 +249,18 @@ def render(v, a):
     logo_para(v, hf / "assets" / "logo.png", cfg)
     for f in ("frases_cortadas.json", "segmentos.json"): shutil.copy(v.trab / f, v.tmp / f)
     py("compor.py", v.tmp, v.cfg_path)
+    return hf, cfg
+
+
+def previa(v, a):
+    """Fotogramas da composição em segundos, sem render: confirmar gancho, cartões e legendas antes dos ~6 min do render."""
+    hf, _ = montar(v); out = v.tmp / "previa"; shutil.rmtree(out, ignore_errors=True)
+    sh(["npx", "--yes", f"hyperframes@{HF_VERSAO}", "snapshot", ".", "--at", a.at, "--no-end", "-o", out], cwd=hf, env=browser_env())
+    print(f"Prévia: {out / 'contact-sheet.jpg'} (um PNG por tempo na mesma pasta)")
+
+
+def render(v, a):
+    hf, cfg = montar(v)
     ev = eventos_sfx(json.load(open(v.tmp / "sfx_eventos.json")), cfg)
     json.dump(ev, open(v.trab / "sfx_eventos.json", "w"))
     out = v.tmp / "render.mp4"
@@ -379,6 +393,7 @@ def main():
     p.add_argument("--modelo", default="large-v3"); p.add_argument("--cortes-manuais", default="[]"); p.add_argument("--limiar", type=float, default=-40)
     p.add_argument("--fonte"); p.add_argument("--vocabulario", default="", help="nomes e termos para a transcrição")
     p.add_argument("--refazer", action="store_true"); p.add_argument("--refazer-transcricao", action="store_true")
+    p = sub.add_parser("previa"); p.add_argument("pasta"); p.add_argument("--at", default="0,1.9", help="tempos em segundos, separados por vírgulas")
     p = sub.add_parser("render"); p.add_argument("pasta")
     p = sub.add_parser("audio"); p.add_argument("pasta"); p.add_argument("--sem-musica", action="store_true"); p.add_argument("--rt60", type=float, default=0.5)
     for nome in ("exportar", "tudo"):
@@ -388,6 +403,7 @@ def main():
         if nome == "tudo": p.add_argument("--sem-musica", action="store_true"); p.add_argument("--rt60", type=float, default=0.5)
     a = ap.parse_args(); v = Video(a.pasta)
     if a.cmd == "preparar": preparar(v, a)
+    elif a.cmd == "previa": previa(v, a)
     elif a.cmd == "render": render(v, a)
     elif a.cmd == "audio": audio(v, a)
     elif a.cmd == "exportar": exportar(v, a)

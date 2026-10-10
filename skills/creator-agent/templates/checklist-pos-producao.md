@@ -20,7 +20,8 @@ Os pontos com `(auto: nome)` são verificados pelo `pipeline.py exportar` (fiche
 ## Imagem e som (ver o `qa.jpg` e ouvir)
 - [ ] Gancho legível no primeiro fotograma e na capa
 - [ ] Nenhum cartão tapa a cara
-- [ ] Nada a piscar nem legendas sobrepostas
+- [ ] Nada a piscar (auto: sem_piscar)
+- [ ] Legendas sem sobreposições (o `compor.py` diz "sobreposições: 0")
 - [ ] SFX leves e sincronizados com a animação (confirmado pelo criador)
 - [ ] Voz sem eco e música baixa (confirmado pelo criador)
 

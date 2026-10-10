@@ -50,6 +50,20 @@ def sonda(mp4):
     return {"w": vs.get("width"), "h": vs.get("height"), "fps": float(num) / float(den or 1), "audio": bool(a), "dur": float(v["format"]["duration"])}
 
 
+def piscadelas(mp4, limiar=1.5):
+    """Fotogramas que diferem dos dois vizinhos enquanto os vizinhos são parecidos (um cartão ou legenda que pisca)."""
+    import numpy as np
+    w, h = 90, 160
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(mp4), "-vf", f"scale={w}:{h},format=gray", "-f", "rawvideo", "-"],
+                         capture_output=True, check=True).stdout
+    f = np.frombuffer(raw, np.uint8).reshape(-1, h, w).astype(np.float32)
+    out = []
+    for i in range(1, len(f) - 1):
+        a, b, c = (np.abs(f[i] - f[i - 1]).mean(), np.abs(f[i] - f[i + 1]).mean(), np.abs(f[i + 1] - f[i - 1]).mean())
+        if min(a, b) > limiar and c < 0.5 * min(a, b): out.append(round(i / 30, 2))
+    return out
+
+
 def verificar(mp4, cfg, raiz=None, chat=None, chat_mb=30):
     res = []  # (id, ok, detalhe, regra)
 
@@ -62,6 +76,8 @@ def verificar(mp4, cfg, raiz=None, chat=None, chat_mb=30):
     i, p = medir_audio(mp4)
     r("loudness", i is not None and abs(i + 14) <= 1.5, f"{i} LUFS (alvo -14 ± 1,5)", "licao 19")
     r("pico", p is not None and p <= -1.0, f"{p} dBFS (máximo -1)", "licao 19")
+    pis = piscadelas(mp4)
+    r("sem_piscar", not pis, "nenhum fotograma isolado a piscar" if not pis else f"{len(pis)} fotogramas a piscar, por exemplo aos {pis[:5]} s")
     if chat:
         mb = Path(chat).stat().st_size / 2**20
         r("copia_chat", mb <= chat_mb, f"{mb:.1f} MB (máximo {chat_mb})", "licao 24")

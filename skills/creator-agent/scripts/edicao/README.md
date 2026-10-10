@@ -10,6 +10,7 @@ FluidSynth com o soundfont FluidR3_GM, Node 20 ou superior (o HyperFrames corre 
 python3 pipeline.py preparar <pasta_do_video> [--cortes-manuais "[[15.2,16.98]]"] [--vocabulario "Layout, alexffb"]
 #   30 fps constantes, transcrição (large-v3), cortes de silêncio, segmentos, palavras na linha cortada, cara, vídeo base,
 #   e trabalho/config.json inicial (takes sugeridos, acento da marca). O agente preenche os componentes (biblioteca/componentes.md).
+python3 pipeline.py previa <pasta_do_video> --at 0,1.9   # fotogramas da composição em segundos, sem render (hyperframes snapshot)
 python3 pipeline.py render <pasta_do_video>      # composição HyperFrames (compor.py) e render; SFX em trabalho/sfx_eventos.json
 python3 pipeline.py audio <pasta_do_video>       # voz sem eco, música com ducking, SFX do mapa, mistura a -14 LUFS
 python3 pipeline.py exportar <pasta_do_video> v1 --titulo "primeira edição"
