@@ -1,0 +1,54 @@
+{
+ "lingua": "pt-PT",
+ "end_card": 2.0,
+ "takes": [
+  {
+   "desde": 0,
+   "base": 1.0,
+   "cx": 0.484,
+   "eye": 0.425,
+   "fw": 0.407
+  }
+ ],
+ "legenda_topo": 1180,
+ "legendas": {
+  "estilo": "iman",
+  "tamanho": 60,
+  "max_palavras": 4,
+  "max_caracteres": 22
+ },
+ "correcoes": [],
+ "destaques": [],
+ "zoom_chave": [
+  {
+   "t": 0.0,
+   "push": 2.6,
+   "de": 1.0,
+   "para": 1.07
+  }
+ ],
+ "tokens": {
+  "accent": "#FF2E00"
+ },
+ "marca": {
+  "nome": "@alexffb_"
+ },
+ "graficos": [],
+ "frame_final": {
+  "botao": "",
+  "handle": "@alexffb_"
+ },
+ "sfx": {
+  "extra": [],
+  "trocar": {},
+  "remover": []
+ },
+ "look": {
+  "contraste": 1.03,
+  "saturacao": 1.03,
+  "brilho": 0.0,
+  "gama": 1.12,
+  "vinheta": "PI/9",
+  "grao": 3
+ }
+}
