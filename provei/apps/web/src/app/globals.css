@@ -1,0 +1,32 @@
+@import '@provei/config/tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-nevoa text-tinta font-sans antialiased;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  h1, h2, h3 { text-wrap: balance; }
+  :focus-visible { outline: 3px solid var(--pv-verde); outline-offset: 2px; border-radius: 6px; }
+  a, button, [role='button'], input, select, textarea { touch-action: manipulation; }
+  img, video { max-width: 100%; }
+}
+
+@layer components {
+  .pv-container { @apply mx-auto w-full max-w-5xl px-4 sm:px-6; }
+  .pv-title { font-family: var(--font-serif), Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+  .pv-safe-bottom { padding-bottom: max(0.5rem, env(safe-area-inset-bottom)); }
+  .pv-safe-top { padding-top: env(safe-area-inset-top); }
+  .pv-skeleton { @apply animate-pulse rounded-m bg-verde-tinta; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+.feed-snap { scroll-snap-type: y mandatory; }
+.feed-snap > * { scroll-snap-align: start; }
