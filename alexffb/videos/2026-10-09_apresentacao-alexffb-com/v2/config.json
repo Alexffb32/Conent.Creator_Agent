@@ -1,0 +1,392 @@
+{
+ "lingua": "pt-PT",
+ "end_card": 2.0,
+ "takes": [
+  {
+   "desde": 0,
+   "base": 1.0,
+   "cx": 0.484,
+   "eye": 0.425,
+   "fw": 0.407
+  }
+ ],
+ "legenda_topo": 1180,
+ "legendas": {
+  "estilo": "iman",
+  "tamanho": 60,
+  "max_palavras": 5,
+  "max_caracteres": 24
+ },
+ "correcoes": [
+  {
+   "de": [
+    "alexffb",
+    ".com."
+   ],
+   "para": [
+    "alexffb.com"
+   ]
+  }
+ ],
+ "destaques": [
+  "marca pessoal",
+  "fiquem atentos",
+  "próximas semanas",
+  "primeiro lançamento",
+  "algumas pessoas",
+  "muito polémico"
+ ],
+ "zoom_chave": [
+  {
+   "t": 0,
+   "push": 2.6,
+   "de": 1,
+   "para": 1.07,
+   "ease": "power1.out"
+  },
+  {
+   "t": 3.3,
+   "mult": 1,
+   "ate": 8.4
+  },
+  {
+   "t": 12.7,
+   "push": 11.92,
+   "de": 1,
+   "para": 1.08
+  }
+ ],
+ "tokens": {
+  "accent": "#FF2E00",
+  "accent_top": "#FF481F",
+  "accent_bottom": "#E02900",
+  "accent_light": "#FF7A52",
+  "accent_dark": "#5A1000",
+  "ink": "#FFFFFF",
+  "muted": "#B3B3B3"
+ },
+ "marca": {
+  "nome": "alexffb"
+ },
+ "graficos": [
+  {
+   "tipo": "gancho",
+   "ini": 0,
+   "fim": 3.06,
+   "topo": 240,
+   "fundo": 466,
+   "texto": "Hoje apresento-te o *alexffb.com*"
+  },
+  {
+   "tipo": "lower_third",
+   "ini": 1.08,
+   "fim": 3.06,
+   "nome": "Alex",
+   "handle": "@alexffb_",
+   "emblema": "*"
+  },
+  {
+   "tipo": "pesquisa",
+   "ini": 3.06,
+   "fim": 8.4,
+   "eyebrow": "O meu projeto",
+   "titulo": "Mais do que um *site*",
+   "pesquisa": "alexffb.com",
+   "escrever": 3.3,
+   "resultados": [
+    {
+     "t": 5.38,
+     "icone": "globe",
+     "titulo": "Site",
+     "desc": "alexffb.com"
+    },
+    {
+     "t": 6.74,
+     "icone": "user",
+     "titulo": "Marca pessoal",
+     "desc": "Todo um projeto"
+    }
+   ],
+   "cursor": {
+    "t": 7.2,
+    "x0": 700,
+    "y0": 700,
+    "x1": 400,
+    "y1": 540,
+    "res": 1
+   }
+  },
+  {
+   "tipo": "mosaicos",
+   "ini": 8.4,
+   "fim": 12.52,
+   "topo": 240,
+   "fundo": 477,
+   "itens": [
+    {
+     "t": 8.82,
+     "icone": "play",
+     "texto": "Conteúdo"
+    },
+    {
+     "t": 9.3,
+     "icone": "star",
+     "texto": "Eventos"
+    },
+    {
+     "t": 10.22,
+     "icone": "shirt",
+     "texto": "Merch"
+    },
+    {
+     "t": 11,
+     "icone": "users",
+     "texto": "Comunidades"
+    }
+   ]
+  },
+  {
+   "tipo": "cta",
+   "ini": 15.2,
+   "fim": 17.88,
+   "topo": 240,
+   "fundo": 432,
+   "app": "alexffb.com",
+   "icone": "bolt",
+   "titulo": "Fiquem atentos",
+   "texto": "Lançamento nas próximas semanas"
+  },
+  {
+   "tipo": "remate",
+   "ini": 19.87,
+   "fim": 22.45,
+   "topo": 240,
+   "fundo": 502,
+   "a": "Incentivar a mentalidade",
+   "b": "empreendedora"
+  }
+ ],
+ "frame_final": {
+  "botao": "",
+  "handle": "@alexffb_"
+ },
+ "sfx": {
+  "extra": [
+   [
+    0,
+    "boom",
+    -2
+   ]
+  ],
+  "trocar": {
+   "19.87": "riser",
+   "24.933": "boom"
+  },
+  "remover": []
+ },
+ "look": {
+  "contraste": 1.04,
+  "saturacao": 1.02,
+  "brilho": 0.0,
+  "gama": 1.04,
+  "vinheta": "PI/8",
+  "grao": 3
+ },
+ "musica": {
+  "ativa": true,
+  "lufs": -23
+ },
+ "sfx_eventos": [
+  [
+   0,
+   "pop"
+  ],
+  [
+   0,
+   "boom",
+   -2
+  ],
+  [
+   1.08,
+   "pop"
+  ],
+  [
+   3.06,
+   "whoosh"
+  ],
+  [
+   3.3,
+   "type"
+  ],
+  [
+   3.39,
+   "type"
+  ],
+  [
+   3.48,
+   "type"
+  ],
+  [
+   3.57,
+   "type"
+  ],
+  [
+   3.66,
+   "type"
+  ],
+  [
+   3.75,
+   "type"
+  ],
+  [
+   3.84,
+   "type"
+  ],
+  [
+   3.93,
+   "type"
+  ],
+  [
+   4.02,
+   "type"
+  ],
+  [
+   4.11,
+   "type"
+  ],
+  [
+   4.2,
+   "type"
+  ],
+  [
+   5.38,
+   "pop"
+  ],
+  [
+   6.74,
+   "pop"
+  ],
+  [
+   8.05,
+   "click"
+  ],
+  [
+   8.82,
+   "tick"
+  ],
+  [
+   9.3,
+   "tick"
+  ],
+  [
+   10.22,
+   "tick"
+  ],
+  [
+   11,
+   "tick"
+  ],
+  [
+   15.2,
+   "notif"
+  ],
+  [
+   19.87,
+   "riser"
+  ],
+  [
+   24.733,
+   "whoosh"
+  ],
+  [
+   24.933,
+   "boom"
+  ]
+ ],
+ "sfx_mapa": {
+  "pop": {
+   "ficheiro": "Pop.MP3",
+   "de": 0.036,
+   "ate": 0.3,
+   "impacto": 0.015,
+   "lufs": -37,
+   "fade": 0.12
+  },
+  "whoosh": {
+   "ficheiro": "Swish Whoosh.MP3",
+   "de": 0.0,
+   "ate": 0.75,
+   "impacto": 0.159,
+   "lufs": -35,
+   "fade": 0.25
+  },
+  "notif": {
+   "ficheiro": "Bell Ding.MP3",
+   "de": 0.758,
+   "ate": 2.3,
+   "impacto": 0.01,
+   "lufs": -35,
+   "fade": 0.9
+  },
+  "type": {
+   "ficheiro": "Keyboard Typing.MP3",
+   "teclas": [
+    1.16,
+    1.34,
+    1.544,
+    2.318,
+    2.398,
+    2.102
+   ],
+   "dur": 0.08,
+   "pre": 0.004,
+   "lufs": -52,
+   "pan": 0.55
+  },
+  "click": {
+   "ficheiro": "Click.MP3",
+   "de": 0.15,
+   "ate": 0.34,
+   "impacto": 0.019,
+   "lufs": -45,
+   "pan": 0.6,
+   "fade": 0.05
+  },
+  "tick": {
+   "ficheiro": "Pop.MP3",
+   "de": 0.036,
+   "ate": 0.3,
+   "impacto": 0.015,
+   "lufs": -43,
+   "fade": 0.12,
+   "semitons": [
+    2,
+    4,
+    5,
+    7
+   ],
+   "pans": [
+    0.42,
+    0.58,
+    0.42,
+    0.58
+   ]
+  },
+  "riser": {
+   "ficheiro": "Metallic Riser.MP3",
+   "de": 0.4,
+   "ate": 1.776,
+   "impacto": 1.3155,
+   "lufs": -36,
+   "fade": 0.02
+  },
+  "boom": {
+   "ficheiro": "Bass Impact.MP3",
+   "de": 0.075,
+   "ate": 2.5,
+   "impacto": 0.02,
+   "lufs": -38,
+   "fade": 1.2
+  }
+ }
+}
