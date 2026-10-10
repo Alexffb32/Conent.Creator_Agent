@@ -34,6 +34,10 @@ const nextConfig = {
   poweredByHeader: false,
   transpilePackages: ['@provei/domain', '@provei/api-client', '@provei/config'],
   images: {
+    // marcadores SVG locais dos dados de exemplo (ficheiros estáticos nossos)
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: supabaseHost ? [{ protocol: 'https', hostname: supabaseHost }] : [],
   },
   async headers() {
