@@ -1,0 +1,493 @@
+{
+ "end_card": 2.0,
+ "corte_take": 13.2,
+ "takes": {
+  "A": {
+   "base": 1.06,
+   "cx": 0.55,
+   "eye": 0.521,
+   "fw": 0.206
+  },
+  "B": {
+   "base": 1.0,
+   "cx": 0.55,
+   "eye": 0.475,
+   "fw": 0.241
+  }
+ },
+ "legenda_topo": 1180,
+ "cartoes_janelas": [
+  [
+   0,
+   2.6,
+   523
+  ],
+  [
+   24.57,
+   29.5,
+   532
+  ],
+  [
+   40.78,
+   42.5,
+   559
+  ],
+  [
+   43.2,
+   48.83,
+   482
+  ]
+ ],
+ "correcoes": [
+  {
+   "de": [
+    "em",
+    "Melsenburg,"
+   ],
+   "para": [
+    "emails",
+    "em",
+    "bulk"
+   ]
+  },
+  {
+   "de": [
+    "tem"
+   ],
+   "para": [
+    "têm"
+   ],
+   "frase": 1
+  },
+  {
+   "de": [
+    "nos",
+    "dão"
+   ],
+   "para": [
+    "não",
+    "dão"
+   ],
+   "frase": 2
+  },
+  {
+   "de": [
+    "ghosts."
+   ],
+   "para": [
+    "ghost"
+   ]
+  },
+  {
+   "de": [
+    "dela."
+   ],
+   "para": [
+    "delas"
+   ]
+  },
+  {
+   "de": [
+    "preciso"
+   ],
+   "para": [
+    "precisas"
+   ]
+  },
+  {
+   "de": [
+    "muitos"
+   ],
+   "para": [
+    "muito"
+   ]
+  }
+ ],
+ "destaques": [
+  "outreach",
+  "resposta",
+  "ghost",
+  "acontecer",
+  "presença digital",
+  "email",
+  "responder",
+  "pesquisar",
+  "encontrar",
+  "site",
+  "personal brand",
+  "úteis",
+  "óbvio",
+  "antes",
+  "presença digital",
+  "mensagem",
+  "resultados"
+ ],
+ "graficos": {
+  "gancho": {
+   "ini": 0.0,
+   "fim": 2.6,
+   "texto": "Como fazer com que te *respondam*"
+  },
+  "lower_third": {
+   "ini": 13.3,
+   "fim": 15.3,
+   "nome": "Alex",
+   "handle": "@alexffb_"
+  },
+  "remate": {
+   "ini": 40.78,
+   "fim": 42.5,
+   "a": "Tratar da tua",
+   "b": "presença digital"
+  },
+  "cta": {
+   "ini": 43.2,
+   "app": "Mensagens",
+   "titulo": "Manda-me mensagem",
+   "texto": "ou escreve aqui em baixo nos comentários",
+   "botao": "Manda-me mensagem",
+   "handle": "@alexffb_"
+  },
+  "cena_lista": {
+   "ini": 3.55,
+   "fim": 9.2667,
+   "eyebrow": "O teu outreach hoje",
+   "titulo": "Sem qualquer *resposta*",
+   "itens": [
+    {
+     "t": 3.64,
+     "icone": "mail",
+     "app": "Email",
+     "titulo": "Emails em bulk",
+     "texto": "Sem resposta"
+    },
+    {
+     "t": 6.16,
+     "icone": "phone",
+     "app": "Chamadas",
+     "titulo": "Cold calls",
+     "texto": "Sem reuniões"
+    },
+    {
+     "t": 7.84,
+     "icone": "chat",
+     "app": "Mensagens",
+     "titulo": "DMs",
+     "texto": "Dão em ghost"
+    }
+   ]
+  },
+  "cena_pesquisa": {
+   "ini": 17.9667,
+   "fim": 24.5667,
+   "eyebrow": "O que encontram quando pesquisam",
+   "titulo": "Vão *pesquisar* sobre nós",
+   "pesquisa": "Layout",
+   "escrever": 18.3,
+   "resultados": [
+    {
+     "t": 20.13,
+     "icone": "globe",
+     "titulo": "Site",
+     "desc": "No topo da página"
+    },
+    {
+     "t": 22.9,
+     "icone": "funnel",
+     "titulo": "Funil",
+     "desc": "Com todas as informações, bem estruturado"
+    }
+   ],
+   "cursor": {
+    "t": 21.0,
+    "x0": 640,
+    "y0": 720,
+    "x1": 520,
+    "y1": 330,
+    "res": 0
+   }
+  },
+  "mosaicos": {
+   "ini": 24.5667,
+   "fim": 29.5,
+   "itens": [
+    {
+     "t": 24.73,
+     "icone": "user",
+     "texto": "Personal brand"
+    },
+    {
+     "t": 26.87,
+     "icone": "camera",
+     "texto": "Instagram"
+    },
+    {
+     "t": 27.45,
+     "icone": "brief",
+     "texto": "LinkedIn"
+    },
+    {
+     "t": 27.89,
+     "icone": "play",
+     "texto": "YouTube"
+    }
+   ]
+  }
+ },
+ "zoom_chave": [
+  {
+   "t": 0,
+   "push": 2.5,
+   "de": 1.0,
+   "para": 1.07,
+   "ease": "power1.out"
+  },
+  {
+   "t": 2.6,
+   "mult": 1.0,
+   "ate": 3.55
+  },
+  {
+   "t": 9.2667,
+   "mult": 1.0,
+   "ate": 10.16
+  },
+  {
+   "t": 10.1667,
+   "push": 3.0,
+   "de": 1.0,
+   "para": 1.06
+  },
+  {
+   "t": 13.2333,
+   "mult": 1.0,
+   "ate": 17.96
+  },
+  {
+   "t": 24.5667,
+   "mult": 1.0,
+   "ate": 33.06
+  },
+  {
+   "t": 33.0667,
+   "push": 9.4,
+   "de": 1.0,
+   "para": 1.1
+  },
+  {
+   "t": 42.5667,
+   "mult": 1.0,
+   "ate": 48.83
+  }
+ ],
+ "tokens": {
+  "bg": "#000000",
+  "surface": "#222222",
+  "ink": "#FFFFFF",
+  "muted": "#B3B3B3",
+  "line": "#4F4F4F",
+  "accent": "#FF2E00",
+  "accent_top": "#FF481F",
+  "accent_bottom": "#E02900",
+  "accent_10": "#1A0500",
+  "accent_light": "#FF7A52",
+  "accent_dark": "#5A1000"
+ },
+ "legendas": {
+  "max_palavras": 5,
+  "max_caracteres": 24,
+  "tamanho": 60
+ },
+ "sfx": {
+  "sons": "sons do Alex (Google Drive), cortados e normalizados por sonoridade com scripts/edicao/sfx_amostras.py",
+  "mapa": {
+   "pop": {
+    "ficheiro": "Pop.MP3",
+    "de": 0.036,
+    "ate": 0.3,
+    "impacto": 0.015,
+    "lufs": -37,
+    "fade": 0.12
+   },
+   "whoosh": {
+    "ficheiro": "Swish Whoosh.MP3",
+    "de": 0.0,
+    "ate": 0.75,
+    "impacto": 0.159,
+    "lufs": -35,
+    "fade": 0.25
+   },
+   "notif": {
+    "ficheiro": "Bell Ding.MP3",
+    "de": 0.758,
+    "ate": 2.3,
+    "impacto": 0.01,
+    "lufs": -35,
+    "fade": 0.9
+   },
+   "type": {
+    "ficheiro": "Keyboard Typing.MP3",
+    "teclas": [
+     1.16,
+     1.34,
+     1.544,
+     2.318,
+     2.398,
+     2.102
+    ],
+    "dur": 0.08,
+    "pre": 0.004,
+    "lufs": -52,
+    "pan": 0.55
+   },
+   "click": {
+    "ficheiro": "Click.MP3",
+    "de": 0.15,
+    "ate": 0.34,
+    "impacto": 0.019,
+    "lufs": -45,
+    "pan": 0.6,
+    "fade": 0.05
+   },
+   "tick": {
+    "ficheiro": "Pop.MP3",
+    "de": 0.036,
+    "ate": 0.3,
+    "impacto": 0.015,
+    "lufs": -43,
+    "fade": 0.12,
+    "semitons": [
+     2,
+     4,
+     5,
+     7
+    ],
+    "pans": [
+     0.42,
+     0.58,
+     0.42,
+     0.58
+    ]
+   },
+   "riser": {
+    "ficheiro": "Metallic Riser.MP3",
+    "de": 0.4,
+    "ate": 1.776,
+    "impacto": 1.3155,
+    "lufs": -36,
+    "fade": 0.02
+   },
+   "boom": {
+    "ficheiro": "Bass Impact.MP3",
+    "de": 0.075,
+    "ate": 2.5,
+    "impacto": 0.02,
+    "lufs": -38,
+    "fade": 1.2
+   }
+  },
+  "eventos": [
+   [
+    0.0,
+    "boom",
+    -2
+   ],
+   [
+    0.0,
+    "pop"
+   ],
+   [
+    3.55,
+    "whoosh"
+   ],
+   [
+    3.64,
+    "notif"
+   ],
+   [
+    6.16,
+    "notif"
+   ],
+   [
+    7.84,
+    "notif"
+   ],
+   [
+    13.3,
+    "pop"
+   ],
+   [
+    17.967,
+    "whoosh"
+   ],
+   [
+    18.3,
+    "type"
+   ],
+   [
+    18.39,
+    "type"
+   ],
+   [
+    18.48,
+    "type"
+   ],
+   [
+    18.57,
+    "type"
+   ],
+   [
+    18.66,
+    "type"
+   ],
+   [
+    18.75,
+    "type"
+   ],
+   [
+    20.13,
+    "pop"
+   ],
+   [
+    21.85,
+    "click"
+   ],
+   [
+    22.9,
+    "pop"
+   ],
+   [
+    24.73,
+    "tick"
+   ],
+   [
+    26.87,
+    "tick"
+   ],
+   [
+    27.45,
+    "tick"
+   ],
+   [
+    27.89,
+    "tick"
+   ],
+   [
+    40.78,
+    "riser"
+   ],
+   [
+    43.2,
+    "notif"
+   ],
+   [
+    48.833,
+    "whoosh"
+   ],
+   [
+    49.033,
+    "boom"
+   ]
+  ]
+ }
+}

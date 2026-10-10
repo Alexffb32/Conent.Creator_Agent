@@ -1,0 +1,21 @@
+{
+  "extraKnownMarketplaces": {
+    "instagram-skills": {
+      "source": {
+        "source": "github",
+        "repo": "sergebulaev/instagram-skills"
+      }
+    },
+    "one-skill-to-rule-them-all": {
+      "source": {
+        "source": "github",
+        "repo": "rebelytics/one-skill-to-rule-them-all"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "instagram-skills@instagram-skills": true,
+    "task-observer@one-skill-to-rule-them-all": true,
+    "claude-code-setup@anthropic-plugin-directory": true
+  }
+}

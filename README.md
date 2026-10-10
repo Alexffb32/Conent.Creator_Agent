@@ -1,65 +1,74 @@
 # Creator Agent
 
-Um agente open source para o Claude Code que ajuda criadores de conteúdo **iniciantes** a fazer o que normalmente exige uma equipa: estratégia, pesquisa de referências, guiões, instruções de gravação, edição com motion graphics, agendamento e análise. Sem pagar a editor, videógrafo ou argumentista, e sem perder horas a pesquisar.
+> **Alex:** o teu conteúdo (vídeos, versões, marca e sons) está em [`alexffb/`](alexffb/). O agente está em [`skills/creator-agent/`](skills/creator-agent/).
+
+Um agente open source para o Claude Code que faz por um criador de conteúdo **iniciante** o trabalho de uma equipa: estratégia, pesquisa de referências, guiões, instruções de gravação, edição de shorts com legendas, motion graphics, música e SFX, agendamento e análise. E aprende o estilo de cada criador com o feedback.
 
 ## O que faz
 
-1. **Pergunta** o essencial (objetivos, nicho, o que vendes, equipamento, tempo) com perguntas de escolha rápida.
-2. **Pesquisa** criadores e vídeos de referência do teu nicho, extrai o que funcionou (ganchos, estrutura, CTAs, edição) e guarda tudo com fontes e datas.
-3. **Monta o funil** (topo, meio, fundo) e um calendário. Sabe o que publicaste da última vez e diz-te o que publicar a seguir para manter o rumo.
-4. **Escreve o guião** (o que dizer) e o **roteiro de gravação** (como gravar: planos, luz, som, B-roll, checklist).
-5. Tu **gravas** e pões os ficheiros na pasta `gravados/` do vídeo.
-6. Ele **valida** os ficheiros, faz o **plano de edição**, **edita** com legendas e motion graphics e entrega em `editado/`.
-7. **Adapta** a peça a cada plataforma (Instagram, YouTube, TikTok, podcast), **agenda** e, depois de publicares, **analisa** os resultados para melhorar o próximo.
+1. **Pergunta** o essencial (objetivos, nicho, oferta, equipamento, tempo, marca, sons, referências de edição) com perguntas de escolha rápida.
+2. **Pesquisa** criadores e vídeos de referência do teu nicho e faz **fichas de estilo** com dados (ritmo de cortes, paleta, sonoridade, fotogramas do gancho), sempre com fontes e datas.
+3. **Monta o funil** (topo, meio, fundo) e um calendário, e diz-te o que publicar a seguir.
+4. **Escreve o guião** e o **roteiro de gravação** (planos, luz, som, B-roll).
+5. Tu **gravas** e pões os ficheiros em `gravados/`.
+6. **Edita** num pipeline de 4 comandos: cortes, legendas, zooms, componentes de motion, voz sem eco, música e os teus sons. Entrega uma pasta por versão, num commit com o título `vN - o que mudou`, e manda-te o vídeo no chat.
+7. **Aprende**: cada correção tua vira uma regra no teu diário de estilo (`estilo/`: "motion leve", "sem barra de progresso", "SFX baixos"), que ganha força quando a repetes ou aprovas, e cada erro técnico vira uma lição que não se repete.
+8. **Trabalha como diretor e editor**: tu decides e aprovas; o agente produz com um SOP de conteúdo (`estrategia/sop-conteudo.md`), listas de pré e pós-produção por vídeo (`scripts/checklist.py` diz se está pronto), ideias tiradas do que clientes e audiência dizem (`historico/voz-do-cliente.csv`) e uma hora fixa de publicação.
+9. **Adapta**, **agenda** e, depois de publicares, **analisa** os resultados para o próximo.
 
-Lê a audiência real (a que tens e a que queres atingir) através das ligações a Instagram e YouTube, ou de exportações dos teus insights.
+## Instalar
 
-## Instalar (resumo)
-
-Ver [INSTALL.md](INSTALL.md) para o passo a passo completo.
-
+Passo a passo em [INSTALL.md](INSTALL.md). No Claude Code:
 ~~~
-# 1) cria o teu repositório PRIVADO de criador no GitHub e clona-o
-# 2) instala a skill dentro dele
-git submodule add https://github.com/<utilizador>/creator-agent .claude/skills/creator-agent
-# 3) cria a estrutura
-bash .claude/skills/creator-agent/scripts/init-creator-repo.sh .
-# 4) abre o Claude Code nesse repositório e escreve
-/creator-agent
+/plugin marketplace add Alexffb32/Conent.Creator_Agent
+/plugin install creator-agent@alexffb
 ~~~
+Depois, no teu repositório privado de criador, escreve `/creator-agent:creator-agent` ou simplesmente "usa o creator-agent". Na primeira vez faz o onboarding e verifica o que falta instalar para editar (`scripts/verificar.py`).
 
 ## Uso
 
-| Comando | O que faz |
+| Pedido | O que faz |
 | --- | --- |
-| `/creator-agent` | Deteta o estado e propõe a próxima ação (primeira vez: onboarding) |
-| `/creator-agent proximo` | Diz o que publicar a seguir e propõe 3 ideias |
-| `/creator-agent pesquisa` | Pesquisa de referências do nicho |
-| `/creator-agent roteiro <pasta>` | Guião e roteiro de gravação |
-| `/creator-agent intake <pasta>` | Valida os vídeos gravados |
-| `/creator-agent editar <pasta>` | Plano de edição e edição |
-| `/creator-agent agendar <pasta>` | Adaptações por plataforma e calendário |
-| `/creator-agent analisar` | Métricas e aprendizagens |
-| `/creator-agent feedback` | Regista correções para o agente se adaptar ao teu estilo |
+| `/creator-agent:creator-agent` | Deteta o estado e propõe a próxima ação (primeira vez: onboarding) |
+| `... proximo` | Diz o que publicar a seguir e propõe 3 ideias |
+| `... pesquisa` | Pesquisa de referências do nicho |
+| `... estilo <criador ou vídeo>` | Ficha de estilo de edição com dados |
+| `... roteiro <pasta>` | Guião e roteiro de gravação |
+| `... intake <pasta>` | Valida os vídeos gravados |
+| `... editar <pasta>` | Plano de edição, edição e entrega da versão |
+| `... agendar <pasta>` | Adaptações por plataforma e calendário |
+| `... analisar` | Métricas e aprendizagens |
+| `... feedback` | Regista correções para o agente se adaptar ao teu estilo |
+| `... contas` | Roadmap e configuração do Instagram e do YouTube |
 
-## Estrutura do teu repositório (privado)
+Também funciona em linguagem natural: "edita o vídeo que gravei no meu estilo", "na v2 baixa os sons", "analisa o estilo do Iman Gadzhi".
 
-Ver `SKILL.md`. Cada vídeo fica em `videos/<short|long|podcast>/AAAA-MM-DD_slug/` com `brief`, `guiao`, `roteiro`, `plano-edicao`, `gravados/`, `editado/` e `adaptacoes/<plataforma>.md`.
+## O que está dentro
+
+| Pasta | O que tem |
+| --- | --- |
+| `skills/creator-agent/SKILL.md` | O agente: princípios, ponto de entrada, estrutura do repositório do criador |
+| `stages/` | Os 11 estágios (onboarding, pesquisa, estratégia e auditoria, guião, roteiro, intake, edição, publicação, análise, aprendizagem, configuração das contas) |
+| `scripts/edicao/` | O pipeline de edição (`pipeline.py`) e os scripts por dentro |
+| `scripts/` | `verificar.py` (dependências), `analisar_referencia.py`, estrutura e próximo post |
+| `biblioteca/` | Componentes de motion, fichas de estilo, sons, música, formatos de vídeo, prompts e a pesquisa de 2026-10-09 (`pesquisa/`: ganchos e CTAs, funil, roadmap das contas, medições do Iman Gadzhi) |
+| `references/` | Funil, ganchos, CTAs, plataformas, pesquisa, edição por objetivo e lições técnicas |
+| `templates/` | Perfil, estilo de edição, sistema de design, guiões, roteiro, plano de edição |
 
 ## Privacidade
 
-Esta repositório (a skill) é público e não contém dados de nenhum criador. Os teus vídeos, estratégia e métricas ficam no **teu** repositório privado. Nunca guardes chaves ou tokens em ficheiros.
+O agente não guarda dados de nenhum criador. Os teus vídeos, estratégia e métricas ficam no **teu** repositório (de preferência privado). Este repositório tem também o estúdio do Alex (`alexffb/`), público por escolha dele. Nunca guardes chaves ou tokens em ficheiros.
 
 ## Limites honestos
 
-- Pesquisa depende do que a web e as tuas ligações permitem. Instagram e TikTok bloqueiam leitura automática; nesse caso o agente pede links, capturas ou exportações.
+- A pesquisa depende do que a web e as tuas ligações permitem. Instagram e TikTok bloqueiam leitura automática; nesse caso o agente pede links, capturas ou ficheiros.
 - Não promete resultados. Aprende com padrões, não garante virais.
-- Edição automática de qualidade exige FFmpeg, Whisper e, para motion graphics, HyperFrames. O agente avisa o que falta.
-- Vídeos grandes pedem Git LFS (quota gratuita limitada) ou outro armazenamento.
+- A edição precisa de FFmpeg, Python, Node e FluidSynth (o `verificar.py` diz como instalar). O render de 50 s demora 5 a 7 minutos num portátil sem GPU.
+- O agente não ouve o áudio: mede-o (sonoridade, distância dos SFX à voz) e confia no teu feedback para o resto.
 
 ## English (short)
 
-Creator Agent is an open-source Claude Code skill for beginner creators. It interviews you (goals, niche, offer, gear), researches reference creators and outlier videos in your niche, builds a TOFU/MOFU/BOFU funnel and posting schedule, writes scripts and shoot guides (shots, lighting, audio), validates your footage, edits with captions and motion graphics, adapts each piece per platform and learns from your analytics. Install per INSTALL.md. Default language follows the creator; the bundled prompts are in European Portuguese and can be translated via pull request.
+Creator Agent is an open-source Claude Code plugin for beginner creators. It interviews you, researches reference creators and builds data-backed editing style cards, plans a TOFU/MOFU/BOFU funnel and schedule, writes scripts and shoot guides, and edits short-form videos with a 4-command pipeline (captions, motion graphics, de-reverbed voice, generated music, your own SFX). It learns each creator's editing style from feedback and never repeats a logged technical mistake. Install with `/plugin marketplace add Alexffb32/Conent.Creator_Agent` and `/plugin install creator-agent@alexffb`. Prompts are in European Portuguese and can be translated via pull request.
 
 ## Contribuir e licença
 
