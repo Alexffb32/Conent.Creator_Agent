@@ -27,6 +27,7 @@ export function DiscoverMap({ points }: { points: MapPoint[] }) {
         // A lista abaixo do mapa é a alternativa acessível; os marcadores são só visuais.
         el.removeAttribute('aria-label');
         el.setAttribute('aria-hidden', 'true');
+        el.tabIndex = -1;
       }
     })();
     return () => {
