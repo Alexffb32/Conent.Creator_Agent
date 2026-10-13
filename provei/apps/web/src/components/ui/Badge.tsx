@@ -9,5 +9,5 @@ const tones: Record<Tone, string> = {
   erro: 'bg-[#fbe9e7] text-erro',
 };
 export function Badge({ tone = 'verde', className, ...rest }: HTMLAttributes<HTMLSpanElement> & { tone?: Tone }) {
-  return <span className={cn('inline-flex items-center gap-1 rounded-pill px-2.5 py-1 text-xs font-semibold', tones[tone], className)} {...rest} />;
+  return <span className={cn('inline-flex min-h-[28px] items-center gap-1 rounded-pill px-3 py-1 text-[13px] font-semibold', tones[tone], className)} {...rest} />;
 }

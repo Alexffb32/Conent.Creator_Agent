@@ -15,8 +15,11 @@ export function Sheet({ open, onClose, title, children }: { open: boolean; onClo
     <dialog
       ref={ref}
       onClose={onClose}
+      onClick={(e) => {
+        if (e.target === ref.current) onClose();
+      }}
       aria-labelledby="sheet-title"
-      className="m-0 mt-auto w-full max-w-lg rounded-t-l bg-branco p-0 text-tinta backdrop:bg-tinta/50 sm:m-auto sm:rounded-l"
+      className="m-0 mt-auto w-full max-w-lg rounded-t-l bg-branco p-0 text-tinta shadow-lg backdrop:bg-tinta/50 sm:m-auto sm:rounded-l"
     >
       <div className="flex items-center justify-between border-b border-linha px-5 py-3">
         <h2 id="sheet-title" className="pv-title text-2xl text-verde-escuro">
