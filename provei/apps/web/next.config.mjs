@@ -31,6 +31,8 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Metadados sempre no <head> (o streaming do Next 15 põe-nos no <body> para agentes que não são robôs).
+  htmlLimitedBots: /.*/,
   poweredByHeader: false,
   transpilePackages: ['@provei/domain', '@provei/api-client', '@provei/config'],
   images: {

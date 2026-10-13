@@ -5,14 +5,15 @@ import { dictionaries, format, type DictKey, type Locale } from './dictionaries'
 
 export const LOCALE_COOKIE = 'pv_lang';
 
-/** Idioma: cookie `pv_lang` (definido por ?lang= no middleware) ou Accept-Language; por omissão pt. */
+/**
+ * Idioma: ?lang= (via cabeçalho do middleware) ou cookie `pv_lang`; por omissão pt.
+ * Não negociamos por Accept-Language: o mesmo URL serviria duas línguas e confundiria canonical/hreflang.
+ */
 export const getLocale = cache(async (): Promise<Locale> => {
-  const c = (await cookies()).get(LOCALE_COOKIE)?.value;
-  if (c === 'pt' || c === 'en') return c;
   const h = (await headers()).get('x-pv-lang');
   if (h === 'pt' || h === 'en') return h;
-  const al = (await headers()).get('accept-language') ?? '';
-  return /^en\b/i.test(al.trim()) ? 'en' : 'pt';
+  const c = (await cookies()).get(LOCALE_COOKIE)?.value;
+  return c === 'en' ? 'en' : 'pt';
 });
 
 export async function getT() {

@@ -54,7 +54,7 @@ export async function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <main id="conteudo" className="flex-1 pb-10">
+      <main id="conteudo" className="min-h-[100dvh] flex-1 pb-10">
         {children}
       </main>
       <footer className="border-t border-linha bg-branco pb-24 pt-6 text-sm text-tinta-2 lg:pb-6">

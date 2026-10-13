@@ -150,7 +150,7 @@ export function FeedCard({ item, loggedIn, priority }: { item: FeedItem; loggedI
         </div>
       </div>
       <div className="flex items-center justify-between gap-2 p-3">
-        <Link href={`/r/${item.restaurant.slug}`} className="min-w-0 flex-1 truncate font-semibold text-verde-escuro" aria-label={t('card.viewRestaurant', { name: item.restaurant.name })}>
+        <Link href={`/r/${item.restaurant.slug}`} className="min-w-0 flex-1 truncate font-semibold text-verde-escuro">
           {item.restaurant.name}
           {item.restaurant.city ? <span className="block truncate text-sm font-normal text-tinta-2">{item.restaurant.city}</span> : null}
         </Link>

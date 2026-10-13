@@ -13,7 +13,7 @@ import { getT } from '@/i18n/server';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t, locale } = await getT();
+  const { t } = await getT();
   return {
     title: { absolute: t('meta.homeTitle') },
     description: t('meta.homeDescription'),
