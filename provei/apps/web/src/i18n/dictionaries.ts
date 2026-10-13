@@ -186,6 +186,8 @@ export const pt = {
   'onb.finish': 'Começar a provar',
   'meta.homeTitle': 'Provei: pratos dos restaurantes da Covilhã e do Fundão',
   'meta.homeDescription': 'Vê o que está a sair da cozinha nos restaurantes da Covilhã e do Fundão. Segue, guarda pratos, chama o empregado na mesa e ganha pontos.',
+  'onb.readPrivacy': 'Li a',
+  'rating.label': '{n} de 5 estrelas',
 } as const;
 
 export type DictKey = keyof typeof pt;
@@ -378,6 +380,8 @@ export const en: Dict = {
   'onb.finish': 'Start tasting',
   'meta.homeTitle': 'Provei: dishes from restaurants in Covilhã and Fundão',
   'meta.homeDescription': 'See what is coming out of the kitchen at restaurants in Covilhã and Fundão. Follow, save dishes, call the waiter from your table and earn points.',
+  'onb.readPrivacy': 'I have read the',
+  'rating.label': '{n} out of 5 stars',
 };
 
 export const dictionaries = { pt: pt as Dict, en } as const;

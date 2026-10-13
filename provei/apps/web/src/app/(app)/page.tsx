@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { publicEnv } from '@/lib/env';
+import { localeAlternates } from '@/lib/seo';
 import { LinkButton, LinkTabs, Skeleton } from '@/components/ui';
 import { FeedList } from '@/components/feed/FeedList';
 import { LocationPrompt } from '@/components/feed/LocationPrompt';
@@ -12,11 +13,11 @@ import { getT } from '@/i18n/server';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
+  const { t, locale } = await getT();
   return {
     title: { absolute: t('meta.homeTitle') },
     description: t('meta.homeDescription'),
-    alternates: { canonical: '/', languages: { 'pt-PT': '/', en: '/?lang=en' } },
+    alternates: localeAlternates('/', locale),
   };
 }
 

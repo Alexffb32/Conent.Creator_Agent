@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
   const setLang = lang === 'pt' || lang === 'en' ? lang : null;
   if (setLang) request.headers.set('x-pv-lang', setLang);
   const withLang = (res: NextResponse) => {
-    if (setLang) res.cookies.set('pv_lang', setLang, { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
+    if (setLang) res.cookies.set('pv_lang', setLang, { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax', secure: request.nextUrl.protocol === 'https:' });
     return res;
   };
 

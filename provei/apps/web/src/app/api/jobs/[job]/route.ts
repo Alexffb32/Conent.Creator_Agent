@@ -35,6 +35,7 @@ async function aggregate(svc: ReturnType<typeof createServiceSupabase>) {
   const leadCutoff = new Date();
   leadCutoff.setMonth(leadCutoff.getMonth() - 12);
   await svc.from('leads').delete().lt('created_at', leadCutoff.toISOString());
+  await svc.from('audit_logs').delete().lt('ts', cutoff.toISOString());
   const noticeCutoff = new Date();
   noticeCutoff.setMonth(noticeCutoff.getMonth() - 24);
   await svc.from('content_notices').delete().lt('created_at', noticeCutoff.toISOString());

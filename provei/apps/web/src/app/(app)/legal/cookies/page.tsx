@@ -5,6 +5,7 @@ export const metadata: Metadata = { title: 'Cookies', alternates: { canonical: '
 
 const ROWS: [string, string, string, string][] = [
   ['sb-…-auth-token', 'Cookie (Supabase)', 'Manter a sessão depois de entrares', 'Até saíres da conta ou o token expirar'],
+  ['sb-…-auth-token-code-verifier', 'Cookie (Supabase)', 'Concluir a entrada pelo link enviado por e-mail', 'Até entrares (minutos)'],
   ['pv_lang', 'Cookie', 'Lembrar o idioma que escolheste (PT/EN)', '12 meses'],
   ['pv_loc', 'Cookie', 'Guardar a localização aproximada para o separador "Perto", só se a autorizares', '30 minutos'],
   ['pv_q_sound / pv_q_vib', 'Armazenamento local', 'Preferências de som e vibração no ecrã de chamadas da equipa do restaurante', 'Até as apagares'],

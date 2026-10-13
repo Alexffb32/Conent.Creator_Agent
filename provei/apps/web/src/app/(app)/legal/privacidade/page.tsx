@@ -42,7 +42,11 @@ export default function PrivacidadePage() {
           <tbody>{DATA.map((r) => <tr key={r[0]}>{r.map((c, i) => <td key={i}>{c}</td>)}</tr>)}</tbody>
         </table>
       </div>
-      <p>Não vendemos dados pessoais. Os restaurantes veem estatísticas agregadas. A equipa de um restaurante vê o teu nome e nome de utilizador se tiveres cartão de fidelização nesse restaurante ou quando mostras o teu QR pessoal. As avaliações são públicas e mostram o teu nome.</p>
+      <p>Não vendemos dados pessoais. Os restaurantes veem estatísticas agregadas. O teu nome de apresentação e o nome de utilizador são públicos (perfil público), tal como as avaliações que publicas. A equipa de um restaurante vê esses dados quando tens cartão de fidelização nesse restaurante ou mostras o teu QR pessoal.</p>
+      <h2>Decisões automatizadas e perfis</h2>
+      <p>A ordem dos pratos no feed é calculada automaticamente a partir da distância, da novidade, dos restaurantes que segues e da tua atividade (por exemplo, pratos que guardaste ou viste). Isto não produz efeitos jurídicos nem te afeta de forma significativa (artigo 22.º do RGPD). Não tomamos decisões automáticas sobre a tua conta.</p>
+      <h2>És obrigado a dar estes dados?</h2>
+      <p>O e-mail é necessário para criar conta e entrar (requisito do contrato). O resto é opcional: sem localização ou notificações a app continua a funcionar.</p>
       <h2>Anúncios</h2>
       <p>Os anúncios estão desligados nesta fase. Quando existirem, aparecem sempre marcados &quot;Patrocinado&quot;. Sem o teu consentimento usamos só a cidade e a hora do dia; nunca partilhamos os teus dados com anunciantes.</p>
       <h2>Quem nos ajuda a tratar os dados</h2>

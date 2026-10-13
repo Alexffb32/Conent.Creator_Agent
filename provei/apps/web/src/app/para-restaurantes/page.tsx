@@ -22,7 +22,7 @@ const FAQ: { q: string; a: string }[] = [
   { q: 'Os clientes têm de instalar uma app?', a: 'Não. Leem o QR da mesa (ou encostam o telemóvel ao autocolante NFC) e o Provei abre no navegador. Quem quiser pode adicioná-lo ao ecrã inicial.' },
   { q: 'Cobram comissão por cliente ou por pedido?', a: 'Não. O Provei não cobra comissões. No plano pago paga uma instalação e uma mensalidade fixas; o plano gratuito não tem custos.' },
   { q: 'Quanto tempo leva a publicar um prato?', a: 'Escolhe a foto ou o vídeo, escreve o nome do prato (e o preço, se quiser) e carrega em Publicar. Leva menos de um minuto.' },
-  { q: 'E se a equipa não vir a chamada da mesa?', a: 'As chamadas aparecem no ecrã da equipa com som e vibração, por ordem de chegada. Se algo falhar, o serviço continua como sempre: o cliente chama com um aceno.' },
+  { q: 'E se a equipa não vir a chamada da mesa?', a: 'As chamadas aparecem no ecrã da equipa por ordem de chegada, com som e vibração se os ligar. Se algo falhar, o serviço continua como sempre: o cliente chama com um aceno.' },
   { q: 'Como funciona o cartão de fidelização?', a: 'Cada visita confirmada na mesa conta um carimbo. Define quantos carimbos dão a recompensa (por exemplo, uma sobremesa). A confirmação exige estar na mesa e tem intervalos mínimos, para evitar abusos.' },
   { q: 'Onde ficam os dados?', a: 'A base de dados fica na União Europeia (Frankfurt). Não vendemos dados pessoais. Os clientes escolhem se partilham a localização.' },
   { q: 'Posso sair quando quiser?', a: 'Sim. O plano pago é mensal. Se cancelar, o restaurante continua no Provei com o plano gratuito.' },
@@ -100,7 +100,7 @@ export default function ParaRestaurantesPage() {
             </ol>
             <ul className="grid gap-3 sm:grid-cols-3">
               {[
-                { icon: BellRing, t: 'Ecrã de chamadas para a equipa, com som e vibração' },
+                { icon: BellRing, t: 'Ecrã de chamadas para a equipa, com som e vibração opcionais' },
                 { icon: BarChart3, t: 'Estatísticas: visualizações, seguidores e visitas' },
                 { icon: Store, t: 'Página do restaurante com menu, horário e avaliações' },
               ].map((f) => (
@@ -125,7 +125,7 @@ export default function ParaRestaurantesPage() {
                   <li>Página do restaurante e menu</li>
                   <li>Até 8 publicações por mês</li>
                   <li>Até 3 mesas com QR e chamada da equipa</li>
-                  <li>Cartão de fidelização básico</li>
+                  <li>Cartão de fidelização por carimbos</li>
                 </ul>
               </div>
               <div className="flex flex-col gap-4 rounded-xl border-2 border-verde bg-branco p-6 shadow-md">
@@ -135,8 +135,7 @@ export default function ParaRestaurantesPage() {
                 <ul className="flex flex-col gap-2 text-tinta">
                   <li>Publicações e mesas sem limite</li>
                   <li>Ofertas na página e na mesa</li>
-                  <li>Retenção dos vídeos: até que segundo os clientes veem</li>
-                  <li>Cartão de fidelização completo</li>
+                  <li>Gráfico de retenção: em que segundo as pessoas deixam de ver cada vídeo</li>
                 </ul>
                 <LinkButton href="#pedido" className="mt-auto">Pedir visita de demonstração</LinkButton>
               </div>

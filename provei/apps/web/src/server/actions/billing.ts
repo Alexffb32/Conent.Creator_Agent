@@ -81,6 +81,12 @@ export async function withdrawAdFree(): Promise<ActionResult<{ withinWithdrawal:
         : `Confirmamos o cancelamento da assinatura Provei sem anúncios. Mantém-se ativa até ${endsAt ? new Date(endsAt).toLocaleDateString('pt-PT') : 'ao fim do período pago'} e não será renovada.`;
       await getMailer().send({ to: me.email, subject: 'Provei · confirmação do fim da assinatura', text, html: `<p>${text}</p>` }).catch((e) => console.error('[withdraw mail]', e));
     }
+    // O reembolso é feito manualmente pelo responsável (nunca automático nesta fase): fica uma tarefa por e-mail.
+    if (withinWithdrawal) {
+      await getMailer()
+        .send({ to: process.env.CONTACT_EMAIL ?? 'ola@provei.pt', subject: 'Provei · reembolsar livre resolução', text: `Reembolsar a subscrição ${sub.stripe_subscription_id ?? sub.id} (utilizador ${me.id}) no prazo de 14 dias.`, html: '<p>Há uma livre resolução por reembolsar (ver auditoria).</p>' })
+        .catch((e) => console.error('[withdraw task]', e));
+    }
     return { withinWithdrawal, endsAt };
   });
 }

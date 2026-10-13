@@ -5,13 +5,14 @@ import { Search, Store } from 'lucide-react';
 import { Badge, Button, Card, EmptyState } from '@/components/ui';
 import { MapFacade } from '@/components/restaurant/MapFacade';
 import { getT } from '@/i18n/server';
+import { localeAlternates } from '@/lib/seo';
 import { createAnonSupabase } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/env';
 import { mediaUrl } from '@/lib/media';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return { title: t('discover.title'), description: t('discover.meta'), alternates: { canonical: '/descobrir', languages: { 'pt-PT': '/descobrir', en: '/descobrir?lang=en' } } };
+  const { t, locale } = await getT();
+  return { title: t('discover.title'), description: t('discover.meta'), alternates: localeAlternates('/descobrir', locale) };
 }
 export const dynamic = 'force-dynamic';
 

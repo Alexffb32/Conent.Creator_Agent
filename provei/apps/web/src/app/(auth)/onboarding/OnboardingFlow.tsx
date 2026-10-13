@@ -80,7 +80,7 @@ export function OnboardingFlow({ next, initialHandle }: { next: string; initialH
           <Checkbox
             checked={form.privacy}
             onChange={(e) => set('privacy', e.target.checked)}
-            label={<>{t('onb.acceptPrivacy')} <Link href="/legal/privacidade" target="_blank" className="underline">{t('footer.privacy')}</Link> {t('onb.required')}</>}
+            label={<>{t('onb.readPrivacy')} <Link href="/legal/privacidade" target="_blank" className="underline">{t('footer.privacy')}</Link> {t('onb.required')}</>}
           />
           <Checkbox checked={form.age13} onChange={(e) => set('age13', e.target.checked)} label={<>{t('onb.age13')} {t('onb.required')}</>} />
           <p className="pt-2 text-sm font-semibold text-tinta-2">{t('onb.optional')}</p>

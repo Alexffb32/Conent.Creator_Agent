@@ -13,6 +13,7 @@ import { FollowButton } from '@/components/restaurant/FollowButton';
 import { ImHereButton } from '@/components/scan/ImHereButton';
 import { MapFacade } from '@/components/restaurant/MapFacade';
 import { getT } from '@/i18n/server';
+import { localeAlternates } from '@/lib/seo';
 import { ReviewForm } from '@/components/restaurant/ReviewForm';
 import { ReportButton } from '@/components/restaurant/ReportButton';
 
@@ -22,13 +23,16 @@ const DAYS = ['seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom'] as const;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const [r, { t }] = await Promise.all([getRestaurantBySlug(slug), getT()]);
+  const [r, { t, locale }] = await Promise.all([getRestaurantBySlug(slug), getT()]);
   if (!r) return { title: t('r.notFound'), robots: { index: false } };
-  const image = mediaUrl(r.cover_path);
+  const cover = mediaUrl(r.cover_path);
+  // As redes sociais não mostram SVG: nesse caso fica a imagem OG por omissão.
+  const image = cover && !cover.endsWith('.svg') ? cover : null;
   return {
     title: r.name,
     description: r.description ?? t('r.meta', { name: r.name, city: r.city ?? 'Portugal' }),
-    alternates: { canonical: `/r/${r.slug}`, languages: { 'pt-PT': `/r/${r.slug}`, en: `/r/${r.slug}?lang=en` } },
+    alternates: localeAlternates(`/r/${r.slug}`, locale),
+    robots: r.is_demo ? { index: false, follow: true } : undefined,
     openGraph: { title: r.name, description: r.description ?? undefined, images: image ? [image] : undefined, url: `${publicEnv.siteUrl}/r/${r.slug}` },
   };
 }
@@ -49,11 +53,11 @@ export default async function RestaurantPage({ params }: { params: Promise<{ slu
     name: r.name,
     description: r.description ?? undefined,
     servesCuisine: r.cuisine,
-    telephone: r.phone ?? undefined,
+    telephone: r.is_demo ? undefined : r.phone ?? undefined,
     url: `${publicEnv.siteUrl}/r/${r.slug}`,
     address: r.address ? { '@type': 'PostalAddress', streetAddress: r.address, addressLocality: r.city ?? undefined, addressCountry: 'PT' } : undefined,
     geo: r.lat != null && r.lng != null ? { '@type': 'GeoCoordinates', latitude: r.lat, longitude: r.lng } : undefined,
-    aggregateRating: data.reviews.length ? { '@type': 'AggregateRating', ratingValue: data.average, reviewCount: data.reviews.length } : undefined,
+    aggregateRating: !r.is_demo && data.reviews.length ? { '@type': 'AggregateRating', ratingValue: data.average, reviewCount: data.reviews.length } : undefined,
   };
 
   return (
