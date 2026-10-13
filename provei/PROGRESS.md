@@ -1,22 +1,21 @@
 # PROGRESS
 
 ## Feito
-- MVP técnico (fases 1–8 do prompt de construção): ver docs/STATUS.md.
-- Supabase `provei` (Frankfurt) com migrações, RLS endurecida e seed fictício aplicado (12 restaurantes, 40 pratos, 20 contas).
-- App verificada localmente contra a base real: screenshots 360/390/768/1440, axe WCAG 2.2 AA e alvos de toque nas vistas públicas.
-- Intake AP: ENI (Alexandre Bento), contacto ola@provei.pt provisório, PT + EN, landing /para-restaurantes.
-- Pesquisa legal inicial (LEGAL.md).
+- MVP técnico (fases 1–8): ver docs/STATUS.md.
+- Supabase `provei` (Frankfurt): 10 migrações, RLS endurecida, seed fictício.
+- Design system com as seis decisões; tokens de profundidade e contraste; corrigida colisão de tokens de raio.
+- PT/EN nas vistas públicas do cliente final.
+- Landing /para-restaurantes com pedido de visita.
+- Pacote legal (aviso legal, privacidade, cookies, termos com DSA, denúncias, livre resolução) com [VERIFY]/[MISSING].
+- SEO técnico (sitemap, robots, OG, JSON-LD, hreflang).
+- Auditoria final: axe, toque, overflow, Lighthouse, cabeçalhos, pnpm audit, revisão independente com correções.
 
 ## A seguir
-- Design system: seis decisões em todos os componentes.
-- i18n PT/EN nas superfícies públicas do cliente final.
-- Landing /para-restaurantes com formulário de pedido de visita.
-- Pacote legal (aviso legal, privacidade, cookies, termos com DSA, denúncias, livre resolução).
-- SEO técnico (sitemap, robots, OG, JSON-LD, hreflang).
-- Auditoria final (Lighthouse, axe, cabeçalhos, pnpm audit, revisor independente).
+- Deploy na Vercel e repetir Lighthouse em produção (LCP).
+- E2E Playwright e integração anti-abuso com a `service_role`.
 
 ## Bloqueado (dono: Alex)
-- Chave `service_role` do Supabase → e2e e ações de servidor em produção.
+- Chave `service_role` do Supabase → formulários públicos, admin, e2e e ações de servidor em produção.
 - Projeto Vercel (API devolveu 403) → deploy.
-- NIF e morada do ENI → aviso legal.
+- NIF e morada do ENI → aviso legal, privacidade e termos.
 - Revisão jurídica (LEGAL.md "Pontos por confirmar").

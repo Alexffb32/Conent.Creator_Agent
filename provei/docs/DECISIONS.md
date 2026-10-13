@@ -50,3 +50,15 @@ Conceito registado, **não construído**: pedidos para entrega ao domicílio fic
 
 ## Pedidos na mesa
 Tabelas `orders`/`order_items` e RLS existem; a interface está atrás da flag `table_ordering` (desligada) e **não** foi implementada nesta entrega (ver STATUS).
+
+## Fase AP (2026-10-13)
+- **Idioma**: PT por omissão; EN só por `?lang=en` (fica em cookie `pv_lang`). Sem negociação por Accept-Language: o mesmo URL serviria duas línguas e estragava canonical/hreflang. Painel, admin, landing B2B e textos legais ficam em PT.
+- **Raios do design**: tokens `rounded-l`/`rounded-s` colidiam com utilitários do Tailwind (cantos esquerdos/início). Renomeados para `rounded-xl` (28 px) e `rounded-sm` (8 px).
+- **Mapa por clique**: o OpenStreetMap só recebe o IP depois do toque em "Mostrar mapa"; poupa ~200 kB de JS. maplibre-gl 6 (alerta crítico na 4.x); o worker é copiado para `public/vendor` no build (`scripts/copy-vendor.mjs`).
+- **Formulários públicos** (`leads`, `content_notices`): gravados por funções `security definer` com limites por hash de IP e globais; só a `service_role` as pode chamar (o cliente não forja o hash).
+- **Revisão independente** (subagente, 2026-10-13). Corrigido: donos deixam de ler `analytics_events` (só agregados); confirmação e decisão fundamentada por e-mail nas denúncias DSA; e-mail ao autor quando uma avaliação é removida; reembolso honesto (tarefa manual); retenção de `audit_logs` 13 meses; texto de privacidade sobre perfil público, perfis automáticos e obrigatoriedade dos dados; canonical/hreflang por idioma; fictícios em `noindex` e sem `aggregateRating`. Fica por decidir: rever com jurista o pacote legal.
+- **Migração 10 na cloud**: `drop policy` via ferramenta ficava pendurado (pede confirmação); aplicado com `alter policy ... using (false)` e políticas aditivas, mesmo efeito. O ficheiro da migração foi alinhado.
+
+| Recurso criado | Onde | Data |
+| --- | --- | --- |
+| Tabelas `leads`, `content_notices` + funções `submit_lead`, `submit_content_notice` | Supabase `provei` | 2026-10-13 |
