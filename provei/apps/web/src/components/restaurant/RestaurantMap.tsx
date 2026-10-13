@@ -12,6 +12,7 @@ export function RestaurantMap({ lat, lng, name }: { lat: number; lng: number; na
     let cancelled = false;
     (async () => {
       const ml = await import('maplibre-gl');
+      ml.setWorkerUrl('/vendor/maplibre-gl-worker.mjs');
       if (cancelled || !ref.current) return;
       map = new ml.Map({
         container: ref.current,

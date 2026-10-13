@@ -13,6 +13,7 @@ export function DiscoverMap({ points }: { points: MapPoint[] }) {
     let cancelled = false;
     (async () => {
       const ml = await import('maplibre-gl');
+      ml.setWorkerUrl('/vendor/maplibre-gl-worker.mjs');
       if (cancelled || !ref.current) return;
       const center: [number, number] = points[0] ? [points[0].lng, points[0].lat] : [-7.5, 40.21];
       map = new ml.Map({

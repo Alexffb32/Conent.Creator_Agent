@@ -307,24 +307,33 @@ describe('administração, auditoria e flags', () => {
     for (let i = 0; i < 4; i++) hits.push((await as<{ rate_limit_hit: boolean }>(db, svc, "select public.rate_limit_hit('k2', 3600, 3)"))[0]!.rate_limit_hit);
     expect(hits).toEqual([true, true, true, false]);
   });
-  it('leads: anónimo submete via função, mas não lê nem insere diretamente; limite por IP', async () => {
+  it('leads: só o servidor submete (função), admin lê, clientes não; limite por IP', async () => {
     const anon = { role: 'anon' as const };
-    const r = await as<{ submit_lead: string }>(db, anon, "select public.submit_lead('Ana Lima', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip1')");
+    await rejects(as(db, anon, "select public.submit_lead('Ana Lima', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip1')"));
+    await rejects(as(db, auth(U.alice), "select public.submit_lead('Ana Lima', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip1')"));
+    const r = await as<{ submit_lead: string }>(db, svc, "select public.submit_lead('Ana Lima', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip1')");
     expect(r[0]!.submit_lead).toBeTruthy();
     expect(await as(db, anon, 'select 1 from public.leads')).toHaveLength(0);
-    expect(await as(db, auth(U.admin), 'select 1 from public.leads')).toHaveLength(0);
+    expect(await as(db, auth(U.alice), 'select 1 from public.leads')).toHaveLength(0);
+    expect((await as(db, auth(U.admin), 'select 1 from public.leads')).length).toBe(1);
     await rejects(as(db, anon, "insert into public.leads (name, restaurant, contact, city) values ('aa','bb','ccccc','dd')"));
-    await rejects(as(db, anon, "select public.submit_lead('A', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip1')"));
-    for (let i = 0; i < 5; i++) await as(db, anon, "select public.submit_lead('Ana Lima', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip2')");
-    expect(await rejects(as(db, anon, "select public.submit_lead('Ana Lima', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip2')"))).toBeTruthy();
+    await rejects(as(db, svc, "select public.submit_lead('A', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip1')"));
+    for (let i = 0; i < 5; i++) await as(db, svc, "select public.submit_lead('Ana Lima', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip2')");
+    await rejects(as(db, svc, "select public.submit_lead('Ana Lima', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip2')"));
   });
-  it('notificações DSA: anónimo submete; só o admin lê; boa-fé obrigatória', async () => {
+  it('notificações DSA: só o servidor submete; só o admin lê; boa-fé obrigatória', async () => {
     const anon = { role: 'anon' as const };
-    await as(db, anon, "select public.submit_content_notice(null, 'q@x.pt', 'https://provei.pt/r/x', 'illegal', 'Este conteúdo é ilegal porque blá blá.', true, 'ip9')");
-    await rejects(as(db, anon, "select public.submit_content_notice(null, 'q@x.pt', 'https://provei.pt/r/x', 'illegal', 'Este conteúdo é ilegal porque blá blá.', false, 'ip9')"));
+    const q = "select public.submit_content_notice(null, 'q@x.pt', 'https://provei.pt/r/x', 'illegal', 'Este conteúdo é ilegal porque blá blá.', BOOL, 'ip9')";
+    await rejects(as(db, anon, q.replace('BOOL', 'true')));
+    await as(db, svc, q.replace('BOOL', 'true'));
+    await rejects(as(db, svc, q.replace('BOOL', 'false')));
     expect(await as(db, anon, 'select 1 from public.content_notices')).toHaveLength(0);
     expect(await as(db, auth(U.alice), 'select 1 from public.content_notices')).toHaveLength(0);
     expect((await as(db, auth(U.admin), 'select 1 from public.content_notices')).length).toBe(1);
+  });
+  it('donos não leem eventos de analytics com user_id (só agregados)', async () => {
+    await db.query("insert into public.analytics_events (restaurant_id, user_id, type) values ($1, $2, 'view')", [R.A, U.alice]);
+    expect(await as(db, auth(U.ownerA), 'select 1 from public.analytics_events')).toHaveLength(0);
   });
   it('toda a tabela pública tem RLS ativa', async () => {
     const r = await db.query<{ tablename: string }>(
