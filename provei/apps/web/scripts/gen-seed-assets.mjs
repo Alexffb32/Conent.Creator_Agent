@@ -20,5 +20,11 @@ const svg = (i, [a, b]) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0
   <text x="400" y="900" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" fill="#FFFFFF" fill-opacity="0.9">Provei · dados fictícios</text>
 </svg>`;
 palettes.forEach((p, i) => writeFileSync(join(out, `dish-${i + 1}.svg`), svg(i, p)));
-palettes.forEach((p, i) => writeFileSync(join(out, `cover-${i + 1}.svg`), svg(i, p).replace('viewBox="0 0 800 1000"', 'viewBox="0 0 1600 640" preserveAspectRatio="xMidYMid slice"')));
+const cover = (i, [a, b]) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" role="img" aria-label="Capa de exemplo ${i + 1}">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>
+  <rect width="1600" height="640" fill="url(#g)"/>
+  ${[0, 1, 2, 3, 4].map((k) => `<circle cx="${180 + k * 320}" cy="${k % 2 ? 420 : 260}" r="${110 + (k % 3) * 30}" fill="#FFFFFF" fill-opacity="${0.12 + (k % 3) * 0.06}"/>`).join('')}
+  <text x="1560" y="610" text-anchor="end" font-family="Arial, sans-serif" font-size="26" fill="#FFFFFF" fill-opacity="0.85">Capa de exemplo · Provei</text>
+</svg>`;
+palettes.forEach((p, i) => writeFileSync(join(out, `cover-${i + 1}.svg`), cover(i, p)));
 console.log('Marcadores gerados em', out);

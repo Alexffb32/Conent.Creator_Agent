@@ -23,12 +23,14 @@ export function RestaurantMap({ lat, lng, name }: { lat: number; lng: number; na
           layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
         },
       });
-      new ml.Marker({ color: '#2D7F1A' }).setLngLat([lng, lat]).addTo(map);
+      const m = new ml.Marker({ color: '#2D7F1A' }).setLngLat([lng, lat]).addTo(map);
+      m.getElement().setAttribute('role', 'img');
+      m.getElement().setAttribute('aria-label', `Localização de ${name}`);
     })();
     return () => {
       cancelled = true;
       map?.remove();
     };
-  }, [lat, lng]);
-  return <div ref={ref} role="img" aria-label={`Mapa com a localização de ${name}`} className="h-56 w-full overflow-hidden rounded-m border border-linha" />;
+  }, [lat, lng, name]);
+  return <div ref={ref} role="region" aria-label={`Mapa com a localização de ${name}`} className="h-56 w-full overflow-hidden rounded-m border border-linha" />;
 }

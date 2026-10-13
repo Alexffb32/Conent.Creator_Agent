@@ -22,7 +22,11 @@ export function DiscoverMap({ points }: { points: MapPoint[] }) {
       });
       for (const p of points) {
         const popup = new ml.Popup({ offset: 18 }).setHTML(`<a href="/r/${encodeURIComponent(p.slug)}" style="font-weight:600;color:#0A3D1C">${p.name.replace(/[<>&"]/g, '')}</a>`);
-        new ml.Marker({ color: '#2D7F1A' }).setLngLat([p.lng, p.lat]).setPopup(popup).addTo(map);
+        const m = new ml.Marker({ color: '#2D7F1A' }).setLngLat([p.lng, p.lat]).setPopup(popup).addTo(map);
+        const el = m.getElement();
+        // A lista abaixo do mapa é a alternativa acessível; os marcadores são só visuais.
+        el.removeAttribute('aria-label');
+        el.setAttribute('aria-hidden', 'true');
       }
     })();
     return () => {
@@ -30,5 +34,5 @@ export function DiscoverMap({ points }: { points: MapPoint[] }) {
       map?.remove();
     };
   }, [points]);
-  return <div ref={ref} role="img" aria-label="Mapa de restaurantes" className="h-72 w-full overflow-hidden rounded-m border border-linha" />;
+  return <div ref={ref} role="region" aria-label="Mapa de restaurantes" className="h-72 w-full overflow-hidden rounded-m border border-linha" />;
 }

@@ -57,8 +57,8 @@ export async function AppShell({ children }: { children: ReactNode }) {
         <div className="pv-container flex flex-wrap items-center justify-between gap-3">
           <span>Provei · Covilhã e Fundão · Em desenvolvimento</span>
           <span className="flex gap-4">
-            <Link href="/legal/termos">Termos</Link>
-            <Link href="/legal/privacidade">Privacidade</Link>
+            <Link href="/legal/termos" className="inline-flex min-h-touch items-center hover:underline">Termos</Link>
+            <Link href="/legal/privacidade" className="inline-flex min-h-touch items-center hover:underline">Privacidade</Link>
           </span>
         </div>
       </footer>

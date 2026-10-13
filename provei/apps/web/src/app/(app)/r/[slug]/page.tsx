@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Clock, Globe, MapPin, Phone, ShieldCheck, Store, Gift } from 'lucide-react';
-import { Badge, Card, CardTitle, EmptyState, RatingStars, Avatar } from '@/components/ui';
+import { Avatar, Badge, Card, CardTitle, EmptyState, LinkButton, RatingStars } from '@/components/ui';
 import { getRestaurantPage, getRestaurantBySlug } from '@/server/restaurants';
 import { getSessionProfile, loadMember } from '@/server/auth';
 import { getFlags } from '@/lib/flags';
@@ -61,7 +61,7 @@ export default async function RestaurantPage({ params }: { params: Promise<{ slu
         {cover ? <Image src={cover} alt="" fill priority sizes="100vw" className="object-cover" /> : null}
       </div>
       <div className="pv-container -mt-10 flex flex-col gap-6">
-        <header className="flex flex-col gap-4 rounded-l border border-linha bg-branco p-5">
+        <header className="relative z-10 flex flex-col gap-4 rounded-l border border-linha bg-branco p-5">
           <div className="flex items-start gap-4">
             <div className="-mt-12 flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-m border-4 border-branco bg-verde-tinta">
               {logo ? <Image src={logo} alt={`Logótipo de ${r.name}`} width={80} height={80} className="h-full w-full object-cover" /> : <Store size={32} className="text-verde" aria-hidden />}
@@ -159,8 +159,8 @@ export default async function RestaurantPage({ params }: { params: Promise<{ slu
             </ul>
             <ul className="flex flex-col gap-2 text-sm">
               {r.address ? <li className="flex gap-2"><MapPin size={16} className="mt-0.5 shrink-0" aria-hidden />{r.address}{r.city ? `, ${r.city}` : ''}</li> : null}
-              {r.phone ? <li className="flex gap-2"><Phone size={16} className="mt-0.5" aria-hidden /><a href={`tel:${r.phone}`} className="underline">{r.phone}</a></li> : null}
-              {r.website ? <li className="flex gap-2"><Globe size={16} className="mt-0.5" aria-hidden /><a href={r.website} rel="noopener noreferrer nofollow" target="_blank" className="underline">{r.website.replace(/^https?:\/\//, '')}</a></li> : null}
+              {r.phone ? <li className="flex items-center gap-2"><Phone size={16} aria-hidden /><a href={`tel:${r.phone}`} className="inline-flex min-h-touch items-center underline">{r.phone}</a></li> : null}
+              {r.website ? <li className="flex gap-2"><Globe size={16} className="mt-0.5" aria-hidden /><a href={r.website} rel="noopener noreferrer nofollow" target="_blank" className="inline-flex min-h-touch items-center underline">{r.website.replace(/^https?:\/\//, '')}</a></li> : null}
               <li className="flex gap-2 text-tinta-2"><Clock size={16} className="mt-0.5" aria-hidden />Horário em Europe/Lisbon</li>
             </ul>
           </Card>
@@ -191,7 +191,7 @@ export default async function RestaurantPage({ params }: { params: Promise<{ slu
                 </li>
               ))}
             </ul>
-            {me ? <ReviewForm restaurantId={r.id} /> : <p className="text-sm text-tinta-2"><Link href={`/entrar?next=/r/${r.slug}`} className="font-semibold text-verde underline">Entra</Link> para avaliar.</p>}
+            {me ? <ReviewForm restaurantId={r.id} /> : <div className="flex flex-wrap items-center gap-3"><LinkButton href={`/entrar?next=/r/${r.slug}`} variant="secondary">Entrar para avaliar</LinkButton></div>}
           </section>
         ) : null}
       </div>

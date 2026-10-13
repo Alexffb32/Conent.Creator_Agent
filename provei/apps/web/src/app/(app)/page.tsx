@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import { Suspense } from 'react';
 import { MSG } from '@provei/domain';
-import { LinkTabs, Skeleton } from '@/components/ui';
+import { LinkButton, LinkTabs, Skeleton } from '@/components/ui';
 import { FeedList } from '@/components/feed/FeedList';
 import { LocationPrompt } from '@/components/feed/LocationPrompt';
 import { getFeed, type FeedTab } from '@/server/feed';
@@ -38,9 +37,10 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         </Suspense>
       )}
       {!me ? (
-        <p className="pb-4 text-center text-sm text-tinta-2">
-          <Link href="/entrar" className="font-semibold text-verde underline">Entra</Link> para seguires restaurantes, guardares pratos e ganhares pontos.
-        </p>
+        <div className="flex flex-col items-center gap-2 pb-4 text-center">
+          <p className="text-sm text-tinta-2">Segue restaurantes, guarda pratos e ganha pontos.</p>
+          <LinkButton href="/entrar" variant="secondary">Criar conta ou entrar</LinkButton>
+        </div>
       ) : null}
     </div>
   );
