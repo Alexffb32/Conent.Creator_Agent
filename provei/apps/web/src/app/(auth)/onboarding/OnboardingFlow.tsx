@@ -4,12 +4,13 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button, Card, CardTitle, Checkbox, Field, Input, Select, Stepper } from '@/components/ui';
 import { completeOnboarding } from '@/server/actions/account';
-
-const STEPS = ['Nome', 'Cidade', 'Privacidade'];
+import { useT } from '@/i18n/client';
 
 export function OnboardingFlow({ next, initialHandle }: { next: string; initialHandle: string }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
+  const { t } = useT();
+  const STEPS = [t('onb.stepName'), t('onb.stepCity'), t('onb.stepPrivacy')];
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<{ message: string; field?: string } | null>(null);
   const [form, setForm] = useState({
@@ -18,6 +19,7 @@ export function OnboardingFlow({ next, initialHandle }: { next: string; initialH
     city: 'Covilhã',
     terms: false,
     privacy: false,
+    age13: false,
     location: false,
     push: false,
     adsPersonalization: false,
@@ -45,45 +47,46 @@ export function OnboardingFlow({ next, initialHandle }: { next: string; initialH
       <Stepper steps={STEPS} current={step} />
       {step === 0 && (
         <section className="flex flex-col gap-4">
-          <CardTitle>Como te chamamos?</CardTitle>
-          <Field label="Nome" htmlFor="nome" error={error?.field === 'displayName' ? error.message : null}>
+          <CardTitle as="h1">{t('onb.nameTitle')}</CardTitle>
+          <Field label={t('onb.name')} htmlFor="nome" error={error?.field === 'displayName' ? error.message : null}>
             <Input id="nome" autoComplete="name" value={form.displayName} onChange={(e) => set('displayName', e.target.value)} placeholder="Ana Silva" />
           </Field>
-          <Field label="Nome de utilizador" htmlFor="handle" hint="3 a 24 letras minúsculas, números ou _" error={error?.field === 'handle' ? error.message : null}>
+          <Field label={t('onb.handle')} htmlFor="handle" hint={t('onb.handleHint')} error={error?.field === 'handle' ? error.message : null}>
             <Input id="handle" autoCapitalize="none" autoCorrect="off" value={form.handle} onChange={(e) => set('handle', e.target.value.toLowerCase())} />
           </Field>
         </section>
       )}
       {step === 1 && (
         <section className="flex flex-col gap-4">
-          <CardTitle>Onde andas à procura?</CardTitle>
-          <p className="text-tinta-2">Mostramos primeiro os pratos perto de ti.</p>
-          <Field label="Cidade" htmlFor="cidade">
+          <CardTitle as="h1">{t('onb.cityTitle')}</CardTitle>
+          <p className="text-tinta-2">{t('onb.cityHint')}</p>
+          <Field label={t('discover.city')} htmlFor="cidade">
             <Select id="cidade" value={form.city} onChange={(e) => set('city', e.target.value)}>
               <option>Covilhã</option>
               <option>Fundão</option>
-              <option>Outra</option>
+              <option value="Outra">{t('onb.otherCity')}</option>
             </Select>
           </Field>
         </section>
       )}
       {step === 2 && (
         <section className="flex flex-col gap-3">
-          <CardTitle>A tua privacidade</CardTitle>
+          <CardTitle as="h1">{t('onb.privacyTitle')}</CardTitle>
           <Checkbox
             checked={form.terms}
             onChange={(e) => set('terms', e.target.checked)}
-            label={<>Li e aceito os <Link href="/legal/termos" target="_blank" className="underline">termos</Link> (obrigatório)</>}
+            label={<>{t('onb.acceptTerms')} <Link href="/legal/termos" target="_blank" className="underline">{t('footer.terms')}</Link> {t('onb.required')}</>}
           />
           <Checkbox
             checked={form.privacy}
             onChange={(e) => set('privacy', e.target.checked)}
-            label={<>Li e aceito a <Link href="/legal/privacidade" target="_blank" className="underline">política de privacidade</Link> (obrigatório)</>}
+            label={<>{t('onb.acceptPrivacy')} <Link href="/legal/privacidade" target="_blank" className="underline">{t('footer.privacy')}</Link> {t('onb.required')}</>}
           />
-          <p className="pt-2 text-sm font-semibold text-tinta-2">Opcional, podes mudar quando quiseres:</p>
-          <Checkbox checked={form.location} onChange={(e) => set('location', e.target.checked)} label="Usar a minha localização" description="Para mostrar pratos perto de ti." />
-          <Checkbox checked={form.push} onChange={(e) => set('push', e.target.checked)} label="Receber notificações" description="Novos pratos de quem segues e pontos ganhos." />
-          <Checkbox checked={form.adsPersonalization} onChange={(e) => set('adsPersonalization', e.target.checked)} label="Anúncios mais relevantes" description="Sem isto só usamos a cidade e a hora. Nunca vendemos dados pessoais." />
+          <Checkbox checked={form.age13} onChange={(e) => set('age13', e.target.checked)} label={<>{t('onb.age13')} {t('onb.required')}</>} />
+          <p className="pt-2 text-sm font-semibold text-tinta-2">{t('onb.optional')}</p>
+          <Checkbox checked={form.location} onChange={(e) => set('location', e.target.checked)} label={t('onb.location')} description={t('onb.locationHint')} />
+          <Checkbox checked={form.push} onChange={(e) => set('push', e.target.checked)} label={t('onb.push')} description={t('onb.pushHint')} />
+          <Checkbox checked={form.adsPersonalization} onChange={(e) => set('adsPersonalization', e.target.checked)} label={t('onb.ads')} description={t('onb.adsHint')} />
         </section>
       )}
       {error && !error.field ? <p role="alert" className="text-erro">{error.message}</p> : null}
@@ -91,16 +94,16 @@ export function OnboardingFlow({ next, initialHandle }: { next: string; initialH
       <div className="flex gap-3">
         {step > 0 ? (
           <Button variant="secondary" onClick={() => setStep(step - 1)} type="button">
-            Voltar
+            {t('onb.back')}
           </Button>
         ) : null}
         {step < 2 ? (
           <Button className="flex-1" disabled={!canNext} onClick={() => setStep(step + 1)} type="button">
-            Continuar
+            {t('onb.next')}
           </Button>
         ) : (
-          <Button className="flex-1" loading={busy} disabled={!form.terms || !form.privacy} onClick={finish} type="button">
-            Começar a provar
+          <Button className="flex-1" loading={busy} disabled={!form.terms || !form.privacy || !form.age13} onClick={finish} type="button">
+            {t('onb.finish')}
           </Button>
         )}
       </div>

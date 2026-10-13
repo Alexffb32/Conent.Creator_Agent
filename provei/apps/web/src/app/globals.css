@@ -40,3 +40,12 @@
 
 .feed-snap { scroll-snap-type: y mandatory; }
 .feed-snap > * { scroll-snap-align: start; }
+
+@layer components {
+  .pv-legal h2 { @apply pv-title mt-4 text-2xl text-verde-escuro; }
+  .pv-legal h3 { @apply mt-2 text-lg font-semibold; }
+  .pv-legal ul { @apply flex list-disc flex-col gap-1 pl-6; }
+  .pv-legal a { @apply font-semibold text-verde-escuro underline decoration-verde-fresco decoration-2 underline-offset-4; }
+  .pv-legal table { @apply w-full border-collapse text-sm; }
+  .pv-legal th, .pv-legal td { @apply border border-linha p-2 text-left align-top; }
+}

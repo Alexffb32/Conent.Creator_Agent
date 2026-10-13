@@ -1,9 +1,12 @@
 'use client';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useRef } from 'react';
+import { useT } from '@/i18n/client';
 
 export function RestaurantMap({ lat, lng, name }: { lat: number; lng: number; name: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const { t } = useT();
+  const pinLabel = t('map.pin', { name });
   useEffect(() => {
     let map: import('maplibre-gl').Map | undefined;
     let cancelled = false;
@@ -25,12 +28,12 @@ export function RestaurantMap({ lat, lng, name }: { lat: number; lng: number; na
       });
       const m = new ml.Marker({ color: '#2D7F1A' }).setLngLat([lng, lat]).addTo(map);
       m.getElement().setAttribute('role', 'img');
-      m.getElement().setAttribute('aria-label', `Localização de ${name}`);
+      m.getElement().setAttribute('aria-label', pinLabel);
     })();
     return () => {
       cancelled = true;
       map?.remove();
     };
-  }, [lat, lng, name]);
-  return <div ref={ref} role="region" aria-label={`Mapa com a localização de ${name}`} className="h-56 w-full overflow-hidden rounded-m border border-linha" />;
+  }, [lat, lng, pinLabel]);
+  return <div ref={ref} role="region" aria-label={t('map.regionOne', { name })} className="h-56 w-full overflow-hidden rounded-m border border-linha" />;
 }

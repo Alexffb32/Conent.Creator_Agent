@@ -7,9 +7,11 @@ import type { FeedItem } from '@provei/api-client';
 import { Badge, cn, useToast } from '@/components/ui';
 import { mediaUrl, formatPrice } from '@/lib/media';
 import { toggleFollow, toggleSave } from '@/server/actions/social';
+import { useT } from '@/i18n/client';
 
 export function FeedCard({ item, loggedIn, priority }: { item: FeedItem; loggedIn: boolean; priority?: boolean }) {
   const { toast } = useToast();
+  const { t } = useT();
   const [followed, setFollowed] = useState(item.followed);
   const [saved, setSaved] = useState(item.saved);
   const [, start] = useTransition();
@@ -67,7 +69,7 @@ export function FeedCard({ item, loggedIn, priority }: { item: FeedItem; loggedI
   }
 
   function needLogin() {
-    toast('Entra na tua conta para fazer isto.', 'info');
+    toast(t('card.loginNeeded'), 'info');
     location.href = `/entrar?next=${encodeURIComponent(location.pathname)}`;
   }
 
@@ -92,16 +94,16 @@ export function FeedCard({ item, loggedIn, priority }: { item: FeedItem; loggedI
       if (!r.ok) {
         setSaved(prev);
         toast(r.error, 'erro');
-      } else toast(r.data.saved ? 'Guardado' : 'Removido dos guardados', 'info');
+      } else toast(r.data.saved ? t('card.saved') : t('card.removed'), 'info');
     });
   }
   async function onShare() {
     const url = `${location.origin}/r/${item.restaurant.slug}`;
     try {
-      if (navigator.share) await navigator.share({ title: item.post.dish_name, text: `${item.post.dish_name} em ${item.restaurant.name}`, url });
+      if (navigator.share) await navigator.share({ title: item.post.dish_name, text: t('card.dishAt', { dish: item.post.dish_name, name: item.restaurant.name }), url });
       else {
         await navigator.clipboard.writeText(url);
-        toast('Link copiado');
+        toast(t('card.linkCopied'));
       }
     } catch {
       /* cancelado */
@@ -113,7 +115,7 @@ export function FeedCard({ item, loggedIn, priority }: { item: FeedItem; loggedI
   const isVideo = item.media?.kind === 'video';
 
   return (
-    <article ref={cardRef} aria-label={item.post.dish_name} className="overflow-hidden rounded-l border border-linha bg-branco">
+    <article ref={cardRef} aria-label={item.post.dish_name} className="overflow-hidden rounded-xl border border-linha bg-branco shadow-sm">
       <div className="relative aspect-[4/5] w-full bg-verde-escuro">
         {isVideo && src ? (
           <video
@@ -125,30 +127,30 @@ export function FeedCard({ item, loggedIn, priority }: { item: FeedItem; loggedI
             playsInline
             preload={priority ? 'auto' : 'none'}
             onTimeUpdate={onTimeUpdate}
-            aria-label={`Vídeo: ${item.post.dish_name}`}
+            aria-label={t('card.video', { dish: item.post.dish_name })}
             className="h-full w-full object-cover"
           />
         ) : src ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt={`${item.post.dish_name} em ${item.restaurant.name}`} loading={priority ? 'eager' : 'lazy'} decoding="async" className="h-full w-full object-cover" />
+          <img src={src} alt={t('card.dishAt', { dish: item.post.dish_name, name: item.restaurant.name })} loading={priority ? 'eager' : 'lazy'} decoding="async" className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-branco/70" aria-hidden>
             <Store size={48} />
           </div>
         )}
-        {item.restaurant.is_demo ? <Badge tone="amarelo" className="absolute left-3 top-3">Exemplo fictício</Badge> : null}
+        {item.restaurant.is_demo ? <Badge tone="amarelo" className="absolute left-3 top-3">{t('card.demo')}</Badge> : null}
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-tinta/80 to-transparent p-4 text-branco">
           <h2 className="pv-title text-3xl leading-tight">{item.post.dish_name}</h2>
           <p className="mt-1 flex items-center gap-2 text-sm">
             {item.post.price_cents != null ? <span className="rounded-pill bg-amarelo px-2.5 py-0.5 font-semibold text-tinta">{formatPrice(item.post.price_cents)}</span> : null}
             {item.distanceKm != null ? (
-              <span className="inline-flex items-center gap-1"><MapPin size={14} aria-hidden />{item.distanceKm < 1 ? 'a menos de 1 km' : `a ${Math.round(item.distanceKm)} km`}</span>
+              <span className="inline-flex items-center gap-1"><MapPin size={14} aria-hidden />{item.distanceKm < 1 ? t('card.near') : t('card.km', { n: Math.round(item.distanceKm) })}</span>
             ) : null}
           </p>
         </div>
       </div>
       <div className="flex items-center justify-between gap-2 p-3">
-        <Link href={`/r/${item.restaurant.slug}`} className="min-w-0 flex-1 truncate font-semibold text-verde-escuro" aria-label={`Ver restaurante ${item.restaurant.name}`}>
+        <Link href={`/r/${item.restaurant.slug}`} className="min-w-0 flex-1 truncate font-semibold text-verde-escuro" aria-label={t('card.viewRestaurant', { name: item.restaurant.name })}>
           {item.restaurant.name}
           {item.restaurant.city ? <span className="block truncate text-sm font-normal text-tinta-2">{item.restaurant.city}</span> : null}
         </Link>
@@ -162,12 +164,12 @@ export function FeedCard({ item, loggedIn, priority }: { item: FeedItem; loggedI
           )}
         >
           <Heart size={16} aria-hidden className={followed ? 'fill-verde' : ''} />
-          {followed ? 'A seguir' : 'Seguir'}
+          {followed ? t('card.following') : t('card.follow')}
         </button>
-        <button type="button" onClick={onSave} aria-pressed={saved} aria-label={saved ? 'Remover dos guardados' : 'Guardar prato'} className="inline-flex h-11 w-11 items-center justify-center rounded-pill hover:bg-verde-tinta">
+        <button type="button" onClick={onSave} aria-pressed={saved} aria-label={saved ? t('card.unsave') : t('card.save')} className="inline-flex h-11 w-11 items-center justify-center rounded-pill hover:bg-verde-tinta">
           <Bookmark size={22} aria-hidden className={saved ? 'fill-amarelo text-amarelo' : ''} />
         </button>
-        <button type="button" onClick={onShare} aria-label="Partilhar" className="inline-flex h-11 w-11 items-center justify-center rounded-pill hover:bg-verde-tinta">
+        <button type="button" onClick={onShare} aria-label={t('card.share')} className="inline-flex h-11 w-11 items-center justify-center rounded-pill hover:bg-verde-tinta">
           <Share2 size={20} aria-hidden />
         </button>
       </div>

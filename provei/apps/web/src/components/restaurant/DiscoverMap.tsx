@@ -1,11 +1,13 @@
 'use client';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useRef } from 'react';
+import { useT } from '@/i18n/client';
 
 export interface MapPoint { slug: string; name: string; lat: number; lng: number }
 
 export function DiscoverMap({ points }: { points: MapPoint[] }) {
   const ref = useRef<HTMLDivElement>(null);
+  const { t } = useT();
   useEffect(() => {
     let map: import('maplibre-gl').Map | undefined;
     let cancelled = false;
@@ -35,5 +37,5 @@ export function DiscoverMap({ points }: { points: MapPoint[] }) {
       map?.remove();
     };
   }, [points]);
-  return <div ref={ref} role="region" aria-label="Mapa de restaurantes" className="h-72 w-full overflow-hidden rounded-m border border-linha" />;
+  return <div ref={ref} role="region" aria-label={t('map.region')} className="h-72 w-full overflow-hidden rounded-m border border-linha" />;
 }

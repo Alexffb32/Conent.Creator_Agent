@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 import { ToastProvider } from '@/components/ui';
 import { publicEnv } from '@/lib/env';
 import { RegisterSW } from '@/components/shell/RegisterSW';
+import { I18nProvider } from '@/i18n/client';
+import { getT } from '@/i18n/server';
 import './globals.css';
 
 const inter = localFont({
@@ -37,14 +39,17 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const { locale, dict, t } = await getT();
   return (
-    <html lang="pt-PT" className={`${inter.variable} ${serif.variable}`}>
+    <html lang={locale === 'en' ? 'en' : 'pt-PT'} className={`${inter.variable} ${serif.variable}`}>
       <body>
         <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[100] focus:rounded-pill focus:bg-branco focus:px-4 focus:py-2">
-          Saltar para o conteúdo
+          {t('nav.skip')}
         </a>
-        <ToastProvider>{children}</ToastProvider>
+        <I18nProvider locale={locale} dict={dict}>
+          <ToastProvider>{children}</ToastProvider>
+        </I18nProvider>
         <RegisterSW />
       </body>
     </html>

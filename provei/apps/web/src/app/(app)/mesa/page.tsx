@@ -8,20 +8,25 @@ import { requireUser } from '@/server/auth';
 import { getActiveSession } from '@/server/tables';
 import { createServiceSupabase } from '@/lib/supabase/server';
 import { getFlags } from '@/lib/flags';
+import { getT } from '@/i18n/server';
 
-export const metadata: Metadata = { title: 'A minha mesa' };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT();
+  return { title: t('nav.table'), robots: { index: false } };
+}
 export const dynamic = 'force-dynamic';
 
 export default async function MesaPage() {
   const me = await requireUser('/mesa');
   const session = await getActiveSession(me.id);
   if (!session) {
+    const { t } = await getT();
     return (
       <div className="pv-container flex max-w-md flex-col gap-4 pt-6">
         <EmptyState
           icon={<QrCode size={44} />}
-          title="Ainda não estás numa mesa"
-          description="Lê o QR da mesa ou aproxima o telemóvel do autocolante NFC. Se a sessão expirou, lê outra vez."
+          title={t('table.none')}
+          description={t('table.noneHint')}
           action={<ImHereButton />}
         />
       </div>

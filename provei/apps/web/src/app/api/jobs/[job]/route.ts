@@ -32,6 +32,12 @@ async function aggregate(svc: ReturnType<typeof createServiceSupabase>) {
   const old = new Date(Date.now() - 2 * 86_400_000).toISOString();
   await svc.from('rate_limits').delete().lt('window_start', old);
   const reds = await svc.from('redemptions').update({ status: 'expired' }).eq('status', 'issued').lt('expires_at', new Date().toISOString()).select('id');
+  const leadCutoff = new Date();
+  leadCutoff.setMonth(leadCutoff.getMonth() - 12);
+  await svc.from('leads').delete().lt('created_at', leadCutoff.toISOString());
+  const noticeCutoff = new Date();
+  noticeCutoff.setMonth(noticeCutoff.getMonth() - 24);
+  await svc.from('content_notices').delete().lt('created_at', noticeCutoff.toISOString());
   await svc.from('ad_campaigns').update({ status: 'ended' }).eq('status', 'active').lt('ends_at', new Date().toISOString());
   return { anonymized: a.data?.length ?? 0, redemptionsExpired: reds.data?.length ?? 0 };
 }

@@ -45,6 +45,7 @@ export default async function PerfilPage() {
         {me.isAdmin ? <LinkButton href="/admin" variant="accent">Administração</LinkButton> : null}
       </div>
       {flags.ad_free_subscription && flags.payments && !me.isAdFree ? <AdFreeButton price={eur(pricing.adFreeEur)} /> : null}
+      {me.isAdFree ? <LinkButton href="/perfil/livre-resolucao" variant="ghost" className="self-start">Terminar assinatura sem anúncios</LinkButton> : null}
       <section aria-labelledby="meus-restaurantes" className="flex flex-col gap-2">
         <h2 id="meus-restaurantes" className="pv-title text-2xl text-verde-escuro">Modo restaurante</h2>
         {restaurants.length === 0 ? (

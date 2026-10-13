@@ -1,12 +1,14 @@
 'use client';
 import jsQR from 'jsqr';
 import { useEffect, useRef, useState } from 'react';
+import { useT } from '@/i18n/client';
 import { Button } from '@/components/ui';
 
 /** Leitor de QR por câmara (getUserMedia + jsQR). Se a câmara falhar, o chamador oferece entrada manual. */
 export function QrScanner({ onResult, onClose }: { onResult: (text: string) => void; onClose?: () => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
+  const { t } = useT();
 
   useEffect(() => {
     let stream: MediaStream | null = null;
@@ -40,7 +42,7 @@ export function QrScanner({ onResult, onClose }: { onResult: (text: string) => v
         };
         tick();
       } catch {
-        setError('Não conseguimos abrir a câmara. Confirma a permissão ou usa o código manual.');
+        setError(true);
       }
     }
     start();
@@ -54,14 +56,14 @@ export function QrScanner({ onResult, onClose }: { onResult: (text: string) => v
   return (
     <div className="flex flex-col gap-3">
       {error ? (
-        <p role="alert" className="rounded-m bg-amarelo-tinta p-3 text-sm">{error}</p>
+        <p role="alert" className="rounded-m bg-amarelo-tinta p-3 text-sm">{t('scan.camera')}</p>
       ) : (
         <div className="relative overflow-hidden rounded-m bg-tinta">
-          <video ref={videoRef} playsInline muted aria-label="Câmara para ler o QR" className="aspect-square w-full object-cover" />
+          <video ref={videoRef} playsInline muted aria-label={t('scan.cameraAria')} className="aspect-square w-full object-cover" />
           <div aria-hidden className="pointer-events-none absolute inset-8 rounded-m border-4 border-verde-fresco/80" />
         </div>
       )}
-      {onClose ? <Button variant="secondary" onClick={onClose}>Fechar câmara</Button> : null}
+      {onClose ? <Button variant="secondary" onClick={onClose}>{t('scan.closeCamera')}</Button> : null}
     </div>
   );
 }

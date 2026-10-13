@@ -3,12 +3,14 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Button, Card, CardTitle } from '@/components/ui';
 import { enterTable } from '@/server/actions/table';
+import { useT } from '@/i18n/client';
 
 export function EnterTable({ token, restaurant, label }: { token: string; restaurant: string; label: string }) {
   const router = useRouter();
   const started = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(true);
+  const { t } = useT();
 
   async function go() {
     setBusy(true);
@@ -30,15 +32,15 @@ export function EnterTable({ token, restaurant, label }: { token: string; restau
   return (
     <div className="pv-container max-w-md pt-8">
       <Card className="flex flex-col gap-3 text-center">
-        <CardTitle>{restaurant}</CardTitle>
-        <p className="text-lg">Mesa {label}</p>
+        <CardTitle as="h1">{restaurant}</CardTitle>
+        <p className="text-lg">{t('table.label', { label })}</p>
         {error ? (
           <>
             <p role="alert" className="text-erro">{error}</p>
-            <Button onClick={() => router.refresh()}>Tentar de novo</Button>
+            <Button onClick={() => router.refresh()}>{t('feed.retry')}</Button>
           </>
         ) : (
-          <p role="status" aria-busy={busy} className="text-tinta-2">A entrar na mesa…</p>
+          <p role="status" aria-busy={busy} className="text-tinta-2">{t('table.entering')}</p>
         )}
       </Card>
     </div>

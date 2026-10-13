@@ -2,10 +2,11 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState, useTransition } from 'react';
 import { BellRing, Receipt, Gift, LogOut, BadgeCheck } from 'lucide-react';
-import { MSG, stampProgress } from '@provei/domain';
+import { stampProgress } from '@provei/domain';
 import { Badge, Button, Card, CardTitle, useToast } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
 import { callWaiter, claimMyVisit, leaveTable } from '@/server/actions/table';
+import { useT } from '@/i18n/client';
 
 interface Call { id: string; status: string; reason: string; created_at: string }
 
@@ -22,6 +23,7 @@ export function TableScreen(props: {
   supabase: { url: string; key: string };
 }) {
   const { toast } = useToast();
+  const { t } = useT();
   const [call, setCall] = useState<Call | null>(props.initialCall);
   const [card, setCard] = useState(props.card);
   const [pending, start] = useTransition();
@@ -29,8 +31,8 @@ export function TableScreen(props: {
   const [visitDone, setVisitDone] = useState(false);
 
   useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 15000);
-    return () => clearInterval(t);
+    const id = setInterval(() => setNow(Date.now()), 15000);
+    return () => clearInterval(id);
   }, []);
 
   // estado da chamada em tempo real (RLS aplica-se) + sondagem de reserva
@@ -61,7 +63,7 @@ export function TableScreen(props: {
     start(async () => {
       const r = await callWaiter({ reason });
       if (!r.ok) return toast(r.error, 'erro');
-      toast(reason === 'bill' ? 'Já sabem que queres a conta' : MSG.callOpen, 'info');
+      toast(reason === 'bill' ? t('table.billAsked') : t('table.helpAsked'), 'info');
       void refresh();
     });
   }
@@ -71,8 +73,8 @@ export function TableScreen(props: {
       if (!r.ok) return toast(r.error, 'erro');
       setVisitDone(true);
       setCard((c) => ({ ...c, stamps: r.data.stamps, points: c.points + r.data.points }));
-      toast(MSG.visitConfirmed(r.data.points));
-      if (r.data.rewardCode) toast(`Completaste o cartão! Recompensa: ${r.data.rewardCode}`, 'info');
+      toast(t('table.visitDone', { n: r.data.points }));
+      if (r.data.rewardCode) toast(t('table.reward', { code: r.data.rewardCode }), 'info');
     });
   }
 
@@ -80,8 +82,8 @@ export function TableScreen(props: {
     return (
       <div className="pv-container max-w-md pt-6">
         <Card className="flex flex-col gap-3 text-center">
-          <CardTitle>{MSG.sessionExpired}</CardTitle>
-          <Link href="/mesa" className="font-semibold text-verde underline">Ler o QR</Link>
+          <CardTitle as="h1">{t('table.expired')}</CardTitle>
+          <Link href="/mesa" className="pv-link inline-flex min-h-touch items-center justify-center font-semibold">{t('table.readQr')}</Link>
         </Card>
       </div>
     );
@@ -90,7 +92,7 @@ export function TableScreen(props: {
   return (
     <div className="pv-container flex max-w-md flex-col gap-4 pt-5">
       <header>
-        <p className="text-sm text-tinta-2">Estás na mesa {props.tableLabel}</p>
+        <p className="text-sm text-tinta-2">{t('table.at', { label: props.tableLabel })}</p>
         <h1 className="pv-title text-4xl text-verde-escuro">{props.restaurant.name}</h1>
       </header>
 
@@ -98,39 +100,39 @@ export function TableScreen(props: {
         <Card className="flex flex-col gap-3 border-verde bg-verde-tinta">
           {call ? (
             <div role="status" aria-live="polite" className="flex flex-col gap-1 text-center">
-              <p className="pv-title text-3xl text-verde-escuro">{call.status === 'acknowledged' ? MSG.callOnTheWay : MSG.callAck}</p>
-              <p className="text-sm text-tinta-2">{call.reason === 'bill' ? 'Pediste a conta.' : 'Já sabem que precisas de ajuda.'}</p>
+              <p className="pv-title text-3xl text-verde-escuro">{call.status === 'acknowledged' ? t('table.onTheWay') : t('table.ack')}</p>
+              <p className="text-sm text-tinta-2">{call.reason === 'bill' ? t('table.billAsked') : t('table.helpAsked')}</p>
             </div>
           ) : (
-            <Button size="lg" loading={pending} onClick={() => request('call')} className="w-full"><BellRing aria-hidden /> Chamar empregado</Button>
+            <Button size="lg" loading={pending} onClick={() => request('call')} className="w-full"><BellRing aria-hidden /> {t('table.call')}</Button>
           )}
-          <Button variant="secondary" disabled={Boolean(call) || pending} onClick={() => request('bill')} className="w-full"><Receipt size={18} aria-hidden /> Pedir a conta</Button>
+          <Button variant="secondary" disabled={Boolean(call) || pending} onClick={() => request('bill')} className="w-full"><Receipt size={18} aria-hidden /> {t('table.bill')}</Button>
         </Card>
       ) : null}
 
       {props.flags.loyalty ? (
         <Card className="flex flex-col gap-3">
-          <div className="flex items-center justify-between"><CardTitle className="text-2xl">O meu cartão</CardTitle><Badge tone="amarelo">{card.points} pts</Badge></div>
-          <div className="flex flex-wrap gap-1.5" role="img" aria-label={`${prog.current} de ${prog.required} carimbos`}>
+          <div className="flex items-center justify-between"><CardTitle className="text-2xl">{t('table.myCard')}</CardTitle><Badge tone="amarelo">{t('common.points', { n: card.points })}</Badge></div>
+          <div className="flex flex-wrap gap-1.5" role="img" aria-label={t('cards.stamps', { n: prog.current, total: prog.required })}>
             {Array.from({ length: prog.required }).map((_, i) => (
               <span key={i} className={`h-7 w-7 rounded-pill border ${i < prog.current ? 'border-verde bg-verde' : 'border-linha bg-nevoa'}`} />
             ))}
           </div>
-          <p className="text-sm text-tinta-2">Faltam {prog.missing} para a próxima recompensa.</p>
+          <p className="text-sm text-tinta-2">{t('table.missing', { n: prog.missing })}</p>
           {visitDone ? (
-            <p role="status" className="flex items-center gap-2 font-semibold text-verde-escuro"><BadgeCheck aria-hidden /> Visita confirmada</p>
+            <p role="status" className="flex items-center gap-2 font-semibold text-verde-escuro"><BadgeCheck aria-hidden /> {t('table.confirmed')}</p>
           ) : (
             <Button variant="accent" disabled={minutesToReady > 0 || pending} onClick={claim}>
-              {minutesToReady > 0 ? `Confirmar visita (disponível em ${minutesToReady} min)` : 'Confirmar a minha visita'}
+              {minutesToReady > 0 ? t('table.confirmIn', { n: minutesToReady }) : t('table.confirm')}
             </Button>
           )}
-          <Link href={`/cartao`} className="text-sm font-semibold text-verde underline">Ver todos os cartões</Link>
+          <Link href="/cartao" className="pv-link inline-flex min-h-touch items-center text-sm font-semibold">{t('table.allCards')}</Link>
         </Card>
       ) : null}
 
       {props.offers.length > 0 ? (
         <section aria-labelledby="ofertas-mesa" className="flex flex-col gap-2">
-          <h2 id="ofertas-mesa" className="pv-title text-2xl text-verde-escuro">Ofertas</h2>
+          <h2 id="ofertas-mesa" className="pv-title text-2xl text-verde-escuro">{t('r.offers')}</h2>
           {props.offers.map((o) => (
             <Card key={o.id} className="flex gap-3 border-amarelo bg-amarelo-tinta"><Gift aria-hidden className="mt-1 shrink-0" /><div><p className="font-semibold">{o.title}</p>{o.description ? <p className="text-sm">{o.description}</p> : null}</div></Card>
           ))}
@@ -138,8 +140,8 @@ export function TableScreen(props: {
       ) : null}
 
       <div className="flex flex-wrap gap-3">
-        <Link href={`/r/${props.restaurant.slug}#menu`} className="inline-flex min-h-touch items-center rounded-pill border border-linha bg-branco px-5 font-semibold text-verde-escuro">Ver o menu</Link>
-        <Button variant="ghost" onClick={() => start(async () => { await leaveTable(); })}><LogOut size={18} aria-hidden /> Sair da mesa</Button>
+        <Link href={`/r/${props.restaurant.slug}#menu`} className="inline-flex min-h-[48px] items-center rounded-pill border border-linha-forte bg-branco px-5 font-semibold text-verde-escuro hover:border-verde hover:bg-verde-tinta">{t('table.menu')}</Link>
+        <Button variant="ghost" onClick={() => start(async () => { await leaveTable(); })}><LogOut size={18} aria-hidden /> {t('table.leave')}</Button>
       </div>
     </div>
   );

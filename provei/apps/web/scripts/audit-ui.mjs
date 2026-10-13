@@ -21,9 +21,20 @@ for (const [w, h] of viewports) {
     await page.screenshot({ path: `${out}/${name}.png`, fullPage: false });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     const small = await page.evaluate(() =>
+      // Exceções da WCAG 2.5.8: ligação inline numa frase; controlo cujo rótulo envolvente tem ≥ 44 px.
+      ((exempt) =>
       [...document.querySelectorAll('button, a[href], input:not([type=hidden]), select, textarea')]
-        .filter((el) => { const b = el.getBoundingClientRect(); const cs = getComputedStyle(el); return b.width > 0 && b.height > 0 && cs.visibility !== 'hidden' && !el.closest('.sr-only, .maplibregl-ctrl') && b.height < 43.5; })
-        .map((el) => `${el.tagName.toLowerCase()}「${(el.textContent || el.getAttribute('aria-label') || '').trim().slice(0, 24)}」${Math.round(el.getBoundingClientRect().height)}px`));
+        .filter((el) => { const b = el.getBoundingClientRect(); const cs = getComputedStyle(el); return b.width > 0 && b.height > 0 && cs.visibility !== 'hidden' && !el.closest('.sr-only, .maplibregl-ctrl, [aria-hidden="true"]') && b.height < 43.5 && !exempt(el); })
+        .map((el) => `${el.tagName.toLowerCase()}「${(el.textContent || el.getAttribute('aria-label') || '').trim().slice(0, 24)}」${Math.round(el.getBoundingClientRect().height)}px`)
+      )((el) => {
+        const lab = el.closest('label');
+        if (lab && lab.getBoundingClientRect().height >= 43.5) return true;
+        if (el.tagName === 'A' && getComputedStyle(el).display === 'inline') {
+          const block = el.closest('p, li, td, dd');
+          if (block && (block.textContent || '').trim().length > (el.textContent || '').trim().length + 3) return true;
+        }
+        return false;
+      }));
     const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
     const serious = axe.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
     const line = `${r} @${w}: overflow=${overflow} small=${small.length} axe=${serious.map((v) => `${v.id}(${v.nodes.length})`).join(',') || 'ok'}`;

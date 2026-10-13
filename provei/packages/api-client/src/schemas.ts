@@ -16,6 +16,7 @@ export const onboardingSchema = z.object({
   city: citySchema,
   terms: z.literal(true, { errorMap: () => ({ message: 'Tens de aceitar os termos' }) }),
   privacy: z.literal(true, { errorMap: () => ({ message: 'Tens de aceitar a política de privacidade' }) }),
+  age13: z.literal(true, { errorMap: () => ({ message: 'Precisas de ter pelo menos 13 anos para criar conta' }) }),
   location: z.boolean().default(false),
   push: z.boolean().default(false),
   adsPersonalization: z.boolean().default(false),
@@ -168,4 +169,26 @@ export const adCampaignSchema = z.object({
   budgetEuros: z.coerce.number().min(1).max(100000),
   startsAt: z.coerce.date(),
   endsAt: z.coerce.date(),
+});
+
+/** Pedido de demonstração (landing /para-restaurantes). `website` é o campo-armadilha (honeypot). */
+export const leadSchema = z.object({
+  name: z.string().trim().min(2, 'Indica o teu nome').max(80),
+  restaurant: z.string().trim().min(2, 'Indica o nome do restaurante').max(120),
+  contact: z.string().trim().min(5, 'Indica um e-mail ou telefone').max(120),
+  city: z.string().trim().min(2, 'Indica a cidade').max(60),
+  message: z.string().trim().max(1000).optional().default(''),
+  website: z.string().max(0).optional().default(''),
+});
+export type LeadInput = z.infer<typeof leadSchema>;
+
+/** Notificação de conteúdo ilegal (DSA art. 16). */
+export const contentNoticeSchema = z.object({
+  name: z.string().trim().max(80).optional().default(''),
+  email: z.string().trim().email('Indica um e-mail válido').max(120),
+  url: z.string().trim().min(5, 'Indica o link exato do conteúdo').max(500),
+  category: z.enum(['illegal', 'ip', 'privacy', 'consumer', 'other']),
+  explanation: z.string().trim().min(20, 'Explica em pelo menos 20 caracteres porque é ilegal').max(4000),
+  goodFaith: z.literal(true, { errorMap: () => ({ message: 'Tens de confirmar que a informação é exata e de boa-fé' }) }),
+  website: z.string().max(0).optional().default(''),
 });

@@ -3,9 +3,11 @@ import { useState, useTransition } from 'react';
 import { Heart } from 'lucide-react';
 import { Button, useToast } from '@/components/ui';
 import { toggleFollow } from '@/server/actions/social';
+import { useT } from '@/i18n/client';
 
 export function FollowButton({ restaurantId, initial, loggedIn, count }: { restaurantId: string; initial: boolean; loggedIn: boolean; count: number }) {
   const { toast } = useToast();
+  const { t } = useT();
   const [following, setFollowing] = useState(initial);
   const [n, setN] = useState(count);
   const [pending, start] = useTransition();
@@ -27,7 +29,7 @@ export function FollowButton({ restaurantId, initial, loggedIn, count }: { resta
         });
       }}
     >
-      <Heart size={18} aria-hidden className={following ? 'fill-verde' : ''} /> {following ? 'A seguir' : 'Seguir'} · {n}
+      <Heart size={18} aria-hidden className={following ? 'fill-verde' : ''} /> {following ? t('card.following') : t('card.follow')} · {n}
     </Button>
   );
 }

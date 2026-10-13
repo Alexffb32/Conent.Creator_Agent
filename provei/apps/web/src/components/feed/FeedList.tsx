@@ -1,11 +1,11 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FeedEntry, FeedPage } from '@provei/api-client';
-import { MSG } from '@provei/domain';
 import { Button, EmptyState, Skeleton } from '@/components/ui';
 import { loadFeedPage } from '@/server/actions/social';
 import { FeedCard } from './FeedCard';
 import { AdCard } from './AdCard';
+import { useT } from '@/i18n/client';
 
 export function FeedList({ initial, tab, loggedIn }: { initial: FeedPage; tab: 'para-ti' | 'perto'; loggedIn: boolean }) {
   const [entries, setEntries] = useState<FeedEntry[]>(initial.entries);
@@ -13,6 +13,7 @@ export function FeedList({ initial, tab, loggedIn }: { initial: FeedPage; tab: '
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const sentinel = useRef<HTMLDivElement>(null);
+  const { t } = useT();
 
   const more = useCallback(async () => {
     if (!cursor || loading) return;
@@ -34,7 +35,7 @@ export function FeedList({ initial, tab, loggedIn }: { initial: FeedPage; tab: '
   }, [cursor, more, error]);
 
   if (entries.length === 0) {
-    return <EmptyState title={MSG.feedEmpty} description="Quando os restaurantes publicarem, os pratos aparecem aqui. Segue os teus favoritos para não perderes nada." />;
+    return <EmptyState title={t('feed.empty')} description={t('feed.emptyHint')} />;
   }
   return (
     <div className="flex flex-col gap-5">
@@ -45,11 +46,11 @@ export function FeedList({ initial, tab, loggedIn }: { initial: FeedPage; tab: '
       {error ? (
         <div role="alert" className="flex flex-col items-center gap-2 rounded-m border border-linha bg-branco p-4 text-center">
           <p>{error}</p>
-          <Button variant="secondary" onClick={more}>Tentar de novo</Button>
+          <Button variant="secondary" onClick={more}>{t('feed.retry')}</Button>
         </div>
       ) : null}
       <div ref={sentinel} aria-hidden className="h-1" />
-      {!cursor && entries.length > 0 ? <p className="py-4 text-center text-sm text-tinta-2">Chegaste ao fim. Volta mais logo!</p> : null}
+      {!cursor && entries.length > 0 ? <p className="py-4 text-center text-sm text-tinta-2">{t('feed.end')}</p> : null}
     </div>
   );
 }

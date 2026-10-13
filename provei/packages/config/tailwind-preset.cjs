@@ -14,7 +14,7 @@ module.exports = {
         linha: { DEFAULT: tokens.color.linha, forte: tokens.color.linhaForte },
         erro: tokens.color.erro,
       },
-      borderRadius: { s: '8px', m: '16px', l: '28px', pill: '999px' },
+      borderRadius: { sm: '8px', m: '16px', xl: '28px', pill: '999px' },
       transitionDuration: { fast: '150ms', base: '250ms', slow: '400ms' },
       boxShadow: { sm: 'var(--pv-shadow-sm)', md: 'var(--pv-shadow-md)', lg: 'var(--pv-shadow-lg)', focus: 'var(--pv-focus)' },
       maxWidth: { content: '1200px', prose: '68ch' },

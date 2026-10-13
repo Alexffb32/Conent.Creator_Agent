@@ -3,7 +3,10 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { QrCode } from 'lucide-react';
 import { Button, Field, Input, Sheet } from '@/components/ui';
-import { QrScanner } from './QrScanner';
+import dynamic from 'next/dynamic';
+
+const QrScanner = dynamic(() => import('./QrScanner').then((m) => m.QrScanner), { ssr: false });
+import { useT } from '@/i18n/client';
 
 /** Extrai o código da mesa de um URL `/t/<code>` (ou aceita o código solto). */
 export function parseTableCode(text: string): string | null {
@@ -17,19 +20,20 @@ export function ImHereButton({ variant = 'primary' }: { variant?: 'primary' | 's
   const [open, setOpen] = useState(false);
   const [manual, setManual] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const { t } = useT();
 
   function go(text: string) {
     const code = parseTableCode(text);
-    if (!code) return setError('Este QR não é de uma mesa Provei.');
+    if (!code) return setError(t('scan.notProvei'));
     setOpen(false);
     router.push(`/t/${code}`);
   }
   return (
     <>
       <Button variant={variant} onClick={() => setOpen(true)}>
-        <QrCode size={18} aria-hidden /> Estou aqui
+        <QrCode size={18} aria-hidden /> {t('r.imHere')}
       </Button>
-      <Sheet open={open} onClose={() => setOpen(false)} title="Lê o QR da mesa">
+      <Sheet open={open} onClose={() => setOpen(false)} title={t('scan.title')}>
         {open ? <QrScanner onResult={go} /> : null}
         {error ? <p role="alert" className="mt-3 text-erro">{error}</p> : null}
         <form
@@ -39,10 +43,10 @@ export function ImHereButton({ variant = 'primary' }: { variant?: 'primary' | 's
             go(manual);
           }}
         >
-          <Field label="Ou escreve o código da mesa" htmlFor="codigo-mesa" hint="Vem impresso junto ao QR.">
+          <Field label={t('scan.manual')} htmlFor="codigo-mesa" hint={t('scan.manualHint')}>
             <Input id="codigo-mesa" value={manual} onChange={(e) => setManual(e.target.value)} autoCapitalize="none" />
           </Field>
-          <Button type="submit" variant="secondary">Entrar na mesa</Button>
+          <Button type="submit" variant="secondary">{t('scan.enter')}</Button>
         </form>
       </Sheet>
     </>

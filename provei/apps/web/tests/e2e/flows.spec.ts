@@ -18,6 +18,7 @@ test('1. registo → onboarding → seguir → guardar', async ({ page }) => {
     await page.getByRole('button', { name: 'Continuar' }).click();
     await page.getByLabel(/Li e aceito os/).check();
     await page.getByLabel(/Li e aceito a/).check();
+    await page.getByLabel(/Tenho 13 anos ou mais/).check();
     await page.getByRole('button', { name: 'Começar a provar' }).click();
     await expect(page).toHaveURL(/\/$/);
     const card = page.getByRole('article', { name: new RegExp(`Prato E2E`) }).first();
