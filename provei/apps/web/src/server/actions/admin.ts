@@ -9,6 +9,17 @@ import { type ActionResult, parse, run, UserError } from '../action';
 import { requireAdminForAction } from '../auth';
 import { audit } from '../audit';
 import { sanitizeText } from '@provei/domain';
+import { getMailer } from '../mail';
+
+/** Fundamentação ao autor do conteúdo (DSA art. 17.º). Falhas de envio não bloqueiam a decisão. */
+async function notifyAuthor(svc: ReturnType<typeof createServiceSupabase>, userId: string | null | undefined, what: string) {
+  if (!userId) return;
+  const { data } = await svc.auth.admin.getUserById(userId);
+  const email = data?.user?.email;
+  if (!email) return;
+  const text = `${what} foi removido do Provei por violar as regras de conteúdo dos termos de utilização (secção 3), na sequência de uma denúncia analisada por uma pessoa. Podes contestar esta decisão respondendo a este e-mail.`;
+  await getMailer().send({ to: email, subject: 'Provei · conteúdo removido', text, html: `<p>${text}</p>` }).catch((e) => console.error('[moderation mail]', e));
+}
 
 export async function verifyRestaurant(restaurantId: string, decision: 'verified' | 'rejected'): Promise<ActionResult> {
   return run(async () => {
@@ -30,7 +41,10 @@ export async function moderateTarget(input: { reportId: string; targetType: 'rev
     const v = parse(z.object({ reportId: uuidSchema, targetType: z.enum(['review', 'post', 'restaurant', 'user']), targetId: uuidSchema, action: z.enum(['remove', 'dismiss']) }), input);
     const svc = createServiceSupabase();
     if (v.action === 'remove') {
-      if (v.targetType === 'review') await svc.from('reviews').update({ status: 'removed' }).eq('id', v.targetId);
+      if (v.targetType === 'review') {
+        const { data: rv } = await svc.from('reviews').update({ status: 'removed' }).eq('id', v.targetId).select('user_id').maybeSingle();
+        await notifyAuthor(svc, rv?.user_id, 'Uma avaliação tua');
+      }
       else if (v.targetType === 'post') await svc.from('posts').update({ status: 'removed' }).eq('id', v.targetId);
       else if (v.targetType === 'user') await svc.from('profiles').update({ suspended_at: new Date().toISOString() }).eq('id', v.targetId);
       else if (v.targetType === 'restaurant') await svc.from('restaurants').update({ verified_status: 'rejected' }).eq('id', v.targetId);
@@ -125,6 +139,28 @@ export async function setCampaignStatus(id: string, status: 'active' | 'paused' 
     await createServiceSupabase().from('ad_campaigns').update({ status }).eq('id', id);
     await audit({ actorId: admin.id, action: `ad.${status}`, entity: 'ad_campaign', entityId: id });
     revalidatePath('/admin/anuncios');
+    return undefined;
+  });
+}
+
+/** Decisão sobre uma notificação DSA (art. 16.º, n.º 5): grava e informa o autor da notificação. */
+export async function decideNotice(input: { id: string; decision: 'actioned' | 'rejected'; reason: string }): Promise<ActionResult> {
+  return run(async () => {
+    const admin = await requireAdminForAction();
+    const v = parse(z.object({ id: uuidSchema, decision: z.enum(['actioned', 'rejected']), reason: z.string().trim().min(5, 'Escreve o motivo da decisão').max(1000) }), input);
+    const svc = createServiceSupabase();
+    const { data: n } = await svc
+      .from('content_notices')
+      .update({ status: v.decision, decision: v.reason, decided_at: new Date().toISOString() })
+      .eq('id', v.id)
+      .select('reporter_email, content_url')
+      .maybeSingle();
+    if (!n) throw new UserError('Notificação não encontrada.');
+    const outcome = v.decision === 'actioned' ? 'Removemos ou limitámos o conteúdo.' : 'Decidimos manter o conteúdo.';
+    const text = `Analisámos a tua denúncia sobre ${n.content_url}. ${outcome} Motivo: ${v.reason}\n\nPodes contestar esta decisão respondendo a este e-mail ou recorrer a um organismo de resolução extrajudicial de litígios.`;
+    await getMailer().send({ to: n.reporter_email, subject: 'Provei · decisão sobre a tua denúncia', text, html: `<p>${text.replace(/[<>&]/g, '')}</p>` }).catch((e) => console.error('[notice decision]', e));
+    await audit({ actorId: admin.id, action: `notice.${v.decision}`, entity: 'content_notices', entityId: v.id });
+    revalidatePath('/admin/denuncias');
     return undefined;
   });
 }

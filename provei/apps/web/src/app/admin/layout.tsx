@@ -4,7 +4,7 @@ import { Logo } from '@/components/brand/Logo';
 import { requireAdminPage } from '@/server/auth';
 
 const NAV = [
-  ['/admin', 'Resumo'], ['/admin/restaurantes', 'Restaurantes'], ['/admin/moderacao', 'Moderação'], ['/admin/utilizadores', 'Utilizadores'],
+  ['/admin', 'Resumo'], ['/admin/restaurantes', 'Restaurantes'], ['/admin/moderacao', 'Moderação'], ['/admin/denuncias', 'Denúncias e pedidos'], ['/admin/utilizadores', 'Utilizadores'],
   ['/admin/flags', 'Flags'], ['/admin/anuncios', 'Anúncios'], ['/admin/planos', 'Planos'], ['/admin/auditoria', 'Auditoria'],
 ] as const;
 

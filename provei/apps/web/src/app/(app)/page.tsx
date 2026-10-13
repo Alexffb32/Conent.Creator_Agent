@@ -17,20 +17,23 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: t('meta.homeTitle') },
     description: t('meta.homeDescription'),
-    alternates: localeAlternates('/', locale),
   };
 }
 
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ tab?: string; conta?: string }> }) {
   const sp = await searchParams;
   const tab: FeedTab = sp.tab === 'perto' ? 'perto' : 'para-ti';
-  const [me, { t }] = await Promise.all([getSessionProfile(), getT()]);
+  const [me, { t, locale }] = await Promise.all([getSessionProfile(), getT()]);
+  // O Next perde a query string quando o caminho é "/": as ligações de idioma da página inicial vão à mão.
+  const alt = localeAlternates('/', locale) as { canonical: string; languages: Record<string, string> };
   const ld = [
     { '@context': 'https://schema.org', '@type': 'Organization', name: 'Provei', url: publicEnv.siteUrl, logo: `${publicEnv.siteUrl}/icons/icon-512.png`, email: 'ola@provei.pt' },
     { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Provei', url: publicEnv.siteUrl, inLanguage: ['pt-PT', 'en'] },
   ];
   return (
     <div className="mx-auto flex w-full max-w-[480px] flex-col gap-5 px-4 pt-5 sm:px-0">
+      <link rel="canonical" href={alt.canonical} />
+      {Object.entries(alt.languages).map(([l, href]) => <link key={l} rel="alternate" hrefLang={l} href={href} />)}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, '\\u003c') }} />
       <div>
         <h1 className="pv-title text-4xl leading-tight text-verde-escuro">{t('feed.hello')}</h1>
