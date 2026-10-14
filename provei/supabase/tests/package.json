@@ -1,0 +1,17 @@
+{
+  "name": "@provei/rls-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "echo ok",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.2.12",
+    "@types/node": "^22.8.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}

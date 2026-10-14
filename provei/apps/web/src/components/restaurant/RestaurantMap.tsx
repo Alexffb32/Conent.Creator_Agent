@@ -1,0 +1,40 @@
+'use client';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { useEffect, useRef } from 'react';
+import { useT } from '@/i18n/client';
+
+export function RestaurantMap({ lat, lng, name }: { lat: number; lng: number; name: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { t } = useT();
+  const pinLabel = t('map.pin', { name });
+  useEffect(() => {
+    let map: import('maplibre-gl').Map | undefined;
+    let cancelled = false;
+    (async () => {
+      const ml = await import('maplibre-gl');
+      ml.setWorkerUrl('/vendor/maplibre-gl-worker.mjs');
+      if (cancelled || !ref.current) return;
+      map = new ml.Map({
+        container: ref.current,
+        center: [lng, lat],
+        zoom: 15,
+        attributionControl: { compact: true },
+        style: {
+          version: 8,
+          sources: {
+            osm: { type: 'raster', tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: '© OpenStreetMap' },
+          },
+          layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+        },
+      });
+      const m = new ml.Marker({ color: '#2D7F1A' }).setLngLat([lng, lat]).addTo(map);
+      m.getElement().setAttribute('role', 'img');
+      m.getElement().setAttribute('aria-label', pinLabel);
+    })();
+    return () => {
+      cancelled = true;
+      map?.remove();
+    };
+  }, [lat, lng, pinLabel]);
+  return <div ref={ref} role="region" aria-label={t('map.regionOne', { name })} className="h-56 w-full overflow-hidden rounded-m border border-linha" />;
+}

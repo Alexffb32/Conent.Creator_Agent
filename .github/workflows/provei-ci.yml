@@ -1,0 +1,47 @@
+name: Provei CI
+
+on:
+  push:
+    branches: [main, 'claude/**', 'feat/**']
+    paths: ['provei/**', '.github/workflows/provei-ci.yml']
+  pull_request:
+    paths: ['provei/**', '.github/workflows/provei-ci.yml']
+
+defaults:
+  run:
+    working-directory: provei
+
+concurrency:
+  group: provei-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, tipos, testes e build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: provei/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Tipos
+        run: pnpm typecheck
+      - name: Testes (domínio, schemas, web)
+        run: pnpm test
+      - name: Testes RLS (Postgres embebido)
+        run: pnpm test:rls
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://provei.example
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-key

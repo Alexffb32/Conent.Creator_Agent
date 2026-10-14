@@ -1,0 +1,35 @@
+# Configuração do Supabase local (supabase start). Requer Docker.
+project_id = "provei"
+
+[api]
+port = 54321
+schemas = ["public", "graphql_public"]
+
+[db]
+port = 54322
+major_version = 17
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback", "http://localhost:3000/auth/confirm"]
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
+# Link mágico que funciona noutro dispositivo (token_hash). Ver docs/ARCHITECTURE.md.
+[auth.email.template.magic_link]
+subject = "O teu link de entrada no Provei"
+content_path = "./supabase/templates/magic_link.html"
+
+[inbucket]
+port = 54324
+
+[storage]
+file_size_limit = "100MiB"
+
+[auth.external.google]
+enabled = false
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"

@@ -1,0 +1,23 @@
+const tokens = require('./src/tokens.json');
+
+/** Tailwind preset partilhado (web e NativeWind). Cores e raios vêm dos tokens da marca. */
+module.exports = {
+  theme: {
+    screens: { sm: '640px', md: '768px', lg: '1024px', xl: '1280px' },
+    extend: {
+      colors: {
+        branco: tokens.color.branco,
+        nevoa: tokens.color.nevoa,
+        verde: { DEFAULT: tokens.color.verde, escuro: tokens.color.verdeEscuro, fresco: tokens.color.verdeFresco, tinta: tokens.color.verdeTinta },
+        amarelo: { DEFAULT: tokens.color.amarelo, tinta: tokens.color.amareloTinta },
+        tinta: { DEFAULT: tokens.color.tinta, 2: tokens.color.tinta2 },
+        linha: { DEFAULT: tokens.color.linha, forte: tokens.color.linhaForte },
+        erro: tokens.color.erro,
+      },
+      borderRadius: { sm: '8px', m: '16px', xl: '28px', pill: '999px' },
+      transitionDuration: { fast: '150ms', base: '250ms', slow: '400ms' },
+      boxShadow: { sm: 'var(--pv-shadow-sm)', md: 'var(--pv-shadow-md)', lg: 'var(--pv-shadow-lg)', focus: 'var(--pv-focus)' },
+      maxWidth: { content: '1200px', prose: '68ch' },
+    },
+  },
+};

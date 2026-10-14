@@ -1,0 +1,33 @@
+:root {
+  --pv-branco: #ffffff;
+  --pv-nevoa: #f4f9ee;
+  --pv-verde: #2d7f1a;
+  --pv-verde-escuro: #0a3d1c;
+  --pv-verde-fresco: #7bc62d;
+  --pv-verde-tinta: #e7f5df;
+  --pv-amarelo: #ffd60a;
+  --pv-amarelo-tinta: #fff4b8;
+  --pv-tinta: #0f2a17;
+  --pv-tinta-2: #4a5d4f;
+  --pv-linha: #dde8d5;
+  --pv-erro: #c0392b;
+  /* borda de controlos (inputs, botões secundários): ≥ 3:1 sobre branco e névoa */
+  --pv-linha-forte: #7e8f82;
+  /* botão primário acetinado: topo e base mantêm texto branco ≥ 4.5:1 */
+  --pv-verde-topo: #2f841c;
+  --pv-verde-base: #26701a;
+  /* elevação: luz de cima, sombra para baixo, cor da tinta a 8–14 % */
+  --pv-shadow-sm: 0 1px 2px rgba(15, 42, 23, 0.08);
+  --pv-shadow-md: 0 8px 24px rgba(15, 42, 23, 0.1);
+  --pv-shadow-lg: 0 24px 64px rgba(15, 42, 23, 0.14);
+  --pv-focus: 0 0 0 2px #ffffff, 0 0 0 4px #2d7f1a;
+  --pv-radius-s: 8px;
+  --pv-radius-m: 16px;
+  --pv-radius-l: 28px;
+  --pv-radius-pill: 999px;
+  --pv-space: 4px;
+  --pv-fast: 150ms;
+  --pv-base: 250ms;
+  --pv-slow: 400ms;
+  --pv-ease: ease-out;
+}
