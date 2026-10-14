@@ -12,7 +12,7 @@ export default async function MenuPage({ params }: { params: Promise<{ slug: str
   const sb = await createServerSupabase();
   const [cats, items] = await Promise.all([
     sb.from('menu_categories').select('id, name').eq('restaurant_id', ctx.restaurant.id).order('position'),
-    sb.from('menu_items').select('id, name, description, price_cents, category_id').eq('restaurant_id', ctx.restaurant.id).order('position'),
+    sb.from('menu_items').select('id, name, description, price_cents, category_id, available, station, allergens').eq('restaurant_id', ctx.restaurant.id).order('position'),
   ]);
   return (
     <div className="flex flex-col gap-5">

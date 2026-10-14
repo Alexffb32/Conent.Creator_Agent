@@ -12,6 +12,9 @@ import { FLOOR, MANAGE, requireMemberForAction, getSessionProfile } from '../aut
 import { audit } from '../audit';
 import { sendPush } from '../push';
 import { getPaymentProvider } from '../payment-provider';
+import { escapeHtml, getMailer } from '../mail';
+import { publicEnv } from '@/lib/env';
+import { formatPrice } from '@/lib/media';
 
 const ERRORS: Record<string, string> = {
   ordering_off: 'Os pedidos pelo Provei ainda não estão ativos neste restaurante. Chama a equipa.',
@@ -60,7 +63,24 @@ export async function placeOrder(input: unknown): Promise<ActionResult<{ orderId
       p_guest_secret_hash: guestKey ? hashSecret(guestKey) : null,
     });
     if (error) dbError(error.message);
-    return { orderId: String(data), guestKey };
+    const orderId = String(data);
+    if (me?.email) await sendOrderConfirmation(orderId, me.email).catch(() => undefined);
+    return { orderId, guestKey };
+  });
+}
+
+/** E-mail transacional de confirmação (só para quem tem conta; um reenvio idempotente não repete o e-mail). */
+async function sendOrderConfirmation(orderId: string, email: string) {
+  const sb = await createServerSupabase();
+  const { data: o } = await sb.from('orders').select('created_at, total_cents, restaurants(name)').eq('id', orderId).maybeSingle();
+  if (!o || Date.now() - new Date(o.created_at).getTime() > 15_000) return;
+  const name = (o.restaurants as unknown as { name: string } | null)?.name ?? 'o restaurante';
+  const url = `${publicEnv.siteUrl}/pedido/${orderId}`;
+  await getMailer().send({
+    to: email,
+    subject: `Pedido recebido em ${name}`,
+    text: `Recebemos o teu pedido em ${name} (total ${formatPrice(o.total_cents)}). Acompanha aqui: ${url}\nEste e-mail não é fatura.`,
+    html: `<p>Recebemos o teu pedido em <strong>${escapeHtml(name)}</strong> (total ${escapeHtml(formatPrice(o.total_cents))}).</p><p><a href="${url}">Acompanhar o pedido</a></p><p>Este e-mail não é fatura.</p>`,
   });
 }
 
@@ -177,4 +197,41 @@ export async function connectStripeAccount(restaurantId: string): Promise<Action
   });
   if (res.ok) redirect(res.data);
   return res as ActionResult;
+}
+
+export interface StaffOrder {
+  id: string;
+  status: string;
+  kind: 'table' | 'pickup';
+  total_cents: number;
+  created_at: string;
+  payment_status: string;
+  payment_method: string;
+  customer_name: string | null;
+  note: string | null;
+  table_label: string | null;
+  items: { name: string; qty: number; note: string | null; station: string | null }[];
+}
+
+/** Pedidos para a equipa: ativos (KDS) ou do dia (sala). Autoriza no servidor e a RLS volta a filtrar. */
+export async function listStaffOrders(restaurantId: string, scope: 'active' | 'today'): Promise<ActionResult<StaffOrder[]>> {
+  return run(async () => {
+    parse(uuidSchema, restaurantId);
+    await requireMemberForAction(restaurantId, ['owner', 'manager', 'kitchen', 'waiter']);
+    const sb = await createServerSupabase();
+    let q = sb
+      .from('orders')
+      .select('id, status, kind, total_cents, created_at, payment_status, payment_method, customer_name, note, tables(label), order_items(name, qty, note, station)')
+      .eq('restaurant_id', restaurantId)
+      .order('created_at', { ascending: true })
+      .limit(200);
+    if (scope === 'active') q = q.in('status', ['new', 'preparing', 'ready']);
+    else q = q.gte('created_at', new Date(Date.now() - 18 * 3600_000).toISOString());
+    const { data, error } = await q;
+    if (error) throw new Error(error.message);
+    return (data ?? []).map((o) => {
+      const { tables, order_items, ...rest } = o as unknown as StaffOrder & { tables: { label: string } | null; order_items: StaffOrder['items'] };
+      return { ...rest, table_label: tables?.label ?? null, items: order_items ?? [] };
+    });
+  });
 }

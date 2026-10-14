@@ -17,6 +17,7 @@ export function TableScreen(props: {
   sessionExpiresAt: string;
   readyAt: string;
   flags: { callWaiter: boolean; loyalty: boolean; ordering: boolean };
+  orderHref: string;
   initialCall: Call | null;
   card: { stamps: number; points: number; level: string; required: number };
   offers: { id: string; title: string; description: string | null; ends_at: string }[];
@@ -140,6 +141,9 @@ export function TableScreen(props: {
       ) : null}
 
       <div className="flex flex-wrap gap-3">
+        {props.flags.ordering ? (
+          <Link href={props.orderHref} className="pv-btn pv-btn-primary inline-flex min-h-[48px] items-center rounded-pill border border-verde-escuro px-6 font-semibold text-branco">Pedir à mesa</Link>
+        ) : null}
         <Link href={`/r/${props.restaurant.slug}#menu`} className="inline-flex min-h-[48px] items-center rounded-pill border border-linha-forte bg-branco px-5 font-semibold text-verde-escuro hover:border-verde hover:bg-verde-tinta">{t('table.menu')}</Link>
         <Button variant="ghost" onClick={() => start(async () => { await leaveTable(); })}><LogOut size={18} aria-hidden /> {t('table.leave')}</Button>
       </div>

@@ -76,3 +76,20 @@ Tabelas `orders`/`order_items` e RLS existem; a interface está atrás da flag `
 | 2026-10-14 | Migrações aplicadas no projeto `provei` (o único, ainda sem produção) e não num branch Supabase. | Os branches Supabase são pagos (por hora) e a regra é não passar do nível gratuito sem avisar. Todas as migrações são primeiro validadas em PGlite (testes RLS). | Criar um branch por fase. |
 | 2026-10-14 | Previews na Vercel: bloqueados (a ligação devolve 403 a criar projetos). Cada fase fica com build e testes verdes no CI. | Depende de token do dono (ver STATUS). | — |
 | 2026-10-14 | `drop policy` pela ferramenta Supabase fica pendurado (pede confirmação); na cloud usa-se `alter policy ... rename` + `alter policy ... using`, mesmo efeito, e o ficheiro da migração foi alinhado. | Fiabilidade da aplicação remota. | — |
+
+## ADENDA 2 · F2 (2026-10-14)
+| Data | Decisão | Porquê | Alternativa rejeitada |
+| --- | --- | --- | --- |
+| 2026-10-14 | O QR da mesa continua em `/t/{code}` (código público aleatório por mesa) e o pedido em `/t/{code}/pedir`; para levantar, `/levantar/{slug}`. | Os QR já impressos continuam válidos; o código não revela restaurante nem número de mesa e é rotativo. | `/t/{restaurante}/{mesa}` (adivinhável, obriga a reimprimir). |
+| 2026-10-14 | Pedido sem conta: o servidor gera um segredo (24 bytes) e guarda só o sha256 em `orders.guest_secret_hash`; o cliente acompanha o pedido com `?k=` no endereço. | Sem conta obrigatória, sem dados pessoais, e ninguém lê um pedido alheio sem o segredo. | Exigir conta para pedir. |
+| 2026-10-14 | Preços e disponibilidade sempre recalculados na base de dados (`place_order`); o cliente só envia ids e quantidades. Idempotência por `client_ref` único por restaurante; carrinho e fila offline no aparelho. | Impede preços adulterados e pedidos duplicados com rede fraca. | Confiar no total do cliente. |
+| 2026-10-14 | Stripe Connect Express com *direct charges* na conta do restaurante, `application_fee` 0, só modo de teste. Webhook Connect num endpoint próprio (`/api/stripe/connect-webhook`, segredo `STRIPE_CONNECT_WEBHOOK_SECRET`); o pedido só fica pago se o valor recebido for igual ao total. | O restaurante é o vendedor e recebe diretamente; o Provei não toca no dinheiro nem cobra comissão nesta fase. | *Destination charges* com o Provei como comerciante (responsabilidade fiscal e de reembolsos do Provei). |
+| 2026-10-14 | MB WAY e Multibanco: dependem dos métodos ativos na conta Stripe de cada restaurante (Checkout mostra os ativos). [VERIFY] disponibilidade em contas Connect Express PT antes de prometer. | Não afirmar o que não foi verificado. | Prometer MB WAY já. |
+| 2026-10-14 | `FiscalExporter` só como interface; implementação `external` = "a fatura é emitida no programa certificado do restaurante". O ticket diz "Documento de consumo — não é fatura". Confirmar com contabilista (Portaria 363/2010, SAF-T) antes de qualquer integração. | O Provei não é programa de faturação certificado pela AT. | Emitir faturas no Provei. |
+| 2026-10-14 | Fecho de caixa é reconciliação interna (Stripe + dinheiro registado + cancelamentos), não documento fiscal. A mesma regra existe em `packages/domain` (pré-visualização) e em SQL (`close_shift`), ambas com testes. Dados sintéticos (`is_synthetic`) excluídos. | Ajuda o fecho diário sem se fazer passar por documento legal. | — |
+| 2026-10-14 | Flags por restaurante resolvidas no layout do painel (`FlagsProvider` com `getFlags(restaurantId)`). | O piloto liga pedidos restaurante a restaurante. | Só flags globais. |
+| 2026-10-14 | Teste manual na cloud: a flag `ordering` foi ligada uns minutos no restaurante fictício "Café dos Estudantes", foram feitos 3 pedidos de teste e a flag voltou a ficar desligada. Os 3 pedidos ficaram marcados `is_synthetic = true` e cancelados (a ferramenta Supabase não deixa apagar sem confirmação). | Validar `place_order` real de ponta a ponta sem dados falsos apresentados como reais. | — |
+
+| Recurso criado | Onde | Data |
+| --- | --- | --- |
+| Migrações `20261014000012_orders`, `20261014000013_orders_synthetic` | Supabase `provei` | 2026-10-14 |

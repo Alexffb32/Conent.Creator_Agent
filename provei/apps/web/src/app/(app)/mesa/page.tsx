@@ -35,7 +35,7 @@ export default async function MesaPage() {
   const svc = createServiceSupabase();
   const flags = await getFlags(session.restaurant_id);
   const rest = session.restaurants as unknown as { name: string; slug: string; settings: Record<string, unknown> };
-  const tbl = session.tables as unknown as { label: string };
+  const tbl = session.tables as unknown as { label: string; public_code: string };
   const [call, card, offers, program, restRow] = await Promise.all([
     svc.from('waiter_calls').select('id, status, reason, created_at').eq('user_id', me.id).eq('table_id', session.table_id).in('status', ['open', 'acknowledged']).order('created_at', { ascending: false }).limit(1).maybeSingle(),
     svc.from('loyalty_cards').select('stamps, points, level').eq('user_id', me.id).eq('restaurant_id', session.restaurant_id).maybeSingle(),
@@ -52,7 +52,8 @@ export default async function MesaPage() {
       tableLabel={tbl.label}
       sessionExpiresAt={session.expires_at}
       readyAt={readyAt}
-      flags={{ callWaiter: flags.call_waiter, loyalty: flags.loyalty, ordering: flags.table_ordering }}
+      flags={{ callWaiter: flags.call_waiter, loyalty: flags.loyalty, ordering: flags.ordering }}
+      orderHref={`/t/${tbl.public_code}/pedir`}
       initialCall={call.data ?? null}
       card={card.data ? { stamps: card.data.stamps, points: card.data.points, level: card.data.level, required: program.data?.stamps_required ?? 8 } : { stamps: 0, points: 0, level: 'convidado', required: program.data?.stamps_required ?? 8 }}
       offers={offersOn ? offers.data ?? [] : []}

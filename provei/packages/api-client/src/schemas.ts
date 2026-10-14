@@ -133,6 +133,8 @@ export const menuItemSchema = z.object({
   name: trimmed(1, 100),
   description: z.string().trim().max(300).default(''),
   priceEuros: z.coerce.number().min(0).max(1000),
+  station: z.string().trim().toLowerCase().min(1).max(30).default('cozinha'),
+  allergens: z.array(z.enum(['gluten','crustaceans','eggs','fish','peanuts','soy','milk','nuts','celery','mustard','sesame','sulphites','lupin','molluscs'])).max(14).default([]),
 });
 export const offerSchema = z.object({
   restaurantId: uuidSchema,

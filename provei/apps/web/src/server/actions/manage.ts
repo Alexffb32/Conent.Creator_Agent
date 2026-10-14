@@ -34,6 +34,8 @@ export async function addMenuItem(input: unknown): Promise<ActionResult> {
       name: sanitizeText(v.name),
       description: sanitizeText(v.description) || null,
       price_cents: Math.round(v.priceEuros * 100),
+      station: sanitizeText(v.station) || 'cozinha',
+      allergens: v.allergens,
     });
     if (error) throw new Error(error.message);
     revalidatePath(`/r/${ctx.restaurant.slug}`, 'layout');
@@ -47,6 +49,20 @@ export async function deleteMenuItem(restaurantId: string, itemId: string): Prom
     const ctx = await requireMemberForAction(restaurantId, MANAGE);
     const sb = await createServerSupabase();
     await sb.from('menu_items').delete().eq('id', itemId).eq('restaurant_id', restaurantId);
+    revalidatePath(`/r/${ctx.restaurant.slug}`, 'layout');
+    return undefined;
+  });
+}
+
+/** Marca um prato como esgotado ou disponível (sai logo do menu de pedidos). */
+export async function setMenuItemAvailable(restaurantId: string, itemId: string, available: boolean): Promise<ActionResult> {
+  return run(async () => {
+    parse(uuidSchema, restaurantId);
+    parse(uuidSchema, itemId);
+    const ctx = await requireMemberForAction(restaurantId, MANAGE);
+    const sb = await createServerSupabase();
+    const { error } = await sb.from('menu_items').update({ available }).eq('id', itemId).eq('restaurant_id', restaurantId);
+    if (error) throw new Error(error.message);
     revalidatePath(`/r/${ctx.restaurant.slug}`, 'layout');
     return undefined;
   });

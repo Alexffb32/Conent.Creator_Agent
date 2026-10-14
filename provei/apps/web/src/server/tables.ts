@@ -120,7 +120,7 @@ export async function getActiveSession(userId: string) {
   const svc = createServiceSupabase();
   const { data } = await svc
     .from('table_sessions')
-    .select('id, started_at, expires_at, table_id, restaurant_id, tables(label), restaurants(name, slug, settings)')
+    .select('id, started_at, expires_at, table_id, restaurant_id, tables(label, public_code), restaurants(name, slug, settings)')
     .eq('user_id', userId)
     .is('ended_at', null)
     .gt('expires_at', new Date().toISOString())
