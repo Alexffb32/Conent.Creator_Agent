@@ -243,3 +243,54 @@ describe('retenção e resgates', () => {
     expect(redemptionState({ ...r, redeemedAt: t0 }, h(2))).toBe('redeemed');
   });
 });
+
+import { canTransition, priceCart, reconcileShift, EU_ALLERGENS } from '../src';
+
+describe('pedidos (F2)', () => {
+  const menu = [
+    { id: 'a', name: 'Bifana', priceCents: 450, available: true, station: 'cozinha' },
+    { id: 'b', name: 'Imperial', priceCents: 150, available: true, station: 'bar' },
+    { id: 'c', name: 'Polvo', priceCents: 1800, available: false, station: 'cozinha' },
+  ];
+  it('preço vem do menu, linhas iguais somam-se', () => {
+    const r = priceCart([{ menuItemId: 'a', qty: 2 }, { menuItemId: 'b', qty: 1 }, { menuItemId: 'a', qty: 1, note: 'sem mostarda' }], menu);
+    expect(r.ok && r.totalCents).toBe(3 * 450 + 150);
+    expect(r.ok && r.lines.find((l) => l.id === 'a')?.note).toBe('sem mostarda');
+  });
+  it('recusa carrinho vazio, quantidades inválidas, pratos desconhecidos ou indisponíveis', () => {
+    expect(priceCart([], menu)).toEqual({ ok: false, error: 'empty' });
+    expect(priceCart([{ menuItemId: 'a', qty: 0 }], menu)).toMatchObject({ ok: false, error: 'bad_qty' });
+    expect(priceCart([{ menuItemId: 'a', qty: 1.5 }], menu)).toMatchObject({ ok: false, error: 'bad_qty' });
+    expect(priceCart([{ menuItemId: 'a', qty: 15 }, { menuItemId: 'a', qty: 6 }], menu)).toMatchObject({ ok: false, error: 'bad_qty' });
+    expect(priceCart([{ menuItemId: 'zzz', qty: 1 }], menu)).toMatchObject({ ok: false, error: 'unknown_item' });
+    expect(priceCart([{ menuItemId: 'c', qty: 1 }], menu)).toMatchObject({ ok: false, error: 'unavailable' });
+    const many = Array.from({ length: 31 }, (_, i) => ({ menuItemId: `x${i}`, qty: 1 }));
+    expect(priceCart(many, menu)).toMatchObject({ ok: false, error: 'too_many_lines' });
+  });
+  it('transições por papel: cozinha prepara, sala entrega, ninguém salta estados', () => {
+    expect(canTransition('new', 'preparing', 'kitchen')).toBe(true);
+    expect(canTransition('preparing', 'ready', 'kitchen')).toBe(true);
+    expect(canTransition('ready', 'delivered', 'kitchen')).toBe(false);
+    expect(canTransition('ready', 'delivered', 'waiter')).toBe(true);
+    expect(canTransition('new', 'ready', 'owner')).toBe(false);
+    expect(canTransition('new', 'cancelled', 'kitchen')).toBe(false);
+    expect(canTransition('preparing', 'cancelled', 'manager')).toBe(true);
+    expect(canTransition('delivered', 'cancelled', 'owner')).toBe(false);
+    expect(canTransition('ready', 'preparing', 'kitchen')).toBe(true);
+  });
+  it('fecho de caixa reconcilia Stripe, dinheiro e anulações e assinala diferenças', () => {
+    const r = reconcileShift([
+      { status: 'delivered', paymentStatus: 'paid', paymentMethod: 'stripe', totalCents: 1000 },
+      { status: 'delivered', paymentStatus: 'paid', paymentMethod: 'cash', totalCents: 2000 },
+      { status: 'delivered', paymentStatus: 'unpaid', paymentMethod: 'none', totalCents: 500 },
+      { status: 'cancelled', paymentStatus: 'unpaid', paymentMethod: 'none', totalCents: 700 },
+    ], 1900);
+    expect(r).toMatchObject({ ordersCount: 3, stripeCents: 1000, cashExpectedCents: 2000, cashDiffCents: -100, unpaidCount: 1, unpaidCents: 500, cancelledCount: 1, cancelledCents: 700 });
+    expect(r.flags).toEqual(['cash_short', 'unpaid_orders']);
+    expect(reconcileShift([], 0).flags).toEqual([]);
+    expect(reconcileShift([{ status: 'delivered', paymentStatus: 'paid', paymentMethod: 'cash', totalCents: 100 }], 150).flags).toEqual(['cash_over']);
+  });
+  it('lista os 14 alergénios da UE', () => {
+    expect(EU_ALLERGENS).toHaveLength(14);
+  });
+});

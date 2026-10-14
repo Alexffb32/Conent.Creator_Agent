@@ -411,3 +411,77 @@ describe('F1: quatro tipos de conta', () => {
     await rejects(as(db, auth(U.alice), 'select public.user_roles($1)', [U.ownerA]));
   });
 });
+
+describe('F2: pedidos', () => {
+  const ref = (n: number) => `30000000-0000-0000-0000-${String(n).padStart(12, '0')}`;
+  let itemA: string;
+  let itemOff: string;
+  const place = (who: { role: 'anon' | 'authenticated'; uid?: string }, items: unknown, clientRef: string, kind = 'table', code: string | null = 'codea0001', name: string | null = null) =>
+    as<{ place_order: string }>(db, who, 'select public.place_order($1, $2, $3, $4::jsonb, $5::uuid, null, $6, null, $7)', [R.A, kind, code, JSON.stringify(items), clientRef, name, 'hash-secret']);
+
+  beforeAll(async () => {
+    itemA = (await db.query<{ id: string }>("insert into public.menu_items (restaurant_id, name, price_cents, station) values ($1, 'Bifana', 450, 'cozinha') returning id", [R.A])).rows[0]!.id;
+    itemOff = (await db.query<{ id: string }>("insert into public.menu_items (restaurant_id, name, price_cents, available) values ($1, 'Esgotado', 900, false) returning id", [R.A])).rows[0]!.id;
+  });
+
+  it('com a flag ordering desligada ninguém pede', async () => {
+    expect(await rejects(place(anon, [{ id: itemA, qty: 1 }], ref(1)))).toMatch(/ordering_off/);
+  });
+  it('anónimo pede pela mesa; preço vem do menu; repetir o client_ref devolve o mesmo pedido', async () => {
+    await db.query("update public.feature_flags set enabled = true where key = 'ordering'");
+    const a = (await place(anon, [{ id: itemA, qty: 2, price_cents: 1 }], ref(2)))[0]!.place_order;
+    const b = (await place(anon, [{ id: itemA, qty: 2 }], ref(2)))[0]!.place_order;
+    expect(a).toBe(b);
+    const o = (await db.query<{ total_cents: number; user_id: string | null }>('select total_cents, user_id from public.orders where id = $1', [a])).rows[0]!;
+    expect(o).toEqual({ total_cents: 900, user_id: null });
+  });
+  it('recusa prato indisponível, de outro restaurante, quantidade inválida e mesa de outro restaurante', async () => {
+    expect(await rejects(place(anon, [{ id: itemOff, qty: 1 }], ref(3)))).toMatch(/unavailable/);
+    const itemB = (await db.query<{ id: string }>("insert into public.menu_items (restaurant_id, name, price_cents) values ($1, 'Do B', 100) returning id", [R.B])).rows[0]!.id;
+    expect(await rejects(place(anon, [{ id: itemB, qty: 1 }], ref(4)))).toMatch(/unknown_item/);
+    expect(await rejects(place(anon, [{ id: itemA, qty: 0 }], ref(5)))).toMatch(/bad_qty/);
+    expect(await rejects(place(anon, [{ id: itemA, qty: 1 }], ref(6), 'table', 'codeb0001'))).toMatch(/table_not_found/);
+    expect(await rejects(place(anon, [{ id: itemA, qty: 1 }], ref(7), 'pickup', null, null))).toMatch(/name_required/);
+  });
+  it('clientes não escrevem diretamente em orders; o cliente vê só os seus', async () => {
+    await rejects(as(db, auth(U.alice), "insert into public.orders (restaurant_id, status) values ($1, 'new')", [R.A]));
+    const mine = (await place(auth(U.alice), [{ id: itemA, qty: 1 }], ref(8)))[0]!.place_order;
+    expect((await as<{ id: string }>(db, auth(U.alice), 'select id from public.orders')).map((r) => r.id)).toEqual([mine]);
+    expect(await as(db, auth(U.bob), 'select 1 from public.orders')).toHaveLength(0);
+    await rejects(as(db, auth(U.alice), 'update public.orders set total_cents = 1 returning id'));
+  });
+  it('pedido sem conta lê-se só com o segredo certo', async () => {
+    const id = (await place(anon, [{ id: itemA, qty: 1 }], ref(9)))[0]!.place_order;
+    const ok = await as<{ get_guest_order: { total_cents: number } | null }>(db, anon, 'select public.get_guest_order($1, $2)', [id, 'hash-secret']);
+    expect(ok[0]!.get_guest_order?.total_cents).toBe(450);
+    const bad = await as<{ get_guest_order: unknown }>(db, anon, 'select public.get_guest_order($1, $2)', [id, 'errado']);
+    expect(bad[0]!.get_guest_order).toBeNull();
+  });
+  it('KDS: cozinha prepara, sala entrega, B não mexe em A, saltos recusados', async () => {
+    const id = (await place(anon, [{ id: itemA, qty: 1 }], ref(10)))[0]!.place_order;
+    const set = (uid: string, s: string) => as(db, auth(uid), 'select public.set_order_status($1, $2, null)', [id, s]);
+    expect(await rejects(set(U.ownerB, 'preparing'))).toMatch(/forbidden/);
+    expect(await rejects(set(U.waiterA, 'preparing'))).toMatch(/bad_transition/);
+    expect(await rejects(set(U.kitchenA, 'delivered'))).toMatch(/bad_transition/);
+    await set(U.kitchenA, 'preparing');
+    await set(U.kitchenA, 'ready');
+    expect(await rejects(set(U.kitchenA, 'delivered'))).toMatch(/bad_transition/);
+    await set(U.waiterA, 'delivered');
+    expect((await db.query<{ status: string }>('select status from public.orders where id = $1', [id])).rows[0]!.status).toBe('delivered');
+    expect((await as(db, auth(U.kitchenA), 'select 1 from public.orders where id = $1', [id])).length).toBe(1);
+    expect(await as(db, auth(U.ownerB), 'select 1 from public.orders where id = $1', [id])).toHaveLength(0);
+  });
+  it('dinheiro: sala regista; cozinha não; fecho de caixa só por quem gere e assinala diferenças', async () => {
+    const id = (await place(anon, [{ id: itemA, qty: 2 }], ref(11)))[0]!.place_order;
+    await rejects(as(db, auth(U.kitchenA), 'select public.mark_order_paid_cash($1)', [id]));
+    await as(db, auth(U.waiterA), 'select public.mark_order_paid_cash($1)', [id]);
+    await rejects(as(db, auth(U.waiterA), 'select public.mark_order_paid_cash($1)', [id]));
+    const range = [R.A, new Date(Date.now() - 3600_000).toISOString(), new Date(Date.now() + 60_000).toISOString()];
+    await rejects(as(db, auth(U.waiterA), 'select public.close_shift($1, $2, $3, 0, null)', range));
+    const c = (await as<{ close_shift: string }>(db, auth(U.managerA), 'select public.close_shift($1, $2, $3, 800, null)', range))[0]!.close_shift;
+    const row = (await as<{ cash_expected_cents: number; cash_diff_cents: number }>(db, auth(U.ownerA), 'select cash_expected_cents, cash_diff_cents from public.cash_closes where id = $1', [c]))[0]!;
+    expect(row).toEqual({ cash_expected_cents: 900, cash_diff_cents: -100 });
+    expect(await as(db, auth(U.waiterA), 'select 1 from public.cash_closes')).toHaveLength(0);
+    await db.query("update public.feature_flags set enabled = false where key = 'ordering'");
+  });
+});
