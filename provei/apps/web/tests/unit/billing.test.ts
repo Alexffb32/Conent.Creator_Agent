@@ -25,6 +25,17 @@ function memoryStore() {
     async updateAdFreeSubscription(i) {
       log.push(`asub:${i.subscriptionId}:${i.status}`);
     },
+    async markOrderPaid(i) {
+      if (i.amountCents !== 900) return 'amount_mismatch';
+      log.push(`paid:${i.orderId}:${i.paymentIntentId}`);
+      return 'paid';
+    },
+    async markOrderPaymentFailed(i) {
+      log.push(`failed:${i.orderId}`);
+    },
+    async setConnectAccountStatus(i) {
+      log.push(`acct:${i.accountId}:${i.chargesEnabled}`);
+    },
   };
   return { store, log, seen };
 }
@@ -69,5 +80,25 @@ describe('webhook Stripe idempotente', () => {
     };
     await expect(processStripeEvent(store, checkout('e8', { kind: 'restaurant_plan', restaurant_id: 'r1' }))).rejects.toThrow();
     expect(seen.has('e8')).toBe(false);
+  });
+});
+
+describe('pagamentos de pedidos (Stripe Connect, teste)', () => {
+  const pi = (id: string, type: string, amount: number, meta: Record<string, string>): StripeEventLite => ({
+    id, type, data: { object: { id: 'pi_1', amount_received: amount, metadata: meta } },
+  });
+  it('marca o pedido pago só uma vez e só se o valor bater certo', async () => {
+    const { store, log } = memoryStore();
+    expect(await processStripeEvent(store, pi('evt_o1', 'payment_intent.succeeded', 900, { kind: 'order', order_id: 'o1' }))).toBe('processed');
+    expect(await processStripeEvent(store, pi('evt_o1', 'payment_intent.succeeded', 900, { kind: 'order', order_id: 'o1' }))).toBe('duplicate');
+    expect(await processStripeEvent(store, pi('evt_o2', 'payment_intent.succeeded', 100, { kind: 'order', order_id: 'o2' }))).toBe('ignored');
+    expect(await processStripeEvent(store, pi('evt_o3', 'payment_intent.succeeded', 900, { kind: 'other' }))).toBe('ignored');
+    expect(log).toEqual(['paid:o1:pi_1']);
+  });
+  it('regista falhas e o estado da conta Connect', async () => {
+    const { store, log } = memoryStore();
+    await processStripeEvent(store, pi('evt_f', 'payment_intent.payment_failed', 900, { kind: 'order', order_id: 'o9' }));
+    await processStripeEvent(store, { id: 'evt_a', type: 'account.updated', data: { object: { id: 'acct_1', charges_enabled: true } } });
+    expect(log).toEqual(['failed:o9', 'acct:acct_1:true']);
   });
 });

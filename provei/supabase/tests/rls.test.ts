@@ -485,3 +485,13 @@ describe('F2: pedidos', () => {
     await db.query("update public.feature_flags set enabled = false where key = 'ordering'");
   });
 });
+
+describe('F2: informação pública da mesa', () => {
+  it('o QR revela só restaurante e etiqueta; códigos inválidos devolvem nada', async () => {
+    const r = await as<{ table_public_info: Record<string, unknown> }>(db, anon, "select public.table_public_info('codea0001')");
+    expect(r[0]!.table_public_info).toMatchObject({ restaurant_id: R.A, table_label: '1', ordering: false });
+    expect(Object.keys(r[0]!.table_public_info).sort()).toEqual(['name', 'ordering', 'payments', 'restaurant_id', 'slug', 'stripe_ready', 'table_label']);
+    const none = await as<{ table_public_info: unknown }>(db, anon, "select public.table_public_info('naoexiste')");
+    expect(none[0]!.table_public_info).toBeNull();
+  });
+});

@@ -214,3 +214,18 @@ do $$ begin
     alter publication supabase_realtime add table public.orders;
   end if;
 end $$;
+
+-- ---------- leitura pública mínima para a página de pedido ----------
+grant execute on function public.flag_on(text, uuid) to anon, authenticated;
+
+-- O QR da mesa só revela restaurante (público) e etiqueta da mesa; nada sobre sessões ou clientes.
+create or replace function public.table_public_info(p_code text) returns jsonb
+language sql stable security definer set search_path = public as $$
+  select jsonb_build_object('restaurant_id', r.id, 'slug', r.slug, 'name', r.name, 'table_label', t.label,
+                            'ordering', public.flag_on('ordering', r.id), 'payments', public.flag_on('payments', r.id),
+                            'stripe_ready', r.stripe_charges_enabled)
+  from public.tables t join public.restaurants r on r.id = t.restaurant_id
+  where t.public_code = lower(p_code) and t.active and r.verified_status = 'verified' and r.deleted_at is null
+$$;
+revoke all on function public.table_public_info(text) from public;
+grant execute on function public.table_public_info(text) to anon, authenticated;

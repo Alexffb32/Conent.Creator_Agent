@@ -11,6 +11,24 @@ export function supabaseBillingStore(): BillingStore {
       if (error.code === '23505') return false;
       throw new Error(error.message);
     },
+    async markOrderPaid({ orderId, paymentIntentId, amountCents }) {
+      const { data: o } = await svc.from('orders').select('id, total_cents, payment_status, status').eq('id', orderId).maybeSingle();
+      if (!o) return 'not_found';
+      if (o.total_cents !== amountCents) {
+        console.error('[stripe-order] valor diferente do pedido', { orderId, amountCents, expected: o.total_cents });
+        return 'amount_mismatch';
+      }
+      if (o.payment_status !== 'paid') {
+        await svc.from('orders').update({ payment_status: 'paid', payment_method: 'stripe', stripe_payment_intent: paymentIntentId, paid_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', orderId);
+      }
+      return 'paid';
+    },
+    async markOrderPaymentFailed({ orderId, paymentIntentId }) {
+      await svc.from('orders').update({ payment_status: 'failed', stripe_payment_intent: paymentIntentId, updated_at: new Date().toISOString() }).eq('id', orderId).neq('payment_status', 'paid');
+    },
+    async setConnectAccountStatus({ accountId, chargesEnabled }) {
+      await svc.from('restaurants').update({ stripe_charges_enabled: chargesEnabled }).eq('stripe_account_id', accountId);
+    },
     async releaseEvent(id) {
       await svc.from('stripe_events').delete().eq('id', id);
     },
