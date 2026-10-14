@@ -2,15 +2,6 @@ import 'server-only';
 import { createSign, randomUUID } from 'node:crypto';
 import { serverEnv } from '@/lib/env';
 
-/** Disponibilidade dos passes: sem credenciais devolve "indisponível" e a UI esconde os botões. */
-export function walletAvailability() {
-  const w = serverEnv.wallet;
-  return {
-    apple: Boolean(w.appleTypeId && w.appleTeamId && w.appleCertBase64),
-    google: Boolean(w.googleIssuerId && w.googleServiceAccountJson),
-  };
-}
-
 const b64u = (b: Buffer | string) => Buffer.from(b).toString('base64url');
 
 /** JWT RS256 "Save to Google Wallet" (generic/loyalty class). */

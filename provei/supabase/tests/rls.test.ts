@@ -294,7 +294,8 @@ describe('administração, auditoria e flags', () => {
   it('por omissão: flags pagas e todas as da ADENDA 2 desligadas, as do produto base ligadas', async () => {
     const rows = (await db.query<{ key: string; enabled: boolean }>('select key, enabled from public.feature_flags')).rows;
     const off = ['payments', 'wallet', 'ads', 'ad_free_subscription', 'table_ordering', 'ordering', 'kds', 'whatsapp', 'review_requests',
-      'coupons', 'analytics', 'ai_advisor', 'recommender', 'kitchen_forecast'];
+      'coupons', 'analytics', 'ai_advisor', 'recommender', 'kitchen_forecast',
+      'wallet_apple', 'wallet_google', 'wallet_updates', 'wallet_location', 'wallet_campaigns'];
     for (const r of rows) expect(r.enabled).toBe(!off.includes(r.key));
   });
   it('auditoria: não é escrita por clientes e é lida só pelo admin', async () => {
@@ -526,5 +527,61 @@ describe('F2: informação pública da mesa', () => {
     expect(Object.keys(r[0]!.table_public_info).sort()).toEqual(['name', 'ordering', 'payments', 'restaurant_id', 'slug', 'stripe_ready', 'table_label']);
     const none = await as<{ table_public_info: unknown }>(db, anon, "select public.table_public_info('naoexiste')");
     expect(none[0]!.table_public_info).toBeNull();
+  });
+});
+
+describe('ADENDA 4 · W1: cartões Wallet', () => {
+  const serial = 'a'.repeat(32);
+  let passId: string;
+  beforeAll(async () => {
+    passId = (await db.query<{ id: string }>(
+      "insert into public.wallet_passes (platform, restaurant_id, customer_id, serial_number, auth_token_hash, member_token_hash) values ('apple', $1, $2, $3, 'h1', 'm1') returning id",
+      [R.A, U.alice, serial],
+    )).rows[0]!.id;
+    await db.query("insert into public.wallet_registrations (device_library_id, pass_id, push_token) values ('dev1', $1, 'push1')", [passId]);
+  });
+  it('flags da Wallet existem e estão desligadas', async () => {
+    const r = await db.query<{ key: string; enabled: boolean }>("select key, enabled from public.feature_flags where key like 'wallet_%' order by key");
+    expect(r.rows).toEqual([
+      { key: 'wallet_apple', enabled: false },
+      { key: 'wallet_campaigns', enabled: false },
+      { key: 'wallet_google', enabled: false },
+      { key: 'wallet_location', enabled: false },
+      { key: 'wallet_updates', enabled: false },
+    ]);
+  });
+  it('o cliente vê só o seu cartão; ninguém escreve pelo cliente; registos invisíveis', async () => {
+    expect(await as(db, auth(U.alice), 'select 1 from public.wallet_passes')).toHaveLength(1);
+    expect(await as(db, auth(U.bob), 'select 1 from public.wallet_passes')).toHaveLength(0);
+    expect(await as(db, auth(U.ownerA), 'select 1 from public.wallet_passes')).toHaveLength(0);
+    expect(await as(db, anon, 'select 1 from public.wallet_passes')).toHaveLength(0);
+    await rejects(as(db, auth(U.alice), "update public.wallet_passes set voided = false returning id"));
+    await rejects(as(db, auth(U.alice), "insert into public.wallet_passes (platform, restaurant_id, customer_id, serial_number, auth_token_hash, member_token_hash) values ('apple', $1, $2, $3, 'x', 'y')", [R.B, U.alice, 'b'.repeat(32)]));
+    await rejects(as(db, auth(U.alice), 'select 1 from public.wallet_registrations'));
+  });
+  it('um cartão ativo por restaurante e cliente', async () => {
+    await rejects(db.query("insert into public.wallet_passes (platform, restaurant_id, customer_id, serial_number, auth_token_hash, member_token_hash) values ('apple', $1, $2, $3, 'h2', 'm2')", [R.A, U.alice, 'c'.repeat(32)]));
+  });
+  it('apagar a conta anula o cartão e avança a etiqueta', async () => {
+    await db.query('update public.profiles set deleted_at = now() where id = $1', [U.alice]);
+    const p = (await db.query<{ voided: boolean; update_tag: string }>('select voided, update_tag from public.wallet_passes where id = $1', [passId])).rows[0]!;
+    expect({ voided: p.voided, update_tag: Number(p.update_tag) }).toEqual({ voided: true, update_tag: 2 });
+    await db.query('update public.profiles set deleted_at = null where id = $1', [U.alice]);
+  });
+});
+
+describe('ADENDA 4 · W1: etiqueta de atualização', () => {
+  it('mudar pontos avança a etiqueta; mudar outra coisa não', async () => {
+    const card = (await db.query<{ id: string }>("insert into public.loyalty_cards (user_id, restaurant_id, points) values ($1, $2, 10) returning id", [U.bob, R.A])).rows[0]!.id;
+    const pass = (await db.query<{ id: string }>(
+      "insert into public.wallet_passes (platform, restaurant_id, customer_id, card_id, serial_number, auth_token_hash, member_token_hash) values ('apple', $1, $2, $3, $4, 'hb', 'mb') returning id",
+      [R.A, U.bob, card, 'd'.repeat(32)],
+    )).rows[0]!.id;
+    const tag = async () => Number((await db.query<{ update_tag: string }>('select update_tag from public.wallet_passes where id = $1', [pass])).rows[0]!.update_tag);
+    expect(await tag()).toBe(1);
+    await db.query('update public.loyalty_cards set points = 20 where id = $1', [card]);
+    expect(await tag()).toBe(2);
+    await db.query('update public.loyalty_cards set updated_at = now() where id = $1', [card]);
+    expect(await tag()).toBe(2);
   });
 });

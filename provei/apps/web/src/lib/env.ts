@@ -46,8 +46,13 @@ export const serverEnv = {
     return {
       appleTypeId: process.env.APPLE_PASS_TYPE_ID ?? '',
       appleTeamId: process.env.APPLE_TEAM_ID ?? '',
-      appleCertBase64: process.env.APPLE_PASS_CERT_BASE64 ?? '',
-      appleCertPassword: process.env.APPLE_PASS_CERT_PASSWORD ?? '',
+      // PEM em base64 (certificado do Pass Type ID, chave privada e certificado intermédio Apple WWDR)
+      appleSignerCertB64: process.env.APPLE_PASS_SIGNER_CERT_PEM_B64 ?? '',
+      appleSignerKeyB64: process.env.APPLE_PASS_SIGNER_KEY_PEM_B64 ?? '',
+      appleSignerKeyPassphrase: process.env.APPLE_PASS_SIGNER_KEY_PASSPHRASE ?? '',
+      appleWwdrB64: process.env.APPLE_WWDR_CERT_PEM_B64 ?? '',
+      /** Segredo para derivar authenticationToken e token do QR (HMAC). Mudar invalida todos os cartões. */
+      tokenSecret: process.env.WALLET_TOKEN_SECRET ?? '',
       googleIssuerId: process.env.GOOGLE_WALLET_ISSUER_ID ?? '',
       googleServiceAccountJson: process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_JSON ?? '',
     };

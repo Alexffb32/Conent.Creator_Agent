@@ -21,6 +21,7 @@ import { tableSecret } from '@/lib/env';
 import { type ActionResult, parse, run, UserError } from '../action';
 import { requireMemberForAction, requireUserForAction, MANAGE } from '../auth';
 import { audit, ipHash } from '../audit';
+import { afterScan, resolveMemberToken, type WalletPassRow } from '../wallet/passes';
 import { enforceRateLimit } from '../ratelimit';
 import { createWaiterCall, exchangeTableToken, getActiveSession } from '../tables';
 import { VisitRefused, notify, recordVerifiedVisit } from '../loyalty';
@@ -178,6 +179,7 @@ export async function validateVisit(input: unknown): Promise<ActionResult<{ name
     await enforceRateLimit(`staffvisit:${ctx.me.id}`, 60, 30);
     const svc = createServiceSupabase();
     let resolvedUser: string | null = null;
+    let walletPass: WalletPassRow | null = null;
 
     if (v.userCode.startsWith('provei:u:')) {
       const check = await verifyTableToken(v.userCode.slice('provei:u:'.length), tableSecret());
@@ -185,6 +187,12 @@ export async function validateVisit(input: unknown): Promise<ActionResult<{ name
       const { error } = await svc.from('table_token_uses').insert({ jti: check.payload.jti, table_id: v.restaurantId, used_by: ctx.me.id });
       if (error) throw new UserError('Este QR já foi usado. Pede ao cliente para o atualizar.');
       resolvedUser = check.payload.tid.slice(2);
+    } else if (v.userCode.startsWith('provei:w:')) {
+      // cartão Wallet: token opaco e rotativo; tem de ser deste restaurante
+      walletPass = await resolveMemberToken(v.userCode.slice('provei:w:'.length), svc);
+      if (!walletPass || !walletPass.customer_id) throw new UserError('Cartão Wallet não reconhecido. Pede ao cliente para o atualizar.');
+      if (walletPass.restaurant_id !== v.restaurantId) throw new UserError('Este cartão Wallet é de outro restaurante.');
+      resolvedUser = walletPass.customer_id;
     } else {
       const handle = v.userCode.replace(/^@/, '').toLowerCase();
       const { data } = await svc.from('profiles').select('id').eq('handle', handle).is('deleted_at', null).maybeSingle();
@@ -202,7 +210,8 @@ export async function validateVisit(input: unknown): Promise<ActionResult<{ name
     const { data: prof } = await svc.from('profiles').select('display_name, handle').eq('id', userId).single();
     try {
       const r = await recordVerifiedVisit({ userId, restaurantId: v.restaurantId, level: 'staff_validated', validatedBy: ctx.me.id, validationReason: v.reason || null, at });
-      await audit({ actorId: ctx.me.id, action: 'visit.staff_validated', entity: 'visit', entityId: r.visitId, restaurantId: v.restaurantId, meta: { userId, backdateMinutes: v.backdateMinutes, reason: v.reason } });
+      if (walletPass) await afterScan(walletPass, svc);
+      await audit({ actorId: ctx.me.id, action: 'visit.staff_validated', entity: 'visit', entityId: r.visitId, restaurantId: v.restaurantId, meta: { userId, backdateMinutes: v.backdateMinutes, reason: v.reason, via: walletPass ? 'wallet' : 'qr' } });
       return { name: prof?.display_name || prof?.handle || 'Cliente', points: r.points, rewardCode: r.rewardCode };
     } catch (e) {
       if (e instanceof VisitRefused) throw new UserError(e.message);

@@ -23,7 +23,7 @@ export function StaffScanner({ restaurantId }: { restaurantId: string }) {
       setBusy(true);
       try {
         const t = text.trim();
-        if (t.startsWith('provei:u:') || t.startsWith('@')) {
+        if (t.startsWith('provei:u:') || t.startsWith('provei:w:') || t.startsWith('@')) {
           const r = await validateVisit({ restaurantId, userCode: t, reason, backdateMinutes: Number(backdate) });
           setResult(r.ok ? { kind: 'ok', text: `Visita confirmada para ${r.data.name}. +${r.data.points} pontos${r.data.rewardCode ? `. Cartão completo! Recompensa ${r.data.rewardCode}` : ''}.` } : { kind: 'erro', text: r.error });
         } else if (t.startsWith('provei:r:') || /^[A-Za-z0-9]{4}-?[A-Za-z0-9]{4}$/.test(t)) {

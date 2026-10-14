@@ -96,3 +96,20 @@ Tabelas `orders`/`order_items` e RLS existem; a interface está atrás da flag `
 | Recurso criado | Onde | Data |
 | --- | --- | --- |
 | Migrações `20261014000012_orders`, `20261014000013_orders_synthetic`, `20261014000014_orders_hardening` | Supabase `provei` | 2026-10-14 |
+
+## ADENDA 4 · W1 (2026-10-14)
+| Data | Decisão | Porquê | Alternativa rejeitada |
+| --- | --- | --- | --- |
+| 2026-10-14 | Biblioteca `passkit-generator` 3.6.1 (versão fixa) para gerar e assinar `.pkpass`. | MIT, mantida (última versão 2026-09-20), Node ≥ 14, compatível com o Node 22 do projeto. | `@walletpass/pass-js` 7.2.0: exige Node ≥ 24.12 e licença AGPL-3.0. |
+| 2026-10-14 | `authenticationToken` e token do QR derivados por HMAC-SHA256 (`WALLET_TOKEN_SECRET`) do número de série (e da versão, no QR). A base guarda só os hashes. | O cartão tem de ser regenerado com o mesmo token; assim não há tokens em claro na base. | Guardar tokens cifrados na base. |
+| 2026-10-14 | Token do QR roda a cada leitura só com `wallet_updates` ligada; a versão anterior é aceite até o telemóvel buscar o cartão novo. | Sem atualização no telemóvel, rodar o token invalidava o cartão. | Rodar sempre. |
+| 2026-10-14 | O cartão na Wallet continua a ser funcionalidade do plano pago do restaurante (decisão do MVP), além das flags. | Coerência com a tabela de preços publicada. | Gratuito para todos. |
+| 2026-10-14 | Etiqueta de atualização avançada por gatilho em `loyalty_cards` (pontos, carimbos, nível) e anulação por gatilho ao apagar a conta. | Todos os caminhos que mexem em pontos ficam cobertos sem depender de cada ação. | Avançar a etiqueta em cada ação do servidor. |
+| 2026-10-14 | `storeCard` não tem `relevantDate` neste desenho: não se promete horário nem frequência do aviso no ecrã de bloqueio. | Requisito do ADENDA 4 §4; o iOS decide. | — |
+| 2026-10-14 | Imagens do cartão geradas do logótipo provisório (`scripts/gen-wallet-images.mjs`), embutidas no servidor. Trocar quando houver kit oficial. | Ficam sempre incluídas no deploy, sem depender de ficheiros públicos. | Servir de `public/`. |
+| 2026-10-14 | `pnpm audit`: `joi` (dependência fixa do `passkit-generator`) forçado para 17.13.8 com `pnpm.overrides` (corrige 4 avisos). Fica 1 aviso alto em `node-forge` ≤ 1.4.0 (verificação de assinaturas RSA PKCS#1 v1.5), sem versão corrigida: o Provei só **assina** com o node-forge, nunca verifica assinaturas com ele, por isso não é explorável aqui. Rever quando sair correção. | Corrigir o que tem correção e documentar o resto. | Trocar de biblioteca (a alternativa exige Node 24 e AGPL). |
+| 2026-10-14 | ADENDA 4 executado antes de retomar ADENDA 2 F3 (pré-requisito só F2 estável). W5 (campanhas) fica bloqueado até chegar o ADENDA 3 (`consents` + `shouldSend`, G1). | Não inventar regras de consentimento que pertencem a outro adenda. | Implementar um `shouldSend` provisório. |
+
+| Recurso criado | Onde | Data |
+| --- | --- | --- |
+| Migração `20261014000015_wallet` (tabelas `wallet_passes`, `wallet_registrations`, 5 flags, 2 gatilhos) | Supabase `provei` | 2026-10-14 |

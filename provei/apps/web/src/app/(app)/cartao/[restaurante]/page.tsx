@@ -8,6 +8,7 @@ import { createServerSupabase } from '@/lib/supabase/server';
 import { getFlags } from '@/lib/flags';
 import { walletAvailability } from '@/server/wallet';
 import { formatDateTime } from '@/lib/media';
+import { AddToAppleWallet } from '@/components/loyalty/AddToAppleWallet';
 
 export const metadata: Metadata = { title: 'Cartão de fidelização' };
 export const dynamic = 'force-dynamic';
@@ -25,7 +26,9 @@ export default async function CartaoRestaurantePage({ params }: { params: Promis
   ]);
   const events = card ? (await sb.from('loyalty_events').select('id, type, delta, reason, created_at').eq('card_id', card.id).order('created_at', { ascending: false }).limit(30)).data ?? [] : [];
   const p = stampProgress(card?.stamps ?? 0, program?.stamps_required ?? 8);
-  const wallet = flags.wallet && r.plan === 'paid' ? walletAvailability() : { apple: false, google: false };
+  const avail = walletAvailability();
+  const paid = r.plan === 'paid';
+  const wallet = { apple: flags.wallet_apple && paid && avail.apple, google: flags.wallet_google && paid && avail.google };
   return (
     <div className="pv-container flex max-w-2xl flex-col gap-5 pt-5">
       <Link href="/cartao" className="text-sm font-semibold text-verde underline">← Todos os cartões</Link>
@@ -37,9 +40,9 @@ export default async function CartaoRestaurantePage({ params }: { params: Promis
         </div>
         <p className="text-tinta-2">{program?.reward_text ?? 'Recompensa por definir'} · faltam {p.missing} carimbos. Cartões completos: {card?.completed_cycles ?? 0}.</p>
         {wallet.apple || wallet.google ? (
-          <div className="flex flex-wrap gap-2">
-            {wallet.apple ? <a className="inline-flex min-h-touch items-center rounded-pill bg-tinta px-5 font-semibold text-branco" href={`/api/wallet/apple/${r.slug}`}>Adicionar ao Apple Wallet</a> : null}
-            {wallet.google ? <a className="inline-flex min-h-touch items-center rounded-pill bg-tinta px-5 font-semibold text-branco" href={`/api/wallet/google/${r.slug}`}>Adicionar ao Google Wallet</a> : null}
+          <div className="flex flex-col gap-3">
+            {wallet.apple ? <AddToAppleWallet restaurantId={r.id} simulated={avail.appleSimulated} /> : null}
+            {wallet.google ? <a className="inline-flex min-h-touch items-center rounded-pill bg-tinta px-5 font-semibold text-branco" href={`/api/wallet/google/${r.slug}`}>Adicionar à Google Wallet</a> : null}
           </div>
         ) : null}
       </Card>

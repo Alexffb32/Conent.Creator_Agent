@@ -24,6 +24,12 @@ export const FLAG_KEYS = [
   'ai_advisor',
   'recommender',
   'kitchen_forecast',
+  // ADENDA 4 (todas desligadas por omissão)
+  'wallet_apple',
+  'wallet_google',
+  'wallet_updates',
+  'wallet_location',
+  'wallet_campaigns',
 ] as const;
 export type FlagKey = (typeof FLAG_KEYS)[number];
 export type Flags = Record<FlagKey, boolean>;
@@ -48,6 +54,11 @@ export const DEFAULT_FLAGS: Flags = {
   ai_advisor: false,
   recommender: false,
   kitchen_forecast: false,
+  wallet_apple: false,
+  wallet_google: false,
+  wallet_updates: false,
+  wallet_location: false,
+  wallet_campaigns: false,
 };
 
 /** Flags globais, com override por restaurante. Liga-se por configuração, sem novo deploy. */

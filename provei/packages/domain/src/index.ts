@@ -12,3 +12,4 @@ export * from './retention';
 export * from './redemption';
 export * from './messages';
 export * from './orders';
+export * from './wallet';
