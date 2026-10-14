@@ -7,6 +7,7 @@ import { createServerSupabase, createServiceSupabase } from '@/lib/supabase/serv
 import { type ActionResult, parse, run, UserError } from '../action';
 import { requireUserForAction } from '../auth';
 import { audit } from '../audit';
+import { pushForCustomer } from '../wallet/stores';
 import { enforceRateLimit } from '../ratelimit';
 
 const CONSENT_VERSION = '2026-10';
@@ -79,6 +80,8 @@ export async function deleteAccount(): Promise<ActionResult> {
     await svc.from('follows').delete().eq('user_id', me.id);
     await svc.from('saves').delete().eq('user_id', me.id);
     await audit({ actorId: me.id, action: 'account.delete', entity: 'profile', entityId: me.id });
+    // o gatilho já anulou os cartões Wallet; o push faz o telemóvel buscar a versão anulada
+    await pushForCustomer(me.id);
     const sb = await createServerSupabase();
     await sb.auth.signOut();
     return undefined;

@@ -563,9 +563,11 @@ describe('ADENDA 4 · W1: cartões Wallet', () => {
     await rejects(db.query("insert into public.wallet_passes (platform, restaurant_id, customer_id, serial_number, auth_token_hash, member_token_hash) values ('apple', $1, $2, $3, 'h2', 'm2')", [R.A, U.alice, 'c'.repeat(32)]));
   });
   it('apagar a conta anula o cartão e avança a etiqueta', async () => {
+    const before = Number((await db.query<{ update_tag: string }>('select update_tag from public.wallet_passes where id = $1', [passId])).rows[0]!.update_tag);
     await db.query('update public.profiles set deleted_at = now() where id = $1', [U.alice]);
     const p = (await db.query<{ voided: boolean; update_tag: string }>('select voided, update_tag from public.wallet_passes where id = $1', [passId])).rows[0]!;
-    expect({ voided: p.voided, update_tag: Number(p.update_tag) }).toEqual({ voided: true, update_tag: 2 });
+    expect(p.voided).toBe(true);
+    expect(Number(p.update_tag)).toBeGreaterThan(before);
     await db.query('update public.profiles set deleted_at = null where id = $1', [U.alice]);
   });
 });
@@ -578,10 +580,38 @@ describe('ADENDA 4 · W1: etiqueta de atualização', () => {
       [R.A, U.bob, card, 'd'.repeat(32)],
     )).rows[0]!.id;
     const tag = async () => Number((await db.query<{ update_tag: string }>('select update_tag from public.wallet_passes where id = $1', [pass])).rows[0]!.update_tag);
-    expect(await tag()).toBe(1);
+    const t0 = await tag();
     await db.query('update public.loyalty_cards set points = 20 where id = $1', [card]);
-    expect(await tag()).toBe(2);
+    const t1 = await tag();
+    expect(t1).toBeGreaterThan(t0);
     await db.query('update public.loyalty_cards set updated_at = now() where id = $1', [card]);
-    expect(await tag()).toBe(2);
+    expect(await tag()).toBe(t1);
+  });
+});
+
+describe('ADENDA 4 · W2: etiqueta global e saúde do push', () => {
+  it('cada alteração recebe uma etiqueta nova da sequência global (nunca fica para trás)', async () => {
+    const mk = async (s: string, cust: string) => (await db.query<{ id: string; update_tag: string }>(
+      "insert into public.wallet_passes (platform, restaurant_id, customer_id, serial_number, auth_token_hash, member_token_hash) values ('apple', $1, $2, $3, $4, $5) returning id, update_tag",
+      [R.B, cust, s, `h${s}`, `m${s}`],
+    )).rows[0]!;
+    const a = await mk('1'.repeat(32), U.alice);
+    const b = await mk('2'.repeat(32), U.bob);
+    expect(Number(b.update_tag)).toBeGreaterThan(Number(a.update_tag));
+    await db.query("update public.wallet_passes set offer = 'Sobremesa' where id = $1", [a.id]);
+    const tagOf = async (id: string) => Number((await db.query<{ update_tag: string }>('select update_tag from public.wallet_passes where id = $1', [id])).rows[0]!.update_tag);
+    expect(await tagOf(a.id)).toBeGreaterThan(Number(b.update_tag));
+    // mexer só no pushed_tag não muda a etiqueta
+    const before = await tagOf(a.id);
+    await db.query('update public.wallet_passes set pushed_tag = update_tag where id = $1', [a.id]);
+    expect(await tagOf(a.id)).toBe(before);
+  });
+  it('eventos de push só para admin com MFA; avisos de pontos ligados por omissão', async () => {
+    await db.query("insert into public.wallet_push_events (platform, status, reason) values ('apple', 'error', 'teste')");
+    expect(await as(db, auth(U.ownerA), 'select 1 from public.wallet_push_events')).toHaveLength(0);
+    expect(await as(db, auth(U.admin), 'select 1 from public.wallet_push_events')).toHaveLength(0);
+    expect((await as(db, authMfa(U.admin), 'select 1 from public.wallet_push_events')).length).toBe(1);
+    await rejects(as(db, auth(U.alice), "insert into public.wallet_push_events (platform, status) values ('apple', 'sent')"));
+    expect((await db.query<{ v: boolean }>('select wallet_points_alerts as v from public.profiles where id = $1', [U.alice])).rows[0]!.v).toBe(true);
   });
 });

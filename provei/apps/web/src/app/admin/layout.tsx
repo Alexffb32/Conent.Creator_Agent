@@ -5,7 +5,7 @@ import { requireAdminPage } from '@/server/auth';
 
 const NAV = [
   ['/admin', 'Resumo'], ['/admin/restaurantes', 'Restaurantes'], ['/admin/moderacao', 'Moderação'], ['/admin/denuncias', 'Denúncias e pedidos'], ['/admin/utilizadores', 'Utilizadores'],
-  ['/admin/flags', 'Flags'], ['/admin/anuncios', 'Anúncios'], ['/admin/planos', 'Planos'], ['/admin/auditoria', 'Auditoria'],
+  ['/admin/flags', 'Flags'], ['/admin/anuncios', 'Anúncios'], ['/admin/planos', 'Planos'], ['/admin/wallet', 'Wallet'], ['/admin/auditoria', 'Auditoria'],
 ] as const;
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {

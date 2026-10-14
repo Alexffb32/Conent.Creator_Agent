@@ -10,6 +10,7 @@ import { enforceRateLimit } from '../ratelimit';
 import { getAppleProvider } from '../wallet/provider';
 import { ensureApplePass } from '../wallet/passes';
 import { signDownload } from '../wallet/tokens';
+import { pushForCustomer } from '../wallet/stores';
 
 const schema = z.object({ restaurantId: uuidSchema, showFirstName: z.boolean().default(false) });
 
@@ -28,5 +29,20 @@ export async function getAppleWalletLink(input: unknown): Promise<ActionResult<{
     if (r.plan !== 'paid') throw new UserError('O cartão na Wallet faz parte do plano pago do restaurante.');
     const pass = await ensureApplePass(me.id, v.restaurantId, { showFirstName: v.showFirstName }, svc);
     return { url: `/api/wallet/apple/download?t=${encodeURIComponent(signDownload(pass.id))}`, simulated: provider.simulated };
+  });
+}
+
+/** Interruptor "avisos de pontos" (aviso de serviço). Regenera os cartões do cliente sem/com changeMessage. */
+export async function setWalletPointsAlerts(on: boolean): Promise<ActionResult> {
+  return run(async () => {
+    const me = await requireUserForAction();
+    await enforceRateLimit(`wallet:alerts:${me.id}`, 3600, 30);
+    const svc = createServiceSupabase();
+    const { error } = await svc.from('profiles').update({ wallet_points_alerts: Boolean(on) }).eq('id', me.id);
+    if (error) throw new Error(error.message);
+    // qualquer valor diferente faz o gatilho dar uma etiqueta nova da sequência
+    await svc.from('wallet_passes').update({ update_tag: 0 }).eq('customer_id', me.id).eq('voided', false);
+    await pushForCustomer(me.id);
+    return undefined;
   });
 }

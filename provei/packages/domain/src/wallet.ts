@@ -38,6 +38,8 @@ export interface StorePassInput {
   /** Flag `wallet_location` e cartão fora do grupo de controlo. */
   withLocations: boolean;
   relevantText?: string;
+  /** Interruptor "avisos de pontos" do cliente: desligado, o campo muda sem aviso (sem changeMessage). */
+  pointsAlerts?: boolean;
   voided?: boolean;
   links: { terms: string; privacy: string };
 }
@@ -118,7 +120,11 @@ export function buildStorePassJson(i: StorePassInput): StorePassJson {
     sharingProhibited: true,
     barcodes: [{ format: 'PKBarcodeFormatQR', message: `provei:w:${i.memberToken}`, messageEncoding: 'iso-8859-1' }],
     storeCard: {
-      headerFields: [{ key: 'points', label: 'Pontos', value: i.points, changeMessage: pointsChangeMessage(i.restaurant.name) }],
+      headerFields: [
+        i.pointsAlerts === false
+          ? { key: 'points', label: 'Pontos', value: i.points }
+          : { key: 'points', label: 'Pontos', value: i.points, changeMessage: pointsChangeMessage(i.restaurant.name) },
+      ],
       primaryFields: [{ key: 'progress', label: 'Próxima recompensa', value: i.progress }],
       secondaryFields: secondary,
       auxiliaryFields: [{ key: 'offer', label: 'Oferta', value: i.offer ?? '', changeMessage: '%@' }],
@@ -171,4 +177,12 @@ export function passProgressText(stamps: number, required: number): string {
   if (required <= 0) return '—';
   const s = Math.min(stamps, required);
   return s >= required ? 'Recompensa pronta a trocar' : `${s} de ${required} carimbos`;
+}
+
+/** Alerta de expiração do certificado do Pass Type ID: 60 e 30 dias antes. */
+export type CertAlert = 'ok' | 'warn_60' | 'warn_30' | 'expired';
+export function certAlertLevel(notAfter: Date, now = new Date()): { level: CertAlert; daysLeft: number } {
+  const daysLeft = Math.floor((notAfter.getTime() - now.getTime()) / 86_400_000);
+  const level: CertAlert = daysLeft < 0 ? 'expired' : daysLeft <= 30 ? 'warn_30' : daysLeft <= 60 ? 'warn_60' : 'ok';
+  return { level, daysLeft };
 }

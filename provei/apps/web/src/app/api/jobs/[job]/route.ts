@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServiceSupabase } from '@/lib/supabase/server';
+import { walletMaintenance } from '@/server/wallet/stores';
 import { serverEnv } from '@/lib/env';
 import { expireCallsAndSessions } from '@/server/tables';
 import { levelFor } from '@provei/domain';
@@ -72,12 +73,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ job: str
       return NextResponse.json({ ok: true, purged: await purgeDeleted(svc) });
     case 'levels':
       return NextResponse.json({ ok: true, changed: await recalcLevels(svc) });
+    case 'wallet':
+      return NextResponse.json({ ok: true, ...(await walletMaintenance(svc)) });
     case 'maintenance': {
       const expire = await expireCallsAndSessions(svc);
       const agg = await aggregate(svc);
       const purged = await purgeDeleted(svc);
       const changed = await recalcLevels(svc);
-      return NextResponse.json({ ok: true, expire, agg, purged, changed });
+      const wallet = await walletMaintenance(svc);
+      return NextResponse.json({ ok: true, expire, agg, purged, changed, wallet });
     }
     default:
       return NextResponse.json({ error: 'Tarefa desconhecida' }, { status: 404 });

@@ -65,6 +65,10 @@ describe('assinatura do .pkpass (certificados de teste gerados aqui, nunca reais
     ).toThrow();
   });
 
+  it('recusa assinar com o certificado expirado', async () => {
+    await expect(new ApplePassKitProvider(certs, () => new Date('2100-01-01')).render(pass)).rejects.toThrow(/expirado/);
+  });
+
   it('o pacote tem a localização pt-PT e as imagens obrigatórias', () => {
     const files = passBundleFiles(pass);
     expect(Object.keys(files)).toEqual(expect.arrayContaining(['pass.json', 'icon.png', 'pt.lproj/pass.strings']));

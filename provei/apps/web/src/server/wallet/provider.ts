@@ -1,4 +1,5 @@
 import 'server-only';
+import { X509Certificate } from 'node:crypto';
 import { PKPass } from 'passkit-generator';
 import { passStringsPt, type StorePassJson } from '@provei/domain';
 import { serverEnv } from '@/lib/env';
@@ -55,12 +56,17 @@ export function passBundleFiles(pass: StorePassJson): Record<string, Buffer> {
 export class ApplePassKitProvider implements AppleProvider {
   readonly platform = 'apple' as const;
   readonly simulated = false;
-  constructor(private readonly certs: AppleCertificates | null = appleCertificatesFromEnv()) {}
+  constructor(
+    private readonly certs: AppleCertificates | null = appleCertificatesFromEnv(),
+    private readonly now: () => Date = () => new Date(),
+  ) {}
   isConfigured() {
     return this.certs !== null;
   }
   async render(pass: StorePassJson): Promise<RenderedPass> {
     if (!this.certs) throw new Error('Certificados Apple Wallet em falta');
+    // certificado expirado: o iPhone recusa o cartão; falhar aqui com uma mensagem clara (alerta no admin a 60/30 dias)
+    if (new Date(new X509Certificate(this.certs.signerCert).validTo) < this.now()) throw new Error('Certificado do Pass Type ID expirado: renovar (docs/runbooks/wallet-cert-renewal.md)');
     const pk = new PKPass(passBundleFiles(pass), this.certs);
     return { body: pk.getAsBuffer(), contentType: 'application/vnd.apple.pkpass', filename: 'provei.pkpass' };
   }

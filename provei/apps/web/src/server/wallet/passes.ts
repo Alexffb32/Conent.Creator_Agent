@@ -78,9 +78,11 @@ export async function buildApplePassJson(passId: string, svc: Svc = createServic
     getFlags(p.restaurant_id),
   ]);
   let firstName: string | null = null;
-  if (p.show_first_name && p.customer_id && !p.voided) {
-    const { data: prof } = await svc.from('profiles').select('display_name').eq('id', p.customer_id).maybeSingle();
-    firstName = (prof?.display_name ?? '').trim().split(/\s+/)[0] || null;
+  let pointsAlerts = true;
+  if (p.customer_id && !p.voided) {
+    const { data: prof } = await svc.from('profiles').select('display_name, wallet_points_alerts').eq('id', p.customer_id).maybeSingle();
+    if (p.show_first_name) firstName = (prof?.display_name ?? '').trim().split(/\s+/)[0] || null;
+    pointsAlerts = prof?.wallet_points_alerts !== false;
   }
   const w = serverEnv.wallet;
   const locations = r?.lat != null && r?.lng != null ? [{ latitude: Number(r.lat), longitude: Number(r.lng) }] : [];
@@ -99,6 +101,7 @@ export async function buildApplePassJson(passId: string, svc: Svc = createServic
     holderFirstName: firstName,
     withLocations: flags.wallet_location && !p.location_control,
     relevantText: (card?.points ?? 0) > 0 ? 'Tens pontos para trocar aqui' : `Mostra o cartão no ${r?.name ?? 'restaurante'}`,
+    pointsAlerts,
     voided: p.voided,
     links: { terms: `${publicEnv.siteUrl}/legal/termos`, privacy: `${publicEnv.siteUrl}/legal/privacidade` },
   });

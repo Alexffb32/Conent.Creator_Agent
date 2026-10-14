@@ -64,6 +64,9 @@ describe('pass.json do cartão (storeCard)', () => {
   it('cartão anulado', () => {
     expect(buildStorePassJson({ ...base, voided: true }).voided).toBe(true);
   });
+  it('com os avisos de pontos desligados o campo muda sem aviso', () => {
+    expect(buildStorePassJson({ ...base, pointsAlerts: false }).storeCard.headerFields[0]).toEqual({ key: 'points', label: 'Pontos', value: 120 });
+  });
   it('escapa % no nome do restaurante na changeMessage', () => {
     expect(pointsChangeMessage('100% Bom')).toBe('Tens %@ pontos no 100%% Bom');
   });
@@ -83,5 +86,19 @@ describe('texto de progresso', () => {
   it('mostra carimbos ou recompensa pronta', () => {
     expect(passProgressText(3, 8)).toBe('3 de 8 carimbos');
     expect(passProgressText(9, 8)).toBe('Recompensa pronta a trocar');
+  });
+});
+
+describe('alerta de expiração do certificado', () => {
+  const now = new Date('2026-10-14T00:00:00Z');
+  const at = (days: number) => new Date(now.getTime() + days * 86_400_000 + 3600_000);
+  it('60 e 30 dias antes, e expirado', async () => {
+    const { certAlertLevel } = await import('../src/wallet');
+    expect(certAlertLevel(at(90), now).level).toBe('ok');
+    expect(certAlertLevel(at(60), now).level).toBe('warn_60');
+    expect(certAlertLevel(at(31), now).level).toBe('warn_60');
+    expect(certAlertLevel(at(30), now).level).toBe('warn_30');
+    expect(certAlertLevel(at(0), now).level).toBe('warn_30');
+    expect(certAlertLevel(at(-1), now).level).toBe('expired');
   });
 });

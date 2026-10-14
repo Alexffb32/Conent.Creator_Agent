@@ -22,6 +22,7 @@ import { type ActionResult, parse, run, UserError } from '../action';
 import { requireMemberForAction, requireUserForAction, MANAGE } from '../auth';
 import { audit, ipHash } from '../audit';
 import { afterScan, resolveMemberToken, type WalletPassRow } from '../wallet/passes';
+import { pushForCustomer } from '../wallet/stores';
 import { enforceRateLimit } from '../ratelimit';
 import { createWaiterCall, exchangeTableToken, getActiveSession } from '../tables';
 import { VisitRefused, notify, recordVerifiedVisit } from '../loyalty';
@@ -120,6 +121,7 @@ export async function claimMyVisit(): Promise<ActionResult<{ points: number; rew
     await enforceRateLimit(`claimvisit:${me.id}`, 600, 10);
     try {
       const r = await recordVerifiedVisit({ userId: me.id, restaurantId: session.restaurant_id, level: 'qr', tableSessionId: session.id });
+      await pushForCustomer(me.id, session.restaurant_id);
       revalidatePath('/mesa');
       revalidatePath('/cartao');
       return { points: r.points, rewardCode: r.rewardCode, stamps: r.stamps, stampsRequired: r.stampsRequired };
@@ -211,6 +213,7 @@ export async function validateVisit(input: unknown): Promise<ActionResult<{ name
     try {
       const r = await recordVerifiedVisit({ userId, restaurantId: v.restaurantId, level: 'staff_validated', validatedBy: ctx.me.id, validationReason: v.reason || null, at });
       if (walletPass) await afterScan(walletPass, svc);
+      await pushForCustomer(userId, v.restaurantId);
       await audit({ actorId: ctx.me.id, action: 'visit.staff_validated', entity: 'visit', entityId: r.visitId, restaurantId: v.restaurantId, meta: { userId, backdateMinutes: v.backdateMinutes, reason: v.reason, via: walletPass ? 'wallet' : 'qr' } });
       return { name: prof?.display_name || prof?.handle || 'Cliente', points: r.points, rewardCode: r.rewardCode };
     } catch (e) {
@@ -262,6 +265,7 @@ export async function adjustLoyalty(input: { restaurantId: string; userId: strin
     const { error } = await svc.from('loyalty_events').insert({ card_id: card.id, type: 'adjust', delta: input.delta, reason: `${input.kind === 'stamps' ? 'stamps' : 'points'}: ${input.reason.trim()}`, actor_id: ctx.me.id });
     if (error) throw new Error(error.message);
     await audit({ actorId: ctx.me.id, action: 'loyalty.adjust', entity: 'loyalty_card', entityId: card.id, restaurantId: input.restaurantId, meta: input });
+    await pushForCustomer(input.userId, input.restaurantId);
     return undefined;
   });
 }

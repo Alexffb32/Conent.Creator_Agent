@@ -113,3 +113,16 @@ Tabelas `orders`/`order_items` e RLS existem; a interface está atrás da flag `
 | Recurso criado | Onde | Data |
 | --- | --- | --- |
 | Migração `20261014000015_wallet` (tabelas `wallet_passes`, `wallet_registrations`, 5 flags, 2 gatilhos) | Supabase `provei` | 2026-10-14 |
+
+## ADENDA 4 · W2 (2026-10-14)
+| Data | Decisão | Porquê | Alternativa rejeitada |
+| --- | --- | --- | --- |
+| 2026-10-14 | Etiqueta de atualização global (sequência `wallet_update_seq`) em vez de contador por cartão. | O dispositivo pede "o que mudou desde X" para todos os cartões; com contadores por cartão perdia atualizações (armadilha "etiqueta que não avança"). | Contador por cartão (versão W1, corrigida). |
+| 2026-10-14 | Push enviado de imediato nas ações que mudam pontos, mais varrimento diário; `pushed_tag` evita repetições e erros ficam pendentes. | O cron gratuito da Vercel é diário. | Fila externa (custo). |
+| 2026-10-14 | APNs real só em `NODE_ENV=production` com certificados; noutros ambientes o transporte é simulado e registado como "simulado". | O push de cartões não funciona em sandbox; números de saúde honestos. | Usar sandbox em testes. |
+| 2026-10-14 | Interruptor "avisos de pontos" no perfil: desligado, o campo `points` é emitido sem `changeMessage` (atualiza sem aviso). | Aviso de serviço respeita a escolha do cliente sem depender do iOS. | Deixar só o interruptor do iOS. |
+| 2026-10-14 | Registos do dispositivo aceites mesmo com `wallet_updates` desligada; push só com a flag. | Ao ligar a flag os cartões já instalados passam a atualizar sem reinstalar. | Recusar registos. |
+
+| Recurso criado | Onde | Data |
+| --- | --- | --- |
+| Migração `20261014000016_wallet_webservice` (sequência, `pushed_tag`, gatilho, `wallet_push_events`, `profiles.wallet_points_alerts`) | Supabase `provei` | 2026-10-14 |
