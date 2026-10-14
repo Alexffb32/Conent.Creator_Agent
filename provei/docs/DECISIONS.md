@@ -138,3 +138,15 @@ Tabelas `orders`/`order_items` e RLS existem; a interface está atrás da flag `
 | Recurso criado | Onde | Data |
 | --- | --- | --- |
 | Migração `20261014000017_wallet_hardening` (`prev_valid_until`, `wallet_pending_pushes`, permissões por coluna) | Supabase `provei` | 2026-10-14 |
+
+## ADENDA 4 · W4 (2026-10-14)
+| Data | Decisão | Porquê | Alternativa rejeitada |
+| --- | --- | --- | --- |
+| 2026-10-14 | Objeto Google criado pela API REST e a ligação "Adicionar" só referencia o id (JWT pequeno). | O servidor controla o conteúdo e as atualizações; o JWT não leva dados do cartão. | Objeto completo dentro do JWT (versão do MVP, removida). |
+| 2026-10-14 | Saldo num PATCH separado com `notifyOnUpdate`, só se o saldo mudou desde o último envio (`pushed_points`). | A Google só avisa quando o campo muda e cada aviso conta para o limite de 3/24 h. | Enviar sempre com aviso. |
+| 2026-10-14 | `QuotaExceededException` (ou 429): repetir sem aviso e registar "quota". | Regra da Google; a atualização não se perde. | Falhar o envio. |
+| 2026-10-14 | Mesmo token do QR e mesmo grupo de controlo nas duas plataformas. | Um só leitor no restaurante e relatório comparável. | Tokens por plataforma. |
+
+| Recurso criado | Onde | Data |
+| --- | --- | --- |
+| Migração `20261014000018_wallet_google` (`pushed_points`, `wallet_pending_sync`) | Supabase `provei` | 2026-10-14 |

@@ -1,5 +1,5 @@
 import 'server-only';
-import { DEFAULT_LEVELS, buildStorePassJson, isLocationControl, passProgressText, type StorePassJson } from '@provei/domain';
+import { DEFAULT_LEVELS, buildGoogleLoyaltyClass, buildGoogleLoyaltyObject, buildStorePassJson, isLocationControl, passProgressText, type StorePassJson } from '@provei/domain';
 import { createServiceSupabase } from '@/lib/supabase/server';
 import { publicEnv, serverEnv } from '@/lib/env';
 import { getFlags } from '@/lib/flags';
@@ -32,10 +32,10 @@ const LEVEL_LABEL: Record<string, string> = Object.fromEntries(DEFAULT_LEVELS.ma
 /** URL HTTPS do serviço web PassKit. Em dev (http) usa-se https no mesmo anfitrião só para o cartão simulado. */
 export const webServiceUrl = () => `${publicEnv.siteUrl.replace(/^http:\/\//, 'https://')}/api/wallet/apple`;
 
-/** Cria (ou devolve) o cartão Apple do cliente neste restaurante. Um por restaurante por cliente. */
-export async function ensureApplePass(userId: string, restaurantId: string, opts: { showFirstName: boolean }, svc: Svc = createServiceSupabase()): Promise<WalletPassRow> {
+/** Cria (ou devolve) o cartão do cliente neste restaurante, por plataforma. Um por restaurante por cliente. */
+export async function ensureWalletPass(platform: 'apple' | 'google', userId: string, restaurantId: string, opts: { showFirstName: boolean }, svc: Svc = createServiceSupabase()): Promise<WalletPassRow> {
   const card = await getOrCreateCard(svc, userId, restaurantId);
-  const existing = await svc.from('wallet_passes').select('*').eq('platform', 'apple').eq('restaurant_id', restaurantId).eq('customer_id', userId).eq('voided', false).maybeSingle();
+  const existing = await svc.from('wallet_passes').select('*').eq('platform', platform).eq('restaurant_id', restaurantId).eq('customer_id', userId).eq('voided', false).maybeSingle();
   if (existing.data) {
     const row = existing.data as WalletPassRow;
     if (row.show_first_name !== opts.showFirstName) {
@@ -48,7 +48,7 @@ export async function ensureApplePass(userId: string, restaurantId: string, opts
   const { data, error } = await svc
     .from('wallet_passes')
     .insert({
-      platform: 'apple',
+      platform,
       restaurant_id: restaurantId,
       customer_id: userId,
       card_id: card.id,
@@ -63,10 +63,52 @@ export async function ensureApplePass(userId: string, restaurantId: string, opts
     .single();
   if (error) {
     // corrida: outro pedido criou o cartão ao mesmo tempo
-    const again = await svc.from('wallet_passes').select('*').eq('platform', 'apple').eq('restaurant_id', restaurantId).eq('customer_id', userId).eq('voided', false).single();
+    const again = await svc.from('wallet_passes').select('*').eq('platform', platform).eq('restaurant_id', restaurantId).eq('customer_id', userId).eq('voided', false).single();
     return again.data as WalletPassRow;
   }
   return data as WalletPassRow;
+}
+
+export const ensureApplePass = (userId: string, restaurantId: string, opts: { showFirstName: boolean }, svc?: Svc) => ensureWalletPass('apple', userId, restaurantId, opts, svc);
+
+/** Estado atual do cartão Google (classe do restaurante + objeto do cliente) a partir dos dados reais. */
+export async function buildGoogleState(passId: string, issuerId: string, svc: Svc = createServiceSupabase()) {
+  const { data: row } = await svc.from('wallet_passes').select('*').eq('id', passId).eq('platform', 'google').maybeSingle();
+  if (!row) return null;
+  const p = row as WalletPassRow;
+  const [{ data: r }, { data: card }, program, flags] = await Promise.all([
+    svc.from('restaurants').select('name, lat, lng').eq('id', p.restaurant_id).single(),
+    p.card_id ? svc.from('loyalty_cards').select('points, stamps, level').eq('id', p.card_id).maybeSingle() : Promise.resolve({ data: null }),
+    loadProgram(svc, p.restaurant_id),
+    getFlags(p.restaurant_id),
+  ]);
+  let firstName: string | null = null;
+  let pointsAlerts = true;
+  if (p.customer_id && !p.voided) {
+    const { data: prof } = await svc.from('profiles').select('display_name, wallet_points_alerts').eq('id', p.customer_id).maybeSingle();
+    if (p.show_first_name) firstName = (prof?.display_name ?? '').trim().split(/\s+/)[0] || null;
+    pointsAlerts = prof?.wallet_points_alerts !== false;
+  }
+  const locations = r?.lat != null && r?.lng != null ? [{ latitude: Number(r.lat), longitude: Number(r.lng) }] : [];
+  // a classe é do restaurante: leva localizações se a flag estiver ligada; o objeto do grupo de controlo não as repete
+  const cls = buildGoogleLoyaltyClass({ issuerId, restaurantId: p.restaurant_id, restaurantName: r?.name ?? 'Restaurante', logoUrl: `${publicEnv.siteUrl}/icons/icon-512.png`, locations, withLocations: false });
+  const points = card?.points ?? 0;
+  const obj = buildGoogleLoyaltyObject({
+    issuerId,
+    restaurantId: p.restaurant_id,
+    serialNumber: p.serial_number,
+    memberToken: memberTokenFor(p.serial_number, p.member_version),
+    points,
+    progress: passProgressText(card?.stamps ?? 0, program.stampsRequired),
+    level: LEVEL_LABEL[card?.level ?? 'convidado'] ?? 'Convidado',
+    offer: p.offer,
+    holderFirstName: firstName,
+    voided: p.voided,
+    locations,
+    withLocations: flags.wallet_location && !p.location_control,
+    links: { terms: `${publicEnv.siteUrl}/legal/termos`, privacy: `${publicEnv.siteUrl}/legal/privacidade` },
+  });
+  return { row: p, cls, obj, points, pointsAlerts, updatesEnabled: flags.wallet_updates };
 }
 
 /** Monta o pass.json atual de um cartão a partir dos dados reais (pontos, carimbos, nível, oferta). */

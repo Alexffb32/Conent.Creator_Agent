@@ -9,6 +9,7 @@ import { getFlags } from '@/lib/flags';
 import { walletAvailability } from '@/server/wallet';
 import { formatDateTime } from '@/lib/media';
 import { AddToAppleWallet } from '@/components/loyalty/AddToAppleWallet';
+import { AddToGoogleWallet } from '@/components/loyalty/AddToGoogleWallet';
 
 export const metadata: Metadata = { title: 'Cartão de fidelização' };
 export const dynamic = 'force-dynamic';
@@ -42,7 +43,7 @@ export default async function CartaoRestaurantePage({ params }: { params: Promis
         {wallet.apple || wallet.google ? (
           <div className="flex flex-col gap-3">
             {wallet.apple ? <AddToAppleWallet restaurantId={r.id} simulated={avail.appleSimulated} /> : null}
-            {wallet.google ? <a className="inline-flex min-h-touch items-center rounded-pill bg-tinta px-5 font-semibold text-branco" href={`/api/wallet/google/${r.slug}`}>Adicionar à Google Wallet</a> : null}
+            {wallet.google ? <AddToGoogleWallet restaurantId={r.id} /> : null}
           </div>
         ) : null}
       </Card>

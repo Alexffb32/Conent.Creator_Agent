@@ -633,3 +633,13 @@ describe('ADENDA 4: endurecimento da Wallet', () => {
     expect(rows.slice(firstLive === -1 ? rows.length : firstLive).every((r) => !r.voided)).toBe(true);
   });
 });
+
+describe('ADENDA 4 · W4: Google Wallet', () => {
+  it('pendentes por plataforma só para o servidor, sem misturar plataformas', async () => {
+    await db.query("insert into public.wallet_passes (platform, restaurant_id, customer_id, serial_number, auth_token_hash, member_token_hash) values ('google', $1, $2, $3, 'hg', 'mg')", [R.A, U.alice, 'f'.repeat(32)]);
+    await rejects(as(db, auth(U.alice), "select * from public.wallet_pending_sync('google', 10)"));
+    const g = (await db.query<{ id: string }>("select id from public.wallet_pending_sync('google', 100)")).rows;
+    const plat = (await db.query<{ platform: string }>('select distinct platform from public.wallet_passes where id = any($1::uuid[])', [g.map((r) => r.id)])).rows;
+    expect(plat).toEqual([{ platform: 'google' }]);
+  });
+});

@@ -6,6 +6,8 @@ import { Http2ApnsTransport, SimulatedApnsTransport, type ApnsTransport } from '
 import { buildApplePassJson } from './passes';
 import { appleCertificatesFromEnv, getAppleProvider } from './provider';
 import { pushPendingUpdates, type PushStore } from './push';
+import { getGoogleProvider } from './google';
+import { syncGooglePasses } from './google-sync';
 import type { WebServiceStore, WsPass } from './webservice';
 
 type Svc = ReturnType<typeof createServiceSupabase>;
@@ -117,6 +119,11 @@ export async function pushForCustomer(userId: string, restaurantId?: string) {
     if (restaurantId) q = q.eq('restaurant_id', restaurantId);
     const { data } = await q;
     if (data?.length) await flushWalletPushes(data.map((r) => r.id as string));
+    const g = getGoogleProvider();
+    let gq = svc.from('wallet_passes').select('id').eq('customer_id', userId).eq('platform', 'google');
+    if (restaurantId) gq = gq.eq('restaurant_id', restaurantId);
+    const { data: gp } = await gq;
+    if (g && gp?.length) await syncGooglePasses(g, svc, gp.map((r) => r.id as string));
   } catch (e) {
     console.error('[wallet-push]', (e as Error).message);
   }
@@ -125,8 +132,10 @@ export async function pushForCustomer(userId: string, restaurantId?: string) {
 /** Limpeza diária: registos de cartões anulados há mais de 30 dias e eventos de push com mais de 90 dias. */
 export async function walletMaintenance(svc: Svc = createServiceSupabase()) {
   const report = await flushWalletPushes();
+  const g = getGoogleProvider();
+  const google = g ? await syncGooglePasses(g, svc).catch((e: Error) => ({ error: e.message })) : null;
   const { data: old } = await svc.from('wallet_passes').select('id').eq('voided', true).lt('updated_at', new Date(Date.now() - 30 * 86400_000).toISOString()).limit(500);
   if (old?.length) await svc.from('wallet_registrations').delete().in('pass_id', old.map((r) => r.id as string));
   await svc.from('wallet_push_events').delete().lt('created_at', new Date(Date.now() - 90 * 86400_000).toISOString());
-  return { push: report, voidedCleaned: old?.length ?? 0 };
+  return { push: report, google, voidedCleaned: old?.length ?? 0 };
 }
