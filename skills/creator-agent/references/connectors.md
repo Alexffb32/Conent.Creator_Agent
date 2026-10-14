@@ -21,3 +21,12 @@ Código de terceiros: lê-o antes de instalar, não o metas dentro da pasta de u
 | --- | --- | --- |
 | [instagram-skills](https://github.com/sergebulaev/instagram-skills) (MIT, em inglês) | Legendas com gancho nos primeiros 125 caracteres, carrosséis, hashtags (3 a 5), planeamento semanal, auditoria de perfil | Plugin: `claude plugin marketplace add sergebulaev/instagram-skills --scope project` e `claude plugin install instagram-skills@instagram-skills --scope project`. Usa só o modo rascunho (as partes Publora e Apify são opcionais e pedem chaves). As legendas saem em `videos/<pasta>/adaptacoes/instagram.md`, em português europeu e sem travessões. |
 | [OpenMontage](https://github.com/calesthio/OpenMontage) (AGPLv3, em inglês) | Análise de vídeos de referência (cenas, ritmo, transcrição, níveis de áudio) e produção com geração de clips por IA, que precisa de chaves de API pagas | Fora deste repositório, por causa da licença AGPLv3 e do tamanho (cerca de 90 MB): clonar, `python3 -m venv .venv`, `.venv/bin/pip install -r requirements.txt` e `npm install --ignore-scripts` em `remotion-composer/`. As ferramentas locais (`tools/analysis/`) funcionam sem chaves. A edição dos shorts do criador continua a ser feita pelo `pipeline.py` deste agente. |
+
+## HyperFrames (plugin e skills oficiais da HeyGen)
+Instalação local, por máquina (não vai para o git, ver `.gitignore`):
+```
+claude plugin marketplace add heygen-com/hyperframes
+claude plugin install hyperframes@hyperframes
+npx skills add heygen-com/hyperframes
+```
+Trazem skills como `embedded-captions`, `talking-head-recut`, `hyperframes-animation` e `hyperframes-audio`. São código de terceiros com permissões completas: rever antes de usar. O pipeline do agente continua fixo em `hyperframes@0.8.140`. Os ficheiros Git LFS do marketplace precisam de `git -C ~/.claude/plugins/marketplaces/hyperframes lfs pull`.
