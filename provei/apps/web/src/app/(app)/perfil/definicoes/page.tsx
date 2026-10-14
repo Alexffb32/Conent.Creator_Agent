@@ -19,6 +19,7 @@ export default async function DefinicoesPage() {
           location: Boolean(me.consents.location),
           push: Boolean(me.consents.push),
           ads_personalization: Boolean(me.consents.ads_personalization),
+          personalization: Boolean(me.consents.personalization),
         }}
       />
     </div>

@@ -86,3 +86,16 @@ export async function deleteAccount(): Promise<ActionResult> {
   if (result.ok) redirect('/?conta=apagada');
   return result;
 }
+
+/** "Repor personalização": apaga o histórico do feed do próprio utilizador (RLS: só os seus eventos). */
+export async function resetPersonalization(): Promise<ActionResult> {
+  return run(async () => {
+    const me = await requireUserForAction();
+    await enforceRateLimit(`reset-perso:${me.id}`, 3600, 10);
+    const sb = await createServerSupabase();
+    const { error } = await sb.from('feed_events').delete().eq('user_id', me.id);
+    if (error) throw new Error(error.message);
+    await audit({ actorId: me.id, action: 'feed.reset_personalization', entity: 'profile', entityId: me.id });
+    return undefined;
+  });
+}

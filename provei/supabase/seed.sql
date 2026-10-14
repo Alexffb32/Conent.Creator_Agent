@@ -100,7 +100,7 @@ begin
   end loop;
 
   -- donos e equipa: dono@ tem os 2 primeiros; staff@ é equipa do primeiro
-  insert into public.restaurant_members values (rest_ids[1], user_ids[2], 'owner', now()), (rest_ids[2], user_ids[2], 'owner', now()), (rest_ids[1], user_ids[3], 'staff', now());
+  insert into public.restaurant_members values (rest_ids[1], user_ids[2], 'owner', now()), (rest_ids[2], user_ids[2], 'owner', now()), (rest_ids[1], user_ids[3], 'waiter', now());
   for i in 3..12 loop
     insert into public.restaurant_members values (rest_ids[i], user_ids[4 + i], 'owner', now()) on conflict do nothing;
   end loop;

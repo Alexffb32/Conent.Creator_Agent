@@ -2,9 +2,13 @@
 import { useState } from 'react';
 import { Download, Trash2 } from 'lucide-react';
 import { Button, Card, CardTitle, Checkbox, Field, Input, Textarea, useToast } from '@/components/ui';
-import { deleteAccount, updateConsent, updateProfile } from '@/server/actions/account';
+import { deleteAccount, resetPersonalization, updateConsent, updateProfile } from '@/server/actions/account';
+import { useFlag } from '@/lib/flags-client';
 
-export function SettingsForms({ profile, consents }: { profile: { displayName: string; handle: string; city: string; bio: string }; consents: Record<'location' | 'push' | 'ads_personalization', boolean> }) {
+type ConsentKey = 'location' | 'push' | 'ads_personalization' | 'personalization';
+
+export function SettingsForms({ profile, consents }: { profile: { displayName: string; handle: string; city: string; bio: string }; consents: Record<ConsentKey, boolean> }) {
+  const recommender = useFlag('recommender');
   const { toast } = useToast();
   const [p, setP] = useState(profile);
   const [c, setC] = useState(consents);
@@ -21,7 +25,7 @@ export function SettingsForms({ profile, consents }: { profile: { displayName: s
     if (!r.ok) return setErr({ field: r.field, message: r.error });
     toast('Perfil guardado');
   }
-  async function toggle(kind: 'location' | 'push' | 'ads_personalization', granted: boolean) {
+  async function toggle(kind: ConsentKey, granted: boolean) {
     setC((s) => ({ ...s, [kind]: granted }));
     const r = await updateConsent({ kind, granted });
     if (!r.ok) {
@@ -48,6 +52,21 @@ export function SettingsForms({ profile, consents }: { profile: { displayName: s
         <Checkbox checked={c.location} onChange={(e) => toggle('location', e.target.checked)} label="Usar a minha localização" description="Ordena os pratos por proximidade." />
         <Checkbox checked={c.push} onChange={(e) => toggle('push', e.target.checked)} label="Notificações" description="Novos pratos, pontos e recompensas." />
         <Checkbox checked={c.ads_personalization} onChange={(e) => toggle('ads_personalization', e.target.checked)} label="Anúncios mais relevantes" description="Sem isto só usamos cidade e hora." />
+        {recommender ? (
+          <>
+            <Checkbox checked={c.personalization} onChange={(e) => toggle('personalization', e.target.checked)} label="Feed personalizado" description="Ordenamos os pratos pelo que vês, guardas e pedes. Sem isto, o feed é igual para todos (proximidade e novidade)." />
+            <Button
+              variant="secondary"
+              className="sm:self-start"
+              onClick={async () => {
+                const r = await resetPersonalization();
+                toast(r.ok ? 'Personalização reposta: apagámos o teu histórico do feed.' : r.error, r.ok ? 'info' : 'erro');
+              }}
+            >
+              Repor personalização
+            </Button>
+          </>
+        ) : null}
       </Card>
       <Card className="flex flex-col gap-3">
         <CardTitle>Os teus dados</CardTitle>

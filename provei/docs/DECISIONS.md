@@ -62,3 +62,17 @@ Tabelas `orders`/`order_items` e RLS existem; a interface está atrás da flag `
 | Recurso criado | Onde | Data |
 | --- | --- | --- |
 | Tabelas `leads`, `content_notices` + funções `submit_lead`, `submit_content_notice` | Supabase `provei` | 2026-10-13 |
+
+## ADENDA 2 · F1 (2026-10-14)
+| Data | Decisão | Porquê | Alternativa rejeitada |
+| --- | --- | --- | --- |
+| 2026-10-14 | Papéis derivados das tabelas de pertença (`restaurant_members`, `advertiser_members`, `profiles.is_admin`) e expostos por `public.user_roles(uid)` e pela claim `app_roles` do JWT (hook `custom_access_token_hook`). | Um mesmo e-mail pode ter vários papéis; uma coluna `profiles.role` única não o permite. | Coluna `profiles.role` com um só valor. |
+| 2026-10-14 | A RLS lê as tabelas, não as claims do JWT. | As claims só mudam quando o token é renovado; a RLS tem de refletir remoções de equipa de imediato. | Políticas baseadas em `auth.jwt()->'app_roles'`. |
+| 2026-10-14 | Papéis no restaurante: owner, manager, kitchen, waiter. `is_owner()` passou a significar "pode gerir" (owner ou manager); `is_restaurant_owner()` é o dono estrito (faturação, remover gerentes); `is_member()` é a sala (owner, manager, waiter); `is_crew()` é toda a equipa (cozinha incluída). `staff` antigo passou a `waiter`. | Evita reescrever cerca de 40 políticas e mantém a cozinha só com menu e pedidos. | Reescrever todas as políticas com nomes novos. |
+| 2026-10-14 | Admin com MFA obrigatório: `is_admin()` exige `aal2` no JWT; as páginas e ações de admin redirecionam para `/mfa` (TOTP). | Requisito da ADENDA 2; protege mesmo se alguém contornar a interface. | MFA só na interface. |
+| 2026-10-14 | Flag `reviews` (já existente, ligada) continua a controlar as avaliações públicas do MVP. O fluxo da ADENDA 2 (pedido de avaliação depois do pedido + Google) usa a flag nova `review_requests`. `ordering` substitui `table_ordering` (mantida desligada por compatibilidade). | Desligar `reviews` partiria o produto base (critério 1). | Reutilizar `reviews` para o fluxo novo. |
+| 2026-10-14 | Dados sintéticos: `is_demo` (já existente em restaurantes, publicações, avaliações, campanhas) é o marcador `is_synthetic` pedido; tabelas novas usam `is_synthetic`. O admin já mostra "Exemplo/Fictício". | Uma só fonte de verdade sem migrar dados. | Renomear `is_demo` em todas as tabelas. |
+| 2026-10-14 | `feed_events` só com conta, flag `recommender` e consentimento `personalization`; retenção 180 dias; o utilizador apaga tudo em "Repor personalização". Sem conta, nada é guardado. | Personalização é perfilagem (RGPD art. 22.º/consentimento). | Guardar eventos anónimos por cookie. |
+| 2026-10-14 | Migrações aplicadas no projeto `provei` (o único, ainda sem produção) e não num branch Supabase. | Os branches Supabase são pagos (por hora) e a regra é não passar do nível gratuito sem avisar. Todas as migrações são primeiro validadas em PGlite (testes RLS). | Criar um branch por fase. |
+| 2026-10-14 | Previews na Vercel: bloqueados (a ligação devolve 403 a criar projetos). Cada fase fica com build e testes verdes no CI. | Depende de token do dono (ver STATUS). | — |
+| 2026-10-14 | `drop policy` pela ferramenta Supabase fica pendurado (pede confirmação); na cloud usa-se `alter policy ... rename` + `alter policy ... using`, mesmo efeito, e o ficheiro da migração foi alinhado. | Fiabilidade da aplicação remota. | — |

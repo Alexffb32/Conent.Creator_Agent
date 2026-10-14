@@ -3,7 +3,7 @@ import { ShieldCheck } from 'lucide-react';
 import { Badge, Card, RatingStars } from '@/components/ui';
 import { ReviewReply } from '@/components/admin/forms';
 import { ReportButton } from '@/components/restaurant/ReportButton';
-import { requireMemberPage } from '@/server/auth';
+import { requireMemberPage, MANAGE } from '@/server/auth';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { formatDateTime } from '@/lib/media';
 
@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function AvaliacoesPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ctx = await requireMemberPage(slug, ['owner']);
+  const ctx = await requireMemberPage(slug, MANAGE);
   const sb = await createServerSupabase();
   const [{ data: reviews }, { data: feedback }] = await Promise.all([
     sb.from('reviews').select('id, rating, text, verified, created_at, user_id, review_replies(body)').eq('restaurant_id', ctx.restaurant.id).eq('status', 'published').order('created_at', { ascending: false }).limit(50),

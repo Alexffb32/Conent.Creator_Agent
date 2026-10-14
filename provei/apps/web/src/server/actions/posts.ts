@@ -8,7 +8,7 @@ import { createServerSupabase, createServiceSupabase } from '@/lib/supabase/serv
 import { getFlags } from '@/lib/flags';
 import { extFor, mimesCompatible, sniffMime } from '@/lib/mime';
 import { type ActionResult, parse, run, UserError } from '../action';
-import { requireMemberForAction } from '../auth';
+import { requireMemberForAction, MANAGE } from '../auth';
 import { audit } from '../audit';
 import { enforceRateLimit } from '../ratelimit';
 import { getVideoProcessor } from '../video';
@@ -28,7 +28,7 @@ async function postsThisMonth(restaurantId: string) {
 export async function requestUpload(input: unknown): Promise<ActionResult<{ mediaId: string; path: string; token: string }>> {
   return run(async () => {
     const v = parse(uploadRequestSchema, input);
-    const ctx = await requireMemberForAction(v.restaurantId, ['owner']);
+    const ctx = await requireMemberForAction(v.restaurantId, MANAGE);
     await enforceRateLimit(`upload:${ctx.me.id}`, 3600, 40, 'Demasiados envios seguidos. Tenta daqui a pouco.');
     if (v.kind === 'video') {
       const svc = createServiceSupabase();
@@ -60,7 +60,7 @@ export async function requestUpload(input: unknown): Promise<ActionResult<{ medi
 export async function finalizeUpload(restaurantId: string, mediaId: string): Promise<ActionResult<{ status: string }>> {
   return run(async () => {
     parse(uuidSchema, mediaId);
-    await requireMemberForAction(restaurantId, ['owner']);
+    await requireMemberForAction(restaurantId, MANAGE);
     const svc = createServiceSupabase();
     const { data: media } = await svc.from('media_assets').select('*').eq('id', mediaId).eq('owner_restaurant_id', restaurantId).maybeSingle();
     if (!media) throw new UserError('Ficheiro não encontrado.');
@@ -93,7 +93,7 @@ export async function finalizeUpload(restaurantId: string, mediaId: string): Pro
 export async function createPost(input: unknown): Promise<ActionResult<{ id: string; status: string }>> {
   return run(async () => {
     const v = parse(postCreateSchema, input);
-    const ctx = await requireMemberForAction(v.restaurantId, ['owner']);
+    const ctx = await requireMemberForAction(v.restaurantId, MANAGE);
     const svc = createServiceSupabase();
     const { data: media } = await svc.from('media_assets').select('id, kind, status').eq('id', v.mediaId).eq('owner_restaurant_id', v.restaurantId).maybeSingle();
     if (!media) throw new UserError('Escolhe primeiro uma foto ou um vídeo.');
@@ -150,7 +150,7 @@ export async function notifyFollowers(restaurantId: string, restaurantName: stri
 
 export async function setPostStatus(restaurantId: string, postId: string, action: 'hide' | 'show' | 'delete'): Promise<ActionResult> {
   return run(async () => {
-    const ctx = await requireMemberForAction(restaurantId, ['owner']);
+    const ctx = await requireMemberForAction(restaurantId, MANAGE);
     const sb = await createServerSupabase();
     const patch = action === 'hide' ? { status: 'hidden' } : action === 'show' ? { status: 'published' } : { deleted_at: new Date().toISOString(), status: 'removed' };
     const { error } = await sb.from('posts').update(patch).eq('id', postId).eq('restaurant_id', restaurantId);

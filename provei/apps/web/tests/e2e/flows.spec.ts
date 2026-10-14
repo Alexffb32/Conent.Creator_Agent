@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { admin, cleanup, createFixture, createUser, hasBackend, loginAs, newContext, uid } from './helpers';
+import { admin, cleanup, createFixture, createUser, hasBackend, loginAs, loginAsAdmin, newContext, uid } from './helpers';
 
 test.skip(!hasBackend, 'Precisa de NEXT_PUBLIC_SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY (ver README).');
 test.describe.configure({ mode: 'serial' });
@@ -161,7 +161,7 @@ test('6. admin aprova um restaurante pendente', async ({ browser, page }) => {
     const anon = await newContext(browser);
     const anonPage = await anon.newPage();
     expect((await anonPage.goto(`/r/${f.slug}`))?.status()).toBe(404);
-    await loginAs(page, adminEmail, '/admin/restaurantes');
+    await loginAsAdmin(page, adminEmail, '/admin/restaurantes');
     const row = page.getByRole('listitem').filter({ hasText: f.slug });
     await row.getByRole('button', { name: 'Aprovar' }).click();
     await expect.poll(async () => (await admin().from('restaurants').select('verified_status').eq('id', f.restaurantId).single()).data?.verified_status).toBe('verified');

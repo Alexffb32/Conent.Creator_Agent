@@ -14,6 +14,16 @@ export const FLAG_KEYS = [
   'reviews',
   'loyalty',
   'call_waiter',
+  // ADENDA 2 (todas desligadas por omissão)
+  'ordering',
+  'kds',
+  'whatsapp',
+  'review_requests',
+  'coupons',
+  'analytics',
+  'ai_advisor',
+  'recommender',
+  'kitchen_forecast',
 ] as const;
 export type FlagKey = (typeof FLAG_KEYS)[number];
 export type Flags = Record<FlagKey, boolean>;
@@ -29,6 +39,15 @@ export const DEFAULT_FLAGS: Flags = {
   reviews: true,
   loyalty: true,
   call_waiter: true,
+  ordering: false,
+  kds: false,
+  whatsapp: false,
+  review_requests: false,
+  coupons: false,
+  analytics: false,
+  ai_advisor: false,
+  recommender: false,
+  kitchen_forecast: false,
 };
 
 /** Flags globais, com override por restaurante. Liga-se por configuração, sem novo deploy. */

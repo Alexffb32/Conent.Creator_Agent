@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Badge } from '@/components/ui';
 import { AdjustForm, LoyaltyProgramForm } from '@/components/admin/forms';
-import { requireMemberPage } from '@/server/auth';
+import { requireMemberPage, MANAGE } from '@/server/auth';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { DEFAULT_PROGRAM } from '@provei/domain';
 import { formatDateTime } from '@/lib/media';
@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function FidelizacaoPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ctx = await requireMemberPage(slug, ['owner']);
+  const ctx = await requireMemberPage(slug, MANAGE);
   const sb = await createServerSupabase();
   const [{ data: program }, { data: cards }, { data: reds }] = await Promise.all([
     sb.from('loyalty_programs').select('*').eq('restaurant_id', ctx.restaurant.id).maybeSingle(),

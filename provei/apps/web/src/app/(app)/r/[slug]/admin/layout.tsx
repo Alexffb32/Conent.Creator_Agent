@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui';
-import { requireMemberPage } from '@/server/auth';
+import { ANY_ROLE, ROLE_LABEL, requireMemberPage } from '@/server/auth';
 import { AdminNav } from '@/components/admin/AdminNav';
 
 export default async function AdminLayout({ children, params }: { children: ReactNode; params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ctx = await requireMemberPage(slug);
+  const ctx = await requireMemberPage(slug, ANY_ROLE);
   return (
     <div className="pv-container flex flex-col gap-4 pt-4 lg:flex-row lg:gap-8">
       <aside className="lg:w-56 lg:shrink-0">
@@ -14,7 +14,7 @@ export default async function AdminLayout({ children, params }: { children: Reac
           <Link href={`/r/${slug}`} className="pv-title text-2xl text-verde-escuro">{ctx.restaurant.name}</Link>
           <div className="flex gap-1.5">
             <Badge tone={ctx.restaurant.plan === 'paid' ? 'amarelo' : 'neutro'}>{ctx.restaurant.plan === 'paid' ? 'Plano pago' : 'Plano gratuito'}</Badge>
-            <Badge tone="neutro">{ctx.role === 'owner' ? 'Dono' : 'Equipa'}</Badge>
+            <Badge tone="neutro">{ROLE_LABEL[ctx.role]}</Badge>
           </div>
         </div>
         <AdminNav slug={slug} role={ctx.role} />

@@ -10,5 +10,5 @@ export default async function FilaPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const ctx = await requireMemberPage(slug);
   const q = await getQueue(ctx.restaurant.id);
-  return <WaiterQueue restaurantId={ctx.restaurant.id} isOwner={ctx.role === 'owner'} initial={q.ok ? q.data : { active: [], today: [], occupiedTables: [] }} />;
+  return <WaiterQueue restaurantId={ctx.restaurant.id} isOwner={ctx.role === 'owner' || ctx.role === 'manager'} initial={q.ok ? q.data : { active: [], today: [], occupiedTables: [] }} />;
 }

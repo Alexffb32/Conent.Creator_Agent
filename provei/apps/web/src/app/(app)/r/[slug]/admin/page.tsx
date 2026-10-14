@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card, CardTitle, LinkLike } from '@/components/admin/ui-shim';
 import { BarChart } from '@/components/admin/BarChart';
-import { requireMemberPage } from '@/server/auth';
+import { requireMemberPage, ANY_ROLE } from '@/server/auth';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -20,8 +20,9 @@ const METRICS = [
 export default async function AdminHome({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ dias?: string; novo?: string }> }) {
   const { slug } = await params;
   const sp = await searchParams;
-  const ctx = await requireMemberPage(slug);
-  if (ctx.role === 'staff') redirect(`/r/${slug}/admin/fila`);
+  const ctx = await requireMemberPage(slug, ANY_ROLE);
+  if (ctx.role === 'waiter') redirect(`/r/${slug}/admin/fila`);
+  if (ctx.role === 'kitchen') redirect(`/r/${slug}/admin/cozinha`);
   const days = sp.dias === '30' ? 30 : 7;
   const sb = await createServerSupabase();
   const since = new Date(Date.now() - (days - 1) * 86_400_000).toISOString().slice(0, 10);

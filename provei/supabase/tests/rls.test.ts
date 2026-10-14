@@ -6,13 +6,17 @@ const U = {
   admin: '00000000-0000-0000-0000-0000000000a1',
   ownerA: '00000000-0000-0000-0000-0000000000b1',
   ownerB: '00000000-0000-0000-0000-0000000000b2',
-  staffA: '00000000-0000-0000-0000-0000000000c1',
+  waiterA: '00000000-0000-0000-0000-0000000000c1',
+  managerA: '00000000-0000-0000-0000-0000000000c2',
+  kitchenA: '00000000-0000-0000-0000-0000000000c3',
+  adv: '00000000-0000-0000-0000-0000000000e1',
   alice: '00000000-0000-0000-0000-0000000000d1',
   bob: '00000000-0000-0000-0000-0000000000d2',
 };
 const R = { A: '10000000-0000-0000-0000-00000000000a', B: '10000000-0000-0000-0000-00000000000b', P: '10000000-0000-0000-0000-00000000000c' };
 const svc = { role: 'service_role' as const };
 const auth = (uid: string) => ({ role: 'authenticated' as const, uid });
+const authMfa = (uid: string) => ({ role: 'authenticated' as const, uid, aal: 'aal2' as const });
 const anon = { role: 'anon' as const };
 
 let db: PGlite;
@@ -29,8 +33,8 @@ beforeAll(async () => {
     [R.A, R.B, R.P],
   );
   await db.query(
-    `insert into public.restaurant_members (restaurant_id, user_id, role) values ($1,$2,'owner'), ($1,$3,'staff'), ($4,$5,'owner')`,
-    [R.A, U.ownerA, U.staffA, R.B, U.ownerB],
+    `insert into public.restaurant_members (restaurant_id, user_id, role) values ($1,$2,'owner'), ($1,$3,'waiter'), ($4,$5,'owner'), ($1,$6,'manager'), ($1,$7,'kitchen')`,
+    [R.A, U.ownerA, U.waiterA, R.B, U.ownerB, U.managerA, U.kitchenA],
   );
   await db.query(
     `insert into public.posts (restaurant_id, type, dish_name, status, published_at) values
@@ -89,9 +93,9 @@ describe('isolamento entre restaurantes', () => {
     expect(await rejects(as(db, auth(U.ownerA), "update public.restaurants set verified_status = 'verified' where id = $1", [R.A]))).toMatch(/permission denied/);
   });
   it('staff não altera o restaurante nem cria publicações', async () => {
-    const r = await as(db, auth(U.staffA), "update public.restaurants set name = 'x' where id = $1 returning id", [R.A]);
+    const r = await as(db, auth(U.waiterA), "update public.restaurants set name = 'x' where id = $1 returning id", [R.A]);
     expect(r).toHaveLength(0);
-    await rejects(as(db, auth(U.staffA), "insert into public.posts (restaurant_id, type, dish_name) values ($1,'photo','Staff post')", [R.A]));
+    await rejects(as(db, auth(U.waiterA), "insert into public.posts (restaurant_id, type, dish_name) values ($1,'photo','Staff post')", [R.A]));
   });
   it('restaurante pendente só é visível ao seu dono', async () => {
     await db.query(`insert into public.restaurant_members values ($1,$2,'owner')`, [R.P, U.alice]);
@@ -109,7 +113,7 @@ describe('dados privados do utilizador', () => {
     expect(alice.map((x) => x.message)).toEqual(['Estava frio']);
     const owner = await as(db, auth(U.ownerA), 'select 1 from public.private_feedback');
     expect(owner).toHaveLength(2);
-    const staff = await as(db, auth(U.staffA), 'select 1 from public.private_feedback');
+    const staff = await as(db, auth(U.waiterA), 'select 1 from public.private_feedback');
     expect(staff).toHaveLength(0);
     const ownerB = await as(db, auth(U.ownerB), 'select 1 from public.private_feedback');
     expect(ownerB).toHaveLength(0);
@@ -174,8 +178,8 @@ describe('chamadas e sessões de mesa', () => {
       Promise.resolve(db.query("insert into public.waiter_calls (table_session_id, restaurant_id, table_id, user_id) values ($1,$2,$3,$4)", [sessionA, R.A, tableA, U.alice])),
     );
     expect(await as(db, auth(U.ownerB), 'select 1 from public.waiter_calls')).toHaveLength(0);
-    expect(await as(db, auth(U.staffA), 'select 1 from public.waiter_calls')).toHaveLength(1);
-    const upd = await as(db, auth(U.staffA), "update public.waiter_calls set status = 'acknowledged', acknowledged_by = $1 returning id", [U.staffA]);
+    expect(await as(db, auth(U.waiterA), 'select 1 from public.waiter_calls')).toHaveLength(1);
+    const upd = await as(db, auth(U.waiterA), "update public.waiter_calls set status = 'acknowledged', acknowledged_by = $1 returning id", [U.waiterA]);
     expect(upd).toHaveLength(1);
     const other = await as(db, auth(U.ownerB), "update public.waiter_calls set status = 'resolved' returning id");
     expect(other).toHaveLength(0);
@@ -197,7 +201,7 @@ describe('fidelização', () => {
   });
   it('cartão: só dono do cartão e equipa do restaurante leem', async () => {
     expect(await as(db, auth(U.alice), 'select 1 from public.loyalty_cards')).toHaveLength(1);
-    expect(await as(db, auth(U.staffA), 'select 1 from public.loyalty_cards')).toHaveLength(1);
+    expect(await as(db, auth(U.waiterA), 'select 1 from public.loyalty_cards')).toHaveLength(1);
     expect(await as(db, auth(U.bob), 'select 1 from public.loyalty_cards')).toHaveLength(0);
     expect(await as(db, auth(U.ownerB), 'select 1 from public.loyalty_cards')).toHaveLength(0);
   });
@@ -273,7 +277,7 @@ describe('avaliações e moderação', () => {
     const rev = (await db.query<{ id: string }>("select id from public.reviews where status = 'published' limit 1")).rows[0]!.id;
     await as(db, auth(U.bob), "insert into public.reports (reporter_id, target_type, target_id, reason) values ($1,'review',$2,'Falso')", [U.bob, rev]);
     expect(await as(db, auth(U.alice), 'select 1 from public.reports')).toHaveLength(0);
-    expect(await as(db, auth(U.admin), 'select 1 from public.reports')).toHaveLength(1);
+    expect(await as(db, authMfa(U.admin), 'select 1 from public.reports')).toHaveLength(1);
     const fc = (await db.query<{ flagged_count: number }>('select flagged_count from public.reviews where id = $1', [rev])).rows[0]!;
     expect(fc.flagged_count).toBe(1);
   });
@@ -283,19 +287,20 @@ describe('administração, auditoria e flags', () => {
   it('flags são públicas para leitura, mas só o admin altera', async () => {
     expect((await as(db, anon, 'select key from public.feature_flags')).length).toBeGreaterThanOrEqual(10);
     expect(await as(db, auth(U.alice), "update public.feature_flags set enabled = true where key = 'ads' returning key")).toHaveLength(0);
-    expect(await as(db, auth(U.admin), "update public.feature_flags set enabled = true where key = 'ads' returning key")).toHaveLength(1);
+    expect(await as(db, authMfa(U.admin), "update public.feature_flags set enabled = true where key = 'ads' returning key")).toHaveLength(1);
     await db.query("update public.feature_flags set enabled = false where key = 'ads'");
   });
-  it('por omissão: payments/wallet/ads/ad_free/table_ordering desligadas, as restantes ligadas', async () => {
+  it('por omissão: flags pagas e todas as da ADENDA 2 desligadas, as do produto base ligadas', async () => {
     const rows = (await db.query<{ key: string; enabled: boolean }>('select key, enabled from public.feature_flags')).rows;
-    const off = ['payments', 'wallet', 'ads', 'ad_free_subscription', 'table_ordering'];
+    const off = ['payments', 'wallet', 'ads', 'ad_free_subscription', 'table_ordering', 'ordering', 'kds', 'whatsapp', 'review_requests',
+      'coupons', 'analytics', 'ai_advisor', 'recommender', 'kitchen_forecast'];
     for (const r of rows) expect(r.enabled).toBe(!off.includes(r.key));
   });
   it('auditoria: não é escrita por clientes e é lida só pelo admin', async () => {
     await rejects(as(db, auth(U.alice), "insert into public.audit_logs (action) values ('x')"));
     await db.query("insert into public.audit_logs (action, actor_id) values ('teste', $1)", [U.admin]);
     expect(await as(db, auth(U.alice), 'select 1 from public.audit_logs')).toHaveLength(0);
-    expect((await as(db, auth(U.admin), 'select 1 from public.audit_logs')).length).toBeGreaterThan(0);
+    expect((await as(db, authMfa(U.admin), 'select 1 from public.audit_logs')).length).toBeGreaterThan(0);
   });
   it('stripe_events e rate_limits são inacessíveis a clientes', async () => {
     expect(await as(db, auth(U.alice), 'select 1 from public.stripe_events')).toHaveLength(0);
@@ -315,7 +320,7 @@ describe('administração, auditoria e flags', () => {
     expect(r[0]!.submit_lead).toBeTruthy();
     expect(await as(db, anon, 'select 1 from public.leads')).toHaveLength(0);
     expect(await as(db, auth(U.alice), 'select 1 from public.leads')).toHaveLength(0);
-    expect((await as(db, auth(U.admin), 'select 1 from public.leads')).length).toBe(1);
+    expect((await as(db, authMfa(U.admin), 'select 1 from public.leads')).length).toBe(1);
     await rejects(as(db, anon, "insert into public.leads (name, restaurant, contact, city) values ('aa','bb','ccccc','dd')"));
     await rejects(as(db, svc, "select public.submit_lead('A', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip1')"));
     for (let i = 0; i < 5; i++) await as(db, svc, "select public.submit_lead('Ana Lima', 'Tasca X', 'ana@x.pt', 'Covilhã', null, 'ip2')");
@@ -329,7 +334,7 @@ describe('administração, auditoria e flags', () => {
     await rejects(as(db, svc, q.replace('BOOL', 'false')));
     expect(await as(db, anon, 'select 1 from public.content_notices')).toHaveLength(0);
     expect(await as(db, auth(U.alice), 'select 1 from public.content_notices')).toHaveLength(0);
-    expect((await as(db, auth(U.admin), 'select 1 from public.content_notices')).length).toBe(1);
+    expect((await as(db, authMfa(U.admin), 'select 1 from public.content_notices')).length).toBe(1);
   });
   it('donos não leem eventos de analytics com user_id (só agregados)', async () => {
     await db.query("insert into public.analytics_events (restaurant_id, user_id, type) values ($1, $2, 'view')", [R.A, U.alice]);
@@ -340,5 +345,69 @@ describe('administração, auditoria e flags', () => {
       "select tablename from pg_tables t join pg_class c on c.relname = t.tablename and c.relnamespace = 'public'::regnamespace where t.schemaname = 'public' and not c.relrowsecurity",
     );
     expect(r.rows).toEqual([]);
+  });
+});
+
+describe('F1: quatro tipos de conta', () => {
+  it('admin sem MFA (aal1) não tem poderes de admin; com aal2 tem', async () => {
+    expect(await as(db, auth(U.admin), 'select 1 from public.audit_logs')).toHaveLength(0);
+    expect(await as(db, auth(U.admin), "update public.feature_flags set enabled = true where key = 'kds' returning key")).toHaveLength(0);
+    expect((await as(db, authMfa(U.admin), 'select 1 from public.audit_logs')).length).toBeGreaterThan(0);
+  });
+  it('manager gere o menu do seu restaurante; waiter e kitchen não', async () => {
+    const ins = (uid: string) => as(db, auth(uid), "insert into public.menu_items (restaurant_id, name, price_cents) values ($1, 'Sopa', 300) returning id", [R.A]);
+    expect(await ins(U.managerA)).toHaveLength(1);
+    await rejects(ins(U.waiterA));
+    await rejects(ins(U.kitchenA));
+  });
+  it('kitchen vê o menu e os pedidos, mas não vê chamadas, mesas, visitas nem cartões', async () => {
+    expect((await as(db, auth(U.kitchenA), 'select 1 from public.menu_items where restaurant_id = $1', [R.A])).length).toBeGreaterThan(0);
+    for (const t of ['waiter_calls', 'tables', 'visits', 'loyalty_cards', 'private_feedback', 'analytics_daily']) {
+      expect(await as(db, auth(U.kitchenA), `select 1 from public.${t}`)).toHaveLength(0);
+    }
+  });
+  it('waiter vê mesas do seu restaurante, mas não números nem faturação', async () => {
+    expect((await as(db, auth(U.waiterA), 'select 1 from public.tables where restaurant_id = $1', [R.A])).length).toBeGreaterThan(0);
+    expect(await as(db, auth(U.waiterA), 'select 1 from public.analytics_daily')).toHaveLength(0);
+    expect(await as(db, auth(U.waiterA), 'select 1 from public.subscriptions')).toHaveLength(0);
+  });
+  it('restaurante A (qualquer papel) não lê nada do restaurante B', async () => {
+    for (const uid of [U.ownerA, U.managerA, U.waiterA, U.kitchenA]) {
+      expect(await as(db, auth(uid), 'select 1 from public.tables where restaurant_id = $1', [R.B])).toHaveLength(0);
+      expect(await as(db, auth(uid), 'select 1 from public.restaurant_members where restaurant_id = $1', [R.B])).toHaveLength(0);
+    }
+  });
+  it('manager não remove o dono; o dono remove o manager', async () => {
+    expect(await as(db, auth(U.managerA), 'delete from public.restaurant_members where user_id = $1 returning user_id', [U.ownerA])).toHaveLength(0);
+  });
+  it('anunciante: cria conta pela função, vê só a sua e nunca dados pessoais de clientes', async () => {
+    const r = await as<{ create_advertiser: string }>(db, auth(U.adv), "select public.create_advertiser('Café Central', 'ads@cafe.pt', null)");
+    const advId = r[0]!.create_advertiser;
+    expect(await as(db, auth(U.adv), 'select id from public.advertisers')).toEqual([{ id: advId }]);
+    expect(await as(db, auth(U.alice), 'select 1 from public.advertisers')).toHaveLength(0);
+    for (const t of ['profiles', 'consents', 'visits', 'loyalty_cards', 'orders', 'feed_events', 'private_feedback', 'ad_impressions']) {
+      const rows = await as<{ id?: string }>(db, auth(U.adv), `select * from public.${t}`);
+      expect(rows.filter((x) => x.id !== U.adv)).toHaveLength(0);
+    }
+    await rejects(as(db, auth(U.adv), "insert into public.advertisers (name, contact_email) values ('X', 'x@x.pt')"));
+  });
+  it('feed_events: cada utilizador só escreve, lê e apaga os seus', async () => {
+    const imp = '20000000-0000-0000-0000-000000000001';
+    await as(db, auth(U.alice), "insert into public.feed_events (user_id, impression_id, event) values ($1, $2, 'impression')", [U.alice, imp]);
+    await rejects(as(db, auth(U.alice), "insert into public.feed_events (user_id, impression_id, event) values ($1, $2, 'impression')", [U.bob, imp]));
+    expect(await as(db, auth(U.bob), 'select 1 from public.feed_events')).toHaveLength(0);
+    expect(await as(db, auth(U.ownerA), 'select 1 from public.feed_events')).toHaveLength(0);
+    expect(await as(db, auth(U.alice), 'delete from public.feed_events returning id')).toHaveLength(1);
+  });
+  it('papéis derivados e claim do JWT: o mesmo e-mail pode ter vários papéis', async () => {
+    const roles = async (uid: string) => (await db.query<{ r: string[] }>('select public.user_roles($1) as r', [uid])).rows[0]!.r;
+    expect(await roles(U.alice)).toEqual(['customer']);
+    expect(await roles(U.ownerA)).toEqual(['customer', 'restaurant']);
+    expect(await roles(U.adv)).toEqual(['customer', 'advertiser']);
+    expect(await roles(U.admin)).toEqual(['customer', 'admin']);
+    const ev = (await db.query<{ e: { claims: { app_roles: string[] } } }>(
+      "select public.custom_access_token_hook(jsonb_build_object('user_id', $1::text, 'claims', '{}'::jsonb)) as e", [U.ownerA])).rows[0]!.e;
+    expect(ev.claims.app_roles).toEqual(['customer', 'restaurant']);
+    await rejects(as(db, auth(U.alice), 'select public.user_roles($1)', [U.ownerA]));
   });
 });

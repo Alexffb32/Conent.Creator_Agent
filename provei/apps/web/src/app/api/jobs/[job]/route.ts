@@ -36,6 +36,8 @@ async function aggregate(svc: ReturnType<typeof createServiceSupabase>) {
   leadCutoff.setMonth(leadCutoff.getMonth() - 12);
   await svc.from('leads').delete().lt('created_at', leadCutoff.toISOString());
   await svc.from('audit_logs').delete().lt('ts', cutoff.toISOString());
+  // Eventos do feed: retenção de 180 dias (personalização usa no máximo os últimos 90).
+  await svc.from('feed_events').delete().lt('ts', new Date(Date.now() - 180 * 86_400_000).toISOString());
   const noticeCutoff = new Date();
   noticeCutoff.setMonth(noticeCutoff.getMonth() - 24);
   await svc.from('content_notices').delete().lt('created_at', noticeCutoff.toISOString());

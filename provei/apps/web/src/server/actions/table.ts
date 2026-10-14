@@ -19,7 +19,7 @@ import { createServerSupabase, createServiceSupabase } from '@/lib/supabase/serv
 import { getFlags } from '@/lib/flags';
 import { tableSecret } from '@/lib/env';
 import { type ActionResult, parse, run, UserError } from '../action';
-import { requireMemberForAction, requireUserForAction } from '../auth';
+import { requireMemberForAction, requireUserForAction, MANAGE } from '../auth';
 import { audit, ipHash } from '../audit';
 import { enforceRateLimit } from '../ratelimit';
 import { createWaiterCall, exchangeTableToken, getActiveSession } from '../tables';
@@ -101,7 +101,7 @@ export async function setCallStatus(input: unknown): Promise<ActionResult> {
 export async function ignoreUser(restaurantId: string, userId: string, ignore: boolean): Promise<ActionResult> {
   return run(async () => {
     parse(uuidSchema, userId);
-    const ctx = await requireMemberForAction(restaurantId, ['owner']);
+    const ctx = await requireMemberForAction(restaurantId, MANAGE);
     const svc = createServiceSupabase();
     if (ignore) await svc.from('restaurant_user_blocks').upsert({ restaurant_id: restaurantId, user_id: userId, kind: 'ignored', created_by: ctx.me.id });
     else await svc.from('restaurant_user_blocks').delete().eq('restaurant_id', restaurantId).eq('user_id', userId).eq('kind', 'ignored');
@@ -132,7 +132,7 @@ export async function claimMyVisit(): Promise<ActionResult<{ points: number; rew
 export async function createTable(input: unknown): Promise<ActionResult<{ id: string }>> {
   return run(async () => {
     const v = parse(tableCreateSchema, input);
-    const ctx = await requireMemberForAction(v.restaurantId, ['owner']);
+    const ctx = await requireMemberForAction(v.restaurantId, MANAGE);
     const sb = await createServerSupabase();
     const svc = createServiceSupabase();
     const [{ count }, { data: limits }] = await Promise.all([
@@ -152,7 +152,7 @@ export async function createTable(input: unknown): Promise<ActionResult<{ id: st
 
 export async function setTableActive(restaurantId: string, tableId: string, active: boolean): Promise<ActionResult> {
   return run(async () => {
-    const ctx = await requireMemberForAction(restaurantId, ['owner']);
+    const ctx = await requireMemberForAction(restaurantId, MANAGE);
     const sb = await createServerSupabase();
     const { error } = await sb.from('tables').update({ active }).eq('id', tableId).eq('restaurant_id', restaurantId);
     if (error) throw new Error(error.message);
@@ -243,7 +243,7 @@ export async function validateRedemption(restaurantId: string, rawCode: string):
 /** Reversão de carimbos/pontos por `adjust`, sempre com razão e auditoria. */
 export async function adjustLoyalty(input: { restaurantId: string; userId: string; kind: 'stamps' | 'points'; delta: number; reason: string }): Promise<ActionResult> {
   return run(async () => {
-    const ctx = await requireMemberForAction(input.restaurantId, ['owner']);
+    const ctx = await requireMemberForAction(input.restaurantId, MANAGE);
     if (!input.reason || input.reason.trim().length < 3) throw new UserError('Indica a razão do ajuste.');
     if (!Number.isInteger(input.delta) || input.delta === 0 || Math.abs(input.delta) > 1000) throw new UserError('Valor de ajuste inválido.');
     const svc = createServiceSupabase();

@@ -30,7 +30,10 @@ export const profileUpdateSchema = z.object({
   city: z.string().trim().max(60).default(''),
 });
 
-export const consentKindSchema = z.enum(['terms', 'privacy', 'location', 'push', 'ads_personalization']);
+export const consentKindSchema = z.enum([
+  'terms', 'privacy', 'location', 'push', 'ads_personalization',
+  'personalization', 'whatsapp_utility', 'whatsapp_marketing', 'email_marketing',
+]);
 export const consentUpdateSchema = z.object({ kind: consentKindSchema, granted: z.boolean() });
 
 export const slugSchema = z.string().trim().toLowerCase().regex(/^[a-z0-9-]{2,60}$/, 'Slug inválido');
@@ -138,7 +141,11 @@ export const offerSchema = z.object({
   endsAt: z.coerce.date(),
 });
 
-export const inviteSchema = z.object({ restaurantId: uuidSchema, email: z.string().trim().toLowerCase().email() });
+export const inviteSchema = z.object({
+  restaurantId: uuidSchema,
+  email: z.string().trim().toLowerCase().email(),
+  role: z.enum(['manager', 'kitchen', 'waiter']).default('waiter'),
+});
 
 export const redeemSchema = z.object({ code: z.string().trim().min(6).max(12) });
 export const staffVisitSchema = z.object({
@@ -191,4 +198,20 @@ export const contentNoticeSchema = z.object({
   explanation: z.string().trim().min(20, 'Explica em pelo menos 20 caracteres porque é ilegal').max(4000),
   goodFaith: z.literal(true, { errorMap: () => ({ message: 'Tens de confirmar que a informação é exata e de boa-fé' }) }),
   website: z.string().max(0).optional().default(''),
+});
+
+/** Eventos do feed (personalização). Lote de até 50; `value` = fração vista (0–1) quando event = 'view'. */
+export const feedEventSchema = z.object({
+  impressionId: z.string().uuid(),
+  postId: z.string().uuid().optional(),
+  restaurantId: z.string().uuid().optional(),
+  event: z.enum(['impression', 'view', 'like', 'save', 'share', 'open_restaurant', 'order', 'skip', 'hide']),
+  value: z.number().min(0).max(1).optional(),
+});
+export const feedEventsBatchSchema = z.object({ events: z.array(feedEventSchema).min(1).max(50) });
+
+export const advertiserSchema = z.object({
+  name: z.string().trim().min(2, 'Indica o nome da empresa').max(120),
+  email: z.string().trim().toLowerCase().email('Indica um e-mail válido'),
+  vat: z.string().trim().max(32).optional().default(''),
 });

@@ -4,7 +4,7 @@ import { Printer } from 'lucide-react';
 import { Card } from '@/components/ui';
 import { CreateTableForm } from '@/components/admin/CreateTableForm';
 import { TableQrCard } from '@/components/admin/TableQrCard';
-import { requireMemberPage } from '@/server/auth';
+import { requireMemberPage, MANAGE } from '@/server/auth';
 import { createServerSupabase, createServiceSupabase } from '@/lib/supabase/server';
 import { publicEnv } from '@/lib/env';
 import { DEFAULT_PLAN_LIMITS } from '@provei/domain';
@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function MesasPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ctx = await requireMemberPage(slug, ['owner']);
+  const ctx = await requireMemberPage(slug, MANAGE);
   const sb = await createServerSupabase();
   const [{ data: tables }, { data: lim }, { data: active }] = await Promise.all([
     sb.from('tables').select('id, label, public_code, active').eq('restaurant_id', ctx.restaurant.id).order('label'),

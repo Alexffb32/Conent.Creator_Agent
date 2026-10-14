@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Card } from '@/components/ui';
 import { OfferForm, RemoveOfferButton } from '@/components/admin/forms';
-import { requireMemberPage } from '@/server/auth';
+import { requireMemberPage, MANAGE } from '@/server/auth';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { formatDateTime } from '@/lib/media';
 
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function OfertasPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ctx = await requireMemberPage(slug, ['owner']);
+  const ctx = await requireMemberPage(slug, MANAGE);
   const sb = await createServerSupabase();
   const { data: offers } = await sb.from('offers').select('id, title, description, ends_at, active').eq('restaurant_id', ctx.restaurant.id).order('ends_at', { ascending: false });
   return (

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Badge, Card } from '@/components/ui';
 import { PostComposer } from '@/components/admin/PostComposer';
 import { PostRowActions } from '@/components/admin/PostRowActions';
-import { requireMemberPage } from '@/server/auth';
+import { requireMemberPage, MANAGE } from '@/server/auth';
 import { createServerSupabase, createServiceSupabase } from '@/lib/supabase/server';
 import { formatDateTime, formatPrice } from '@/lib/media';
 import { DEFAULT_PLAN_LIMITS } from '@provei/domain';
@@ -19,7 +19,7 @@ const STATUS: Record<string, { label: string; tone: 'verde' | 'amarelo' | 'neutr
 
 export default async function PublicacoesPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ctx = await requireMemberPage(slug, ['owner']);
+  const ctx = await requireMemberPage(slug, MANAGE);
   const sb = await createServerSupabase();
   const monthStart = new Date();
   monthStart.setUTCDate(1);

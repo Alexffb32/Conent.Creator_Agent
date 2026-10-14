@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { restaurantCreateSchema, restaurantUpdateSchema, hoursSchema } from '@provei/api-client';
 import { createServerSupabase, createServiceSupabase } from '@/lib/supabase/server';
 import { type ActionResult, parse, run, UserError } from '../action';
-import { requireMemberForAction, requireUserForAction } from '../auth';
+import { requireMemberForAction, requireUserForAction, MANAGE } from '../auth';
 import { audit } from '../audit';
 import { enforceRateLimit } from '../ratelimit';
 
@@ -38,7 +38,7 @@ export async function createRestaurant(input: unknown): Promise<ActionResult<{ s
 
 export async function updateRestaurant(restaurantId: string, input: unknown): Promise<ActionResult> {
   return run(async () => {
-    const ctx = await requireMemberForAction(restaurantId, ['owner']);
+    const ctx = await requireMemberForAction(restaurantId, MANAGE);
     const v = parse(restaurantUpdateSchema, input);
     const sb = await createServerSupabase();
     const { error } = await sb
@@ -64,7 +64,7 @@ export async function updateRestaurant(restaurantId: string, input: unknown): Pr
 
 export async function updateHours(restaurantId: string, hours: unknown): Promise<ActionResult> {
   return run(async () => {
-    const ctx = await requireMemberForAction(restaurantId, ['owner']);
+    const ctx = await requireMemberForAction(restaurantId, MANAGE);
     const v = parse(hoursSchema, hours);
     const sb = await createServerSupabase();
     const { error } = await sb.from('restaurants').update({ hours: v }).eq('id', restaurantId);

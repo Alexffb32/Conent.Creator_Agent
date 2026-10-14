@@ -65,7 +65,15 @@ export async function requireUserForAction(): Promise<SessionProfile> {
   return me;
 }
 
-export type MemberRole = 'owner' | 'staff';
+export type MemberRole = 'owner' | 'manager' | 'kitchen' | 'waiter';
+/** Gestão: menu, preços, números, IA, cupões, equipa. */
+export const MANAGE: MemberRole[] = ['owner', 'manager'];
+/** Sala: chamadas, mesas, visitas, resgates. */
+export const FLOOR: MemberRole[] = ['owner', 'manager', 'waiter'];
+/** Cozinha: KDS. */
+export const KITCHEN: MemberRole[] = ['owner', 'manager', 'kitchen'];
+export const ANY_ROLE: MemberRole[] = ['owner', 'manager', 'kitchen', 'waiter'];
+export const ROLE_LABEL: Record<MemberRole, string> = { owner: 'Dono', manager: 'Gerente', kitchen: 'Cozinha', waiter: 'Sala' };
 
 export interface MemberContext {
   me: SessionProfile;
@@ -74,7 +82,7 @@ export interface MemberContext {
 }
 
 /** Autorização no servidor (além de RLS): o utilizador tem de pertencer ao restaurante. */
-export async function loadMember(slugOrId: { slug?: string; id?: string }, roles: MemberRole[] = ['owner', 'staff']): Promise<MemberContext | null> {
+export async function loadMember(slugOrId: { slug?: string; id?: string }, roles: MemberRole[] = ANY_ROLE): Promise<MemberContext | null> {
   const me = await getSessionProfile();
   if (!me || me.suspended) return null;
   const sb = await createServerSupabase();
@@ -92,7 +100,7 @@ export async function loadMember(slugOrId: { slug?: string; id?: string }, roles
   };
 }
 
-export async function requireMemberPage(slug: string, roles: MemberRole[] = ['owner', 'staff']): Promise<MemberContext> {
+export async function requireMemberPage(slug: string, roles: MemberRole[] = FLOOR): Promise<MemberContext> {
   const me = await getSessionProfile();
   if (!me) redirect(`/entrar?next=${encodeURIComponent(`/r/${slug}/admin`)}`);
   const ctx = await loadMember({ slug }, roles);
@@ -100,22 +108,32 @@ export async function requireMemberPage(slug: string, roles: MemberRole[] = ['ow
   return ctx;
 }
 
-export async function requireMemberForAction(restaurantId: string, roles: MemberRole[] = ['owner', 'staff']): Promise<MemberContext> {
+export async function requireMemberForAction(restaurantId: string, roles: MemberRole[] = FLOOR): Promise<MemberContext> {
   const ctx = await loadMember({ id: restaurantId }, roles);
   if (!ctx) throw new UserError('Não tens permissão para fazer isto neste restaurante.');
   return ctx;
 }
 
-export async function requireAdminPage(): Promise<SessionProfile> {
+/** Nível de garantia da sessão: 'aal2' quando o utilizador confirmou o segundo fator (TOTP). */
+export async function getAal(): Promise<'aal1' | 'aal2'> {
+  const sb = await createServerSupabase();
+  const { data } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+  return data?.currentLevel === 'aal2' ? 'aal2' : 'aal1';
+}
+
+/** Admin: MFA obrigatório. Sem segundo fator confirmado nesta sessão, vai para /mfa. A RLS exige o mesmo (aal2). */
+export async function requireAdminPage(next = '/admin'): Promise<SessionProfile> {
   const me = await getSessionProfile();
-  if (!me) redirect('/entrar?next=/admin');
+  if (!me) redirect(`/entrar?next=${encodeURIComponent(next)}`);
   if (!me.isAdmin) redirect('/');
+  if ((await getAal()) !== 'aal2') redirect(`/mfa?next=${encodeURIComponent(next)}`);
   return me;
 }
 
 export async function requireAdminForAction(): Promise<SessionProfile> {
   const me = await requireUserForAction();
   if (!me.isAdmin) throw new UserError('Sem permissão de administração.');
+  if ((await getAal()) !== 'aal2') throw new UserError('Confirma o segundo fator (MFA) para continuar.');
   return me;
 }
 

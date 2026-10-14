@@ -6,7 +6,7 @@ import { reviewReplacesPrevious, sanitizeText, validateReview } from '@provei/do
 import { createServerSupabase, createServiceSupabase } from '@/lib/supabase/server';
 import { getFlags } from '@/lib/flags';
 import { type ActionResult, parse, run, UserError } from '../action';
-import { requireMemberForAction, requireUserForAction } from '../auth';
+import { requireMemberForAction, requireUserForAction, MANAGE } from '../auth';
 import { audit } from '../audit';
 import { enforceRateLimit } from '../ratelimit';
 import { awardReviewPhotoPoints } from '../loyalty';
@@ -96,7 +96,7 @@ export async function replyToReview(input: unknown): Promise<ActionResult> {
     const svc = createServiceSupabase();
     const { data: rev } = await svc.from('reviews').select('restaurant_id').eq('id', v.reviewId).maybeSingle();
     if (!rev) throw new UserError('Avaliação não encontrada.');
-    const ctx = await requireMemberForAction(rev.restaurant_id, ['owner']);
+    const ctx = await requireMemberForAction(rev.restaurant_id, MANAGE);
     const sb = await createServerSupabase();
     const { error } = await sb.from('review_replies').insert({ review_id: v.reviewId, restaurant_id: rev.restaurant_id, author_id: ctx.me.id, body: sanitizeText(v.body) });
     if (error) throw new UserError(error.code === '23505' ? 'Já respondeste a esta avaliação.' : 'Não foi possível publicar a resposta.');

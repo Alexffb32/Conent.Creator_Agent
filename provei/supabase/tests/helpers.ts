@@ -18,12 +18,13 @@ export async function newDb(): Promise<PGlite> {
 /** Executa SQL como um papel (anon/authenticated/service_role) e utilizador. */
 export async function as<T = Record<string, unknown>>(
   db: PGlite,
-  who: { role: 'anon' | 'authenticated' | 'service_role'; uid?: string },
+  who: { role: 'anon' | 'authenticated' | 'service_role'; uid?: string; aal?: 'aal1' | 'aal2' },
   sql: string,
   params: unknown[] = [],
 ): Promise<T[]> {
   await db.exec(`set role ${who.role}`);
   await db.exec(`select set_config('request.jwt.claim.sub', '${who.uid ?? ''}', false)`);
+  await db.exec(`select set_config('request.jwt.claims', '${JSON.stringify({ sub: who.uid ?? '', aal: who.aal ?? 'aal1' })}', false)`);
   try {
     const r = await db.query<T>(sql, params);
     return r.rows;

@@ -108,7 +108,7 @@ async function main() {
 
   // donos e equipa
   const memberships = [
-    [restIds[0]!.id, donoId, 'owner'], [restIds[1]!.id, donoId, 'owner'], [restIds[0]!.id, staffId, 'staff'],
+    [restIds[0]!.id, donoId, 'owner'], [restIds[1]!.id, donoId, 'owner'], [restIds[0]!.id, staffId, 'waiter'],
     ...restIds.slice(2).map((r) => [r.id, others[Math.floor(rnd() * others.length)]!, 'owner'] as const),
   ];
   for (const [restaurant_id, user_id, role] of memberships) await sb.from('restaurant_members').upsert({ restaurant_id, user_id, role }, { onConflict: 'restaurant_id,user_id', ignoreDuplicates: true });

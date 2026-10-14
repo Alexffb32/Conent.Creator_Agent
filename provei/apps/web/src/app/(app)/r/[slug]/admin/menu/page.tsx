@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { MenuEditor } from '@/components/admin/MenuEditor';
-import { requireMemberPage } from '@/server/auth';
+import { requireMemberPage, MANAGE } from '@/server/auth';
 import { createServerSupabase } from '@/lib/supabase/server';
 
 export const metadata: Metadata = { title: 'Menu' };
@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function MenuPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ctx = await requireMemberPage(slug, ['owner']);
+  const ctx = await requireMemberPage(slug, MANAGE);
   const sb = await createServerSupabase();
   const [cats, items] = await Promise.all([
     sb.from('menu_categories').select('id, name').eq('restaurant_id', ctx.restaurant.id).order('position'),

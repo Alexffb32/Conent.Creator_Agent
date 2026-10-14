@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Card, CardTitle, LinkButton } from '@/components/ui';
 import { BarChart } from '@/components/admin/BarChart';
-import { requireMemberPage } from '@/server/auth';
+import { requireMemberPage, MANAGE } from '@/server/auth';
 import { createServerSupabase } from '@/lib/supabase/server';
 import { passedFiveSeconds, retentionCurve } from '@provei/domain';
 
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function RetencaoPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ctx = await requireMemberPage(slug, ['owner']);
+  const ctx = await requireMemberPage(slug, MANAGE);
   if (ctx.restaurant.plan !== 'paid') {
     return (
       <div className="flex flex-col gap-4">

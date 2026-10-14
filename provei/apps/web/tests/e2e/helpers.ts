@@ -1,3 +1,4 @@
+import { createHmac } from 'node:crypto';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { expect, type Browser, type BrowserContext, type Page } from '@playwright/test';
 
@@ -61,7 +62,7 @@ export async function createFixture(opts: { plan?: 'free' | 'paid'; verified?: '
     description: 'Fictício de teste', cuisine: ['Teste'],
   }).select('id').single();
   if (error || !r) throw new Error(`restaurante: ${error?.message}`);
-  await sb.from('restaurant_members').insert([{ restaurant_id: r.id, user_id: ownerId, role: 'owner' }, { restaurant_id: r.id, user_id: staffId, role: 'staff' }]);
+  await sb.from('restaurant_members').insert([{ restaurant_id: r.id, user_id: ownerId, role: 'owner' }, { restaurant_id: r.id, user_id: staffId, role: 'waiter' }]);
   await sb.from('loyalty_programs').insert({ restaurant_id: r.id, stamps_required: opts.stampsRequired ?? 2, reward_text: 'Sobremesa de teste', min_interval_hours: 0 });
   const tableCode = `e2e${id}`.replace(/[^a-z0-9]/g, '').slice(0, 12).padEnd(8, 'x');
   const { data: t } = await sb.from('tables').insert({ restaurant_id: r.id, label: '7', public_code: tableCode }).select('id').single();
@@ -83,4 +84,27 @@ export async function cleanup(f: Fixture, extraUsers: string[] = []) {
 export async function expectNoHorizontalScroll(page: Page) {
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow, 'scroll horizontal').toBeLessThanOrEqual(1);
+}
+
+/** Código TOTP (RFC 6238, SHA-1, 6 dígitos, 30 s) para o segundo fator nos testes. */
+export function totp(secretBase32: string, now = Date.now()): string {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  let bits = '';
+  for (const ch of secretBase32.replace(/=+$/, '').toUpperCase()) bits += alphabet.indexOf(ch).toString(2).padStart(5, '0');
+  const key = Buffer.from(bits.match(/.{8}/g)!.map((b) => parseInt(b, 2)));
+  const counter = Buffer.alloc(8);
+  counter.writeBigUInt64BE(BigInt(Math.floor(now / 30_000)));
+  const h = createHmac('sha1', key).update(counter).digest();
+  const o = h[h.length - 1]! & 0xf;
+  return (((h.readUInt32BE(o) & 0x7fffffff) % 1_000_000) + '').padStart(6, '0');
+}
+
+/** Admin: entra, regista o TOTP em /mfa e confirma o código (a administração exige aal2). */
+export async function loginAsAdmin(page: Page, email: string, next = '/admin') {
+  await loginAs(page, email, next);
+  await page.waitForURL(/\/mfa/);
+  const secret = (await page.locator('.font-mono').innerText()).trim();
+  await page.getByLabel('Código').fill(totp(secret));
+  await page.getByRole('button', { name: 'Confirmar' }).click();
+  await page.waitForURL((u) => u.pathname.startsWith(next.split('?')[0]!));
 }

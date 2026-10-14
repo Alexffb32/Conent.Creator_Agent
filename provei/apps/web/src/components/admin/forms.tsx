@@ -147,13 +147,13 @@ export function InviteForm({ restaurantId }: { restaurantId: string }) {
   const [busy, setBusy] = useState(false);
   return (
     <form
-      className="flex items-end gap-2"
+      className="flex flex-col gap-3 sm:flex-row sm:items-end"
       onSubmit={async (e) => {
         e.preventDefault();
         const f = e.currentTarget;
         const fd = new FormData(f);
         setBusy(true);
-        const r = await inviteStaff({ restaurantId, email: fd.get('email') });
+        const r = await inviteStaff({ restaurantId, email: fd.get('email'), role: fd.get('role') });
         setBusy(false);
         if (!r.ok) return toast(r.error, 'erro');
         toast(r.data.added ? 'Adicionado à equipa' : 'Convite enviado por e-mail', 'info');
@@ -162,6 +162,13 @@ export function InviteForm({ restaurantId }: { restaurantId: string }) {
       }}
     >
       <div className="flex-1"><Field label="E-mail do novo membro" htmlFor="iv-e"><Input id="iv-e" name="email" type="email" required /></Field></div>
+      <Field label="Papel" htmlFor="iv-r">
+        <Select id="iv-r" name="role" defaultValue="waiter">
+          <option value="waiter">Sala (chamadas e pedidos)</option>
+          <option value="kitchen">Cozinha (só o ecrã de cozinha)</option>
+          <option value="manager">Gerente (menu, números, equipa)</option>
+        </Select>
+      </Field>
       <Button type="submit" loading={busy}>Convidar</Button>
     </form>
   );
