@@ -24,7 +24,7 @@ test('pedido na mesa sem conta chega à cozinha e fecha o ciclo', async ({ brows
     await g.getByRole('button', { name: 'Juntar Bitoque de teste' }).click();
     await g.getByRole('button', { name: 'Juntar Bitoque de teste' }).click();
     await g.getByRole('button', { name: /Enviar pedido · 2/ }).click();
-    await expect(g).toHaveURL(/\/pedido\/[0-9a-f-]+\?k=/);
+    await expect(g).toHaveURL(/\/pedido\/[0-9a-f-]+$/);
     await expect(g.getByText('Documento de consumo — não é fatura', { exact: false })).toBeVisible();
     await expect(g.getByText('19,00')).toBeVisible();
 

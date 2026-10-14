@@ -18,13 +18,13 @@ const PAYMENT_LABEL: Record<string, string> = {
 /** Estado do pedido e ticket digital. Não é fatura: a fatura é emitida pelo restaurante no seu programa certificado. */
 export function OrderTicket({
   initial,
-  guestKey,
+  isGuest,
   restaurantName,
   canPayOnline,
   justPaid,
 }: {
   initial: GuestOrder;
-  guestKey: string | null;
+  isGuest: boolean;
   restaurantName: string;
   canPayOnline: boolean;
   justPaid: boolean;
@@ -39,14 +39,14 @@ export function OrderTicket({
     if (done && !waitingPayment) return;
     const t = setInterval(async () => {
       try {
-        const fresh = await loadOrder(order.id, guestKey);
+        const fresh = await loadOrder(order.id);
         if (fresh) setOrder(fresh);
       } catch {
         /* sem rede: tenta no próximo ciclo */
       }
     }, waitingPayment ? 3000 : 10000);
     return () => clearInterval(t);
-  }, [done, waitingPayment, order.id, guestKey]);
+  }, [done, waitingPayment, order.id]);
 
   const step = STEPS.indexOf(order.status as OrderStatus);
   const payable = canPayOnline && order.payment_status !== 'paid' && order.status !== 'cancelled';
@@ -106,7 +106,7 @@ export function OrderTicket({
           action={() =>
             start(async () => {
               setError(null);
-              const r = await payOrderOnline(order.id, guestKey);
+              const r = await payOrderOnline(order.id);
               if (r && !r.ok) setError(r.error);
             })
           }
@@ -118,7 +118,7 @@ export function OrderTicket({
         </form>
       )}
       {error && <p role="alert" className="text-erro">{error}</p>}
-      {guestKey && <p className="text-[15px] text-tinta-2">Guarda esta página: o endereço é a tua chave para acompanhar o pedido sem conta.</p>}
+      {isGuest && <p className="text-[15px] text-tinta-2">Pediste sem conta: acompanhas o pedido neste aparelho e neste navegador.</p>}
     </div>
   );
 }

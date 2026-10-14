@@ -1,10 +1,10 @@
 # Fase 2 · Pedidos (ADENDA 2)
 
-Data: 2026-10-14 · Migrações: `20261014000012_orders.sql`, `20261014000013_orders_synthetic.sql` (aplicadas no Supabase `provei`).
+Data: 2026-10-14 · Migrações: `20261014000012_orders.sql`, `20261014000013_orders_synthetic.sql`, `20261014000014_orders_hardening.sql` (aplicadas no Supabase `provei`).
 Flags: `ordering` (pedidos), `kds` (ecrã de cozinha), `payments` (pagamento online). Todas desligadas por omissão.
 
 ## Feito
-- **Pedir à mesa sem conta**: `/t/{code}` oferece "Pedir sem conta" quando `ordering` está ligado; `/t/{code}/pedir` com menu, alergénios (14 da UE), notas, carrinho guardado no aparelho, envio idempotente (`client_ref`) e fila offline (envia quando a rede volta).
+- **Pedir à mesa sem conta** (exige `SUPABASE_SERVICE_ROLE_KEY` no servidor; a chave de acompanhamento fica num cookie httpOnly do próprio pedido): `/t/{code}` oferece "Pedir sem conta" quando `ordering` está ligado; `/t/{code}/pedir` com menu, alergénios (14 da UE), notas, carrinho guardado no aparelho, envio idempotente (`client_ref`) e fila offline (envia quando a rede volta).
 - **Pedir para levantar**: `/levantar/{slug}` (pede o nome).
 - **Ticket digital** em `/pedido/{id}`: estado em tempo quase real (consulta a cada 10 s), linhas, total, "Documento de consumo — não é fatura", botão "Pagar online" quando `payments` + conta Stripe pronta.
 - **Base de dados**: `place_order` (preços do menu, limites por mesa/cliente, 30 linhas, 1–20 unidades), `get_guest_order`, `set_order_status` (mesmas transições que `packages/domain`), `mark_order_paid_cash`, `close_shift`, `table_public_info`. Clientes sem escrita direta em `orders`.
@@ -18,8 +18,9 @@ Flags: `ordering` (pedidos), `kds` (ecrã de cozinha), `payments` (pagamento onl
 
 ## Testes
 - Domínio: transições, preço do carrinho, fecho de caixa (35 testes).
-- RLS (PGlite): 62 testes, incluindo 8 de F2 (sem flag não há pedido, preço do servidor, idempotência, cozinha não cancela, sala não prepara, restaurante B não vê pedidos de A, convidado só com segredo, mesa pública).
-- Webhook: pagamento só com valor igual; conta Connect atualizada.
+- RLS (PGlite): 64 testes, incluindo 10 de F2 (sem flag não há pedido, preço do servidor, idempotência, cozinha não cancela, sala não prepara, restaurante B não vê pedidos de A, convidado só com segredo e não com o hash, mesa pública, anon sem acesso direto, teto de pedidos abertos, pago não se cancela, fechos sem sobreposição, pagamento Stripe só da conta Connect certa).
+- Revisão de segurança independente: ver `docs/DECISIONS.md` (F2); todas as falhas médias e baixas corrigidas.
+- Webhook: pedidos só pelo endpoint Connect, conta certa e valor igual; conta Connect atualizada.
 - E2E `tests/e2e/orders.spec.ts`: QR → pedido sem conta → KDS → pronto → entregue → dinheiro → fecho (corre com `SUPABASE_SERVICE_ROLE_KEY`; sem ela fica *skipped*).
 - Manual na cloud (360 px): pedido real de ponta a ponta, total calculado pela base de dados, axe sem violações. Dados de teste marcados sintéticos.
 

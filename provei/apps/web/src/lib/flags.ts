@@ -58,9 +58,10 @@ export const getFlags = cache(async (restaurantId?: string): Promise<Flags> => {
     const sb = serverEnv.serviceRoleKey ? createServiceSupabase() : createAnonSupabase();
     const { data } = await sb.from('feature_flags').select('key, enabled');
     for (const row of data ?? []) if (row.key in flags) flags[row.key as FlagKey] = row.enabled;
-    if (restaurantId && serverEnv.serviceRoleKey) {
-      const { data: over } = await sb.from('restaurant_flags').select('key, enabled').eq('restaurant_id', restaurantId);
-      for (const row of over ?? []) if (row.key in flags) flags[row.key as FlagKey] = row.enabled;
+    if (restaurantId) {
+      // mesma fonte que flag_on() na base de dados (função pública: as flags não são segredo)
+      const { data: over } = await sb.rpc('restaurant_flag_overrides', { p_rid: restaurantId });
+      for (const row of (over ?? []) as { key: string; enabled: boolean }[]) if (row.key in flags) flags[row.key as FlagKey] = row.enabled;
     }
   } catch {
     // base de dados indisponível: usar valores por omissão

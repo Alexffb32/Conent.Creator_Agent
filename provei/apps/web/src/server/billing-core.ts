@@ -5,6 +5,8 @@
 export interface StripeEventLite {
   id: string;
   type: string;
+  /** Conta Connect que originou o evento (só nos eventos de contas ligadas). */
+  account?: string;
   data: { object: Record<string, unknown> };
 }
 
@@ -16,7 +18,7 @@ export interface BillingStore {
   activateAdFree(input: { userId: string; customerId: string | null; subscriptionId: string | null; periodEnd: Date | null }): Promise<void>;
   updateAdFreeSubscription(input: { subscriptionId: string; status: string; periodEnd: Date | null }): Promise<void>;
   /** Pedido pago por Stripe Connect (cobrança direta na conta do restaurante). Só marca se o valor bater certo. */
-  markOrderPaid(input: { orderId: string; paymentIntentId: string; amountCents: number }): Promise<'paid' | 'amount_mismatch' | 'not_found'>;
+  markOrderPaid(input: { orderId: string; accountId: string; paymentIntentId: string; amountCents: number }): Promise<'paid' | 'amount_mismatch' | 'not_found' | 'wrong_account' | 'cancelled'>;
   markOrderPaymentFailed(input: { orderId: string; paymentIntentId: string }): Promise<void>;
   /** Estado da conta Connect do restaurante (account.updated). */
   setConnectAccountStatus(input: { accountId: string; chargesEnabled: boolean }): Promise<void>;
@@ -28,7 +30,11 @@ const str = (v: unknown): string | null => (typeof v === 'string' && v ? v : nul
 const date = (v: unknown): Date | null => (typeof v === 'number' ? new Date(v * 1000) : null);
 const ACTIVE = new Set(['active', 'trialing']);
 
-export async function processStripeEvent(store: BillingStore, event: StripeEventLite): Promise<'processed' | 'duplicate' | 'ignored'> {
+/**
+ * `source: 'connect'` só para o endpoint de contas ligadas: os pedidos e o estado das contas Connect só se aceitam
+ * daí, e sempre com a conta (`event.account`) que tem de ser a do restaurante do pedido.
+ */
+export async function processStripeEvent(store: BillingStore, event: StripeEventLite, source: 'platform' | 'connect' = 'platform'): Promise<'processed' | 'duplicate' | 'ignored'> {
   const isNew = await store.claimEvent(event.id, event.type);
   if (!isNew) return 'duplicate';
   try {
@@ -38,18 +44,18 @@ export async function processStripeEvent(store: BillingStore, event: StripeEvent
       case 'payment_intent.payment_failed': {
         const meta = (o.metadata ?? {}) as Record<string, string>;
         const pi = str(o.id);
-        if (meta.kind !== 'order' || !meta.order_id || !pi) return 'ignored';
+        if (source !== 'connect' || !event.account || meta.kind !== 'order' || !meta.order_id || !pi) return 'ignored';
         if (event.type === 'payment_intent.payment_failed') {
           await store.markOrderPaymentFailed({ orderId: meta.order_id, paymentIntentId: pi });
           return 'processed';
         }
         const amount = typeof o.amount_received === 'number' ? o.amount_received : typeof o.amount === 'number' ? o.amount : -1;
-        const r = await store.markOrderPaid({ orderId: meta.order_id, paymentIntentId: pi, amountCents: amount });
+        const r = await store.markOrderPaid({ orderId: meta.order_id, accountId: event.account, paymentIntentId: pi, amountCents: amount });
         return r === 'paid' ? 'processed' : 'ignored';
       }
       case 'account.updated': {
         const id = str(o.id);
-        if (!id) return 'ignored';
+        if (source !== 'connect' || !id) return 'ignored';
         await store.setConnectAccountStatus({ accountId: id, chargesEnabled: o.charges_enabled === true });
         return 'processed';
       }

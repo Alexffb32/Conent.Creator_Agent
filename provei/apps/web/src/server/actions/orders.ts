@@ -1,15 +1,17 @@
 'use server';
 import 'server-only';
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
+import { cookies, headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { closeShiftSchema, orderStatusSchema, placeOrderSchema, uuidSchema } from '@provei/api-client';
 import { createServerSupabase, createServiceSupabase } from '@/lib/supabase/server';
-import { serverEnv } from '@/lib/env';
+import { serverEnv, tableSecret } from '@/lib/env';
 import { getFlags } from '@/lib/flags';
 import { type ActionResult, parse, run, UserError } from '../action';
 import { FLOOR, MANAGE, requireMemberForAction, getSessionProfile } from '../auth';
 import { audit } from '../audit';
+import { rateLimit } from '../ratelimit';
 import { sendPush } from '../push';
 import { getPaymentProvider } from '../payment-provider';
 import { escapeHtml, getMailer } from '../mail';
@@ -32,6 +34,9 @@ const ERRORS: Record<string, string> = {
   not_payable: 'Este pedido já está pago ou foi cancelado.',
   not_found: 'Pedido não encontrado.',
   bad_period: 'O período tem de ter entre alguns minutos e 36 horas.',
+  too_many_open: 'Já há vários pedidos em aberto aqui. Espera que a equipa os confirme ou chama-a.',
+  paid_order: 'Este pedido já foi pago: não se cancela aqui. Faz o reembolso primeiro.',
+  overlap: 'Este período já foi fechado (total ou parcialmente).',
 };
 function dbError(message: string): never {
   const key = Object.keys(ERRORS).find((k) => message.includes(k));
@@ -39,18 +44,35 @@ function dbError(message: string): never {
   throw new Error(message);
 }
 const hashSecret = (s: string) => createHash('sha256').update(s).digest('hex');
+/** Chave de acompanhamento sem conta: derivada do clientRef, por isso um reenvio devolve a mesma chave. */
+const guestKeyFor = (clientRef: string) => createHmac('sha256', tableSecret()).update(`guest-order:${clientRef}`).digest('base64url');
+const GUEST_COOKIE = 'pv_order_k';
+
+async function guestKeyFromCookie(): Promise<string | null> {
+  return (await cookies()).get(GUEST_COOKIE)?.value ?? null;
+}
 
 /**
- * Envia o pedido. Sem conta obrigatória: quem pede sem conta recebe um segredo para acompanhar o pedido.
- * Repetir com o mesmo clientRef (reenvio após falha de rede) devolve o mesmo pedido.
+ * Envia o pedido. Sem conta obrigatória: quem pede sem conta fica com uma chave num cookie httpOnly limitado
+ * a /pedido/{id} (nunca no endereço). Repetir com o mesmo clientRef devolve o mesmo pedido e a mesma chave.
  */
-export async function placeOrder(input: unknown): Promise<ActionResult<{ orderId: string; guestKey: string | null }>> {
+export async function placeOrder(input: unknown): Promise<ActionResult<{ orderId: string }>> {
   return run(async () => {
     const v = parse(placeOrderSchema, input);
     if (v.kind === 'table' && !v.tableCode) throw new UserError('Falta o código da mesa.');
     const me = await getSessionProfile();
-    const guestKey = me ? null : randomBytes(24).toString('base64url');
-    const sb = await createServerSupabase();
+    const h = await headers();
+    const ip = (h.get('x-forwarded-for') ?? '').split(',')[0]!.trim() || h.get('x-real-ip') || 'unknown';
+    if (!(await rateLimit(`order:ip:${ip}`, 3600, 15))) throw new UserError(ERRORS.rate_limited!);
+    let guestKey: string | null = null;
+    let sb;
+    if (me) sb = await createServerSupabase();
+    else {
+      // sem conta, o pedido entra pelo servidor (a função não aceita chamadas anónimas diretas)
+      if (!serverEnv.serviceRoleKey) throw new UserError('Os pedidos sem conta ainda não estão disponíveis. Entra na tua conta para pedir.');
+      guestKey = guestKeyFor(v.clientRef);
+      sb = createServiceSupabase();
+    }
     const { data, error } = await sb.rpc('place_order', {
       p_restaurant: v.restaurantId,
       p_kind: v.kind,
@@ -64,8 +86,11 @@ export async function placeOrder(input: unknown): Promise<ActionResult<{ orderId
     });
     if (error) dbError(error.message);
     const orderId = String(data);
+    if (guestKey) {
+      (await cookies()).set(GUEST_COOKIE, guestKey, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: `/pedido/${orderId}`, maxAge: 2 * 86400 });
+    }
     if (me?.email) await sendOrderConfirmation(orderId, me.email).catch(() => undefined);
-    return { orderId, guestKey };
+    return { orderId };
   });
 }
 
@@ -84,21 +109,20 @@ async function sendOrderConfirmation(orderId: string, email: string) {
   });
 }
 
-/** Lê um pedido: com conta pela RLS; sem conta pelo segredo. */
-export async function loadOrder(orderId: string, guestKey?: string | null) {
+/** Lê um pedido: com conta pela RLS; sem conta pela chave do cookie (o hash é feito na base de dados). */
+export async function loadOrder(orderId: string) {
   if (!uuidSchema.safeParse(orderId).success) return null;
   const sb = await createServerSupabase();
-  if (guestKey) {
-    const { data } = await sb.rpc('get_guest_order', { p_id: orderId, p_secret_hash: hashSecret(guestKey) });
-    return (data as GuestOrder | null) ?? null;
-  }
   const { data } = await sb
     .from('orders')
     .select('id, status, kind, total_cents, created_at, payment_status, restaurant_id, note, order_items(name, qty, price_cents, note)')
     .eq('id', orderId)
     .maybeSingle();
-  if (!data) return null;
-  return { ...data, items: data.order_items } as unknown as GuestOrder;
+  if (data) return { ...data, items: data.order_items } as unknown as GuestOrder;
+  const guestKey = await guestKeyFromCookie();
+  if (!guestKey) return null;
+  const { data: g } = await sb.rpc('get_guest_order', { p_id: orderId, p_secret_hash: guestKey });
+  return (g as GuestOrder | null) ?? null;
 }
 export interface GuestOrder {
   id: string;
@@ -157,9 +181,9 @@ export async function closeShift(input: unknown): Promise<ActionResult<{ id: str
 }
 
 /** Pagamento online do pedido (Stripe Connect, modo de teste). Leva o cliente para o checkout. */
-export async function payOrderOnline(orderId: string, guestKey: string | null): Promise<ActionResult> {
+export async function payOrderOnline(orderId: string): Promise<ActionResult> {
   const res = await run(async () => {
-    const order = await loadOrder(orderId, guestKey);
+    const order = await loadOrder(orderId);
     if (!order) throw new UserError(ERRORS.not_found!);
     if (order.payment_status === 'paid' || order.status === 'cancelled') throw new UserError(ERRORS.not_payable!);
     const flags = await getFlags(order.restaurant_id);
@@ -170,7 +194,7 @@ export async function payOrderOnline(orderId: string, guestKey: string | null): 
     if (!r || !provider.isReady({ stripeAccountId: r.stripe_account_id, chargesEnabled: r.stripe_charges_enabled })) {
       throw new UserError('Este restaurante ainda não aceita pagamentos online. Paga ao balcão.');
     }
-    const returnPath = `/pedido/${orderId}${guestKey ? `?k=${encodeURIComponent(guestKey)}` : ''}`;
+    const returnPath = `/pedido/${orderId}`;
     const { url } = await provider.startCheckout({ orderId, amountCents: order.total_cents, restaurantName: r.name, stripeAccountId: r.stripe_account_id!, returnPath });
     return url;
   });
@@ -191,7 +215,11 @@ export async function connectStripeAccount(restaurantId: string): Promise<Action
       existingAccountId: r?.stripe_account_id ?? null,
       returnPath: `/r/${ctx.restaurant.slug}/admin/definicoes`,
     });
-    if (!r?.stripe_account_id) await svc.from('restaurants').update({ stripe_account_id: accountId }).eq('id', restaurantId);
+    if (!r?.stripe_account_id) {
+      // atómico: se dois pedidos simultâneos criarem contas, só a primeira fica ligada
+      const { data: set } = await svc.from('restaurants').update({ stripe_account_id: accountId }).eq('id', restaurantId).is('stripe_account_id', null).select('id');
+      if (!set?.length) throw new UserError('A conta Stripe já foi ligada noutro pedido. Atualiza a página.');
+    }
     await audit({ actorId: ctx.me.id, action: 'stripe.connect', entity: 'restaurant', entityId: restaurantId, restaurantId });
     return url;
   });

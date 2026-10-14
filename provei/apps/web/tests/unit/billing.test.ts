@@ -26,6 +26,7 @@ function memoryStore() {
       log.push(`asub:${i.subscriptionId}:${i.status}`);
     },
     async markOrderPaid(i) {
+      if (i.accountId !== 'acct_A') return 'wrong_account';
       if (i.amountCents !== 900) return 'amount_mismatch';
       log.push(`paid:${i.orderId}:${i.paymentIntentId}`);
       return 'paid';
@@ -84,21 +85,25 @@ describe('webhook Stripe idempotente', () => {
 });
 
 describe('pagamentos de pedidos (Stripe Connect, teste)', () => {
-  const pi = (id: string, type: string, amount: number, meta: Record<string, string>): StripeEventLite => ({
-    id, type, data: { object: { id: 'pi_1', amount_received: amount, metadata: meta } },
+  const pi = (id: string, type: string, amount: number, meta: Record<string, string>, account = 'acct_A'): StripeEventLite => ({
+    id, type, account, data: { object: { id: 'pi_1', amount_received: amount, metadata: meta } },
   });
-  it('marca o pedido pago só uma vez e só se o valor bater certo', async () => {
+  it('marca o pedido pago só uma vez, só pelo endpoint Connect, só da conta certa e com o valor certo', async () => {
     const { store, log } = memoryStore();
-    expect(await processStripeEvent(store, pi('evt_o1', 'payment_intent.succeeded', 900, { kind: 'order', order_id: 'o1' }))).toBe('processed');
-    expect(await processStripeEvent(store, pi('evt_o1', 'payment_intent.succeeded', 900, { kind: 'order', order_id: 'o1' }))).toBe('duplicate');
-    expect(await processStripeEvent(store, pi('evt_o2', 'payment_intent.succeeded', 100, { kind: 'order', order_id: 'o2' }))).toBe('ignored');
-    expect(await processStripeEvent(store, pi('evt_o3', 'payment_intent.succeeded', 900, { kind: 'other' }))).toBe('ignored');
+    const order = { kind: 'order', order_id: 'o1' };
+    expect(await processStripeEvent(store, pi('evt_p', 'payment_intent.succeeded', 900, order), 'platform')).toBe('ignored');
+    expect(await processStripeEvent(store, pi('evt_o1', 'payment_intent.succeeded', 900, order), 'connect')).toBe('processed');
+    expect(await processStripeEvent(store, pi('evt_o1', 'payment_intent.succeeded', 900, order), 'connect')).toBe('duplicate');
+    expect(await processStripeEvent(store, pi('evt_o2', 'payment_intent.succeeded', 100, { kind: 'order', order_id: 'o2' }), 'connect')).toBe('ignored');
+    expect(await processStripeEvent(store, pi('evt_o4', 'payment_intent.succeeded', 900, { kind: 'order', order_id: 'o4' }, 'acct_B'), 'connect')).toBe('ignored');
+    expect(await processStripeEvent(store, pi('evt_o3', 'payment_intent.succeeded', 900, { kind: 'other' }), 'connect')).toBe('ignored');
     expect(log).toEqual(['paid:o1:pi_1']);
   });
-  it('regista falhas e o estado da conta Connect', async () => {
+  it('regista falhas e o estado da conta Connect (só pelo endpoint Connect)', async () => {
     const { store, log } = memoryStore();
-    await processStripeEvent(store, pi('evt_f', 'payment_intent.payment_failed', 900, { kind: 'order', order_id: 'o9' }));
-    await processStripeEvent(store, { id: 'evt_a', type: 'account.updated', data: { object: { id: 'acct_1', charges_enabled: true } } });
+    await processStripeEvent(store, pi('evt_f', 'payment_intent.payment_failed', 900, { kind: 'order', order_id: 'o9' }), 'connect');
+    expect(await processStripeEvent(store, { id: 'evt_x', type: 'account.updated', data: { object: { id: 'acct_1', charges_enabled: true } } })).toBe('ignored');
+    await processStripeEvent(store, { id: 'evt_a', type: 'account.updated', data: { object: { id: 'acct_1', charges_enabled: true } } }, 'connect');
     expect(log).toEqual(['failed:o9', 'acct:acct_1:true']);
   });
 });

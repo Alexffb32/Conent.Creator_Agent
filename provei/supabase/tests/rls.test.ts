@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { PGlite } from '@electric-sql/pglite';
 import { as, newDb, rejects } from './helpers';
@@ -416,8 +417,11 @@ describe('F2: pedidos', () => {
   const ref = (n: number) => `30000000-0000-0000-0000-${String(n).padStart(12, '0')}`;
   let itemA: string;
   let itemOff: string;
-  const place = (who: { role: 'anon' | 'authenticated'; uid?: string }, items: unknown, clientRef: string, kind = 'table', code: string | null = 'codea0001', name: string | null = null) =>
-    as<{ place_order: string }>(db, who, 'select public.place_order($1, $2, $3, $4::jsonb, $5::uuid, null, $6, null, $7)', [R.A, kind, code, JSON.stringify(items), clientRef, name, 'hash-secret']);
+  // Sem conta, o pedido entra pelo servidor (service_role); o segredo fica guardado só como sha256.
+  const svc = { role: 'service_role' as const };
+  const SECRET_HASH = createHash('sha256').update('segredo').digest('hex');
+  const place = (who: { role: 'anon' | 'authenticated' | 'service_role'; uid?: string }, items: unknown, clientRef: string, kind = 'table', code: string | null = 'codea0001', name: string | null = null) =>
+    as<{ place_order: string }>(db, who.role === 'anon' ? svc : who, 'select public.place_order($1, $2, $3, $4::jsonb, $5::uuid, null, $6, null, $7)', [R.A, kind, code, JSON.stringify(items), clientRef, name, who.role === 'authenticated' ? null : SECRET_HASH]);
 
   beforeAll(async () => {
     itemA = (await db.query<{ id: string }>("insert into public.menu_items (restaurant_id, name, price_cents, station) values ($1, 'Bifana', 450, 'cozinha') returning id", [R.A])).rows[0]!.id;
@@ -452,8 +456,11 @@ describe('F2: pedidos', () => {
   });
   it('pedido sem conta lê-se só com o segredo certo', async () => {
     const id = (await place(anon, [{ id: itemA, qty: 1 }], ref(9)))[0]!.place_order;
-    const ok = await as<{ get_guest_order: { total_cents: number } | null }>(db, anon, 'select public.get_guest_order($1, $2)', [id, 'hash-secret']);
+    const ok = await as<{ get_guest_order: { total_cents: number } | null }>(db, anon, 'select public.get_guest_order($1, $2)', [id, 'segredo']);
     expect(ok[0]!.get_guest_order?.total_cents).toBe(450);
+    // o hash guardado não serve de senha
+    const viaHash = await as<{ get_guest_order: unknown }>(db, anon, 'select public.get_guest_order($1, $2)', [id, SECRET_HASH]);
+    expect(viaHash[0]!.get_guest_order).toBeNull();
     const bad = await as<{ get_guest_order: unknown }>(db, anon, 'select public.get_guest_order($1, $2)', [id, 'errado']);
     expect(bad[0]!.get_guest_order).toBeNull();
   });
@@ -482,6 +489,32 @@ describe('F2: pedidos', () => {
     const row = (await as<{ cash_expected_cents: number; cash_diff_cents: number }>(db, auth(U.ownerA), 'select cash_expected_cents, cash_diff_cents from public.cash_closes where id = $1', [c]))[0]!;
     expect(row).toEqual({ cash_expected_cents: 900, cash_diff_cents: -100 });
     expect(await as(db, auth(U.waiterA), 'select 1 from public.cash_closes')).toHaveLength(0);
+    // período sobreposto recusado
+    expect(await rejects(as(db, auth(U.managerA), 'select public.close_shift($1, $2, $3, 0, null)', range))).toMatch(/overlap/);
+    // pedido pago não se cancela
+    expect(await rejects(as(db, auth(U.waiterA), "select public.set_order_status($1, 'cancelled', 'teste')", [id]))).toMatch(/paid_order/);
+  });
+  it('endurecimento: anon não chama place_order; teto de pedidos abertos; overrides de flags legíveis', async () => {
+    expect(await rejects(as(db, anon, 'select public.place_order($1, $2, $3, $4::jsonb, $5::uuid, null, null, null, null)', [R.A, 'table', 'codea0001', JSON.stringify([{ id: itemA, qty: 1 }]), ref(20)]))).toMatch(/permission denied/);
+    let err = '';
+    for (let n = 21; n < 40 && !err; n++) err = await place(anon, [{ id: itemA, qty: 1 }], ref(n)).then(() => '', (e: Error) => e.message);
+    expect(err).toMatch(/too_many_open|rate_limited/);
+    await db.query("insert into public.restaurant_flags (restaurant_id, key, enabled) values ($1, 'kds', true)", [R.A]);
+    const o = await as<{ key: string; enabled: boolean }>(db, anon, 'select * from public.restaurant_flag_overrides($1)', [R.A]);
+    expect(o).toEqual([{ key: 'kds', enabled: true }]);
+    await db.query("delete from public.restaurant_flags where restaurant_id = $1 and key = 'kds'", [R.A]);
+  });
+  it('Stripe: só marca pago com a conta Connect do restaurante e o valor certo', async () => {
+    await db.query("update public.orders set status = 'cancelled' where status in ('new','preparing')");
+    const id = (await place(auth(U.bob), [{ id: itemA, qty: 1 }], ref(50)))[0]!.place_order;
+    await db.query("update public.restaurants set stripe_account_id = 'acct_A' where id = $1", [R.A]);
+    await db.query("update public.restaurants set stripe_account_id = 'acct_B' where id = $1", [R.B]);
+    const pay = (acct: string, amount: number) => as<{ r: string }>(db, svc, 'select public.mark_order_paid_stripe($1, $2, $3, $4) as r', [id, acct, 'pi_1', amount]);
+    await rejects(as(db, auth(U.ownerA), "select public.mark_order_paid_stripe($1, 'acct_A', 'pi', 450)", [id]));
+    expect((await pay('acct_B', 450))[0]!.r).toBe('wrong_account');
+    expect((await pay('acct_A', 1))[0]!.r).toBe('amount_mismatch');
+    expect((await pay('acct_A', 450))[0]!.r).toBe('paid');
+    expect((await db.query<{ payment_status: string }>('select payment_status from public.orders where id = $1', [id])).rows[0]!.payment_status).toBe('paid');
     await db.query("update public.feature_flags set enabled = false where key = 'ordering'");
   });
 });

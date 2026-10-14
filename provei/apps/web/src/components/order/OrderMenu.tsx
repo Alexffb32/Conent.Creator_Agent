@@ -116,16 +116,8 @@ export function OrderMenu({
         setError(r.error);
         return;
       }
-      if (r.data.guestKey) {
-        try {
-          localStorage.setItem(`pv_order_${r.data.orderId}`, r.data.guestKey);
-        } catch {
-          /* o segredo vai no endereço */
-        }
-      }
       save(storeKey, null);
-      const k = r.data.guestKey ? `?k=${encodeURIComponent(r.data.guestKey)}` : '';
-      router.push(`/pedido/${r.data.orderId}${k}`);
+      router.push(`/pedido/${r.data.orderId}`);
     } catch {
       // falha de rede: guarda e tenta outra vez quando a ligação voltar (mesmo clientRef = sem duplicados)
       setQueued(true);

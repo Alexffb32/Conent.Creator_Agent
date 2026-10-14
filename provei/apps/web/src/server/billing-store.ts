@@ -11,17 +11,13 @@ export function supabaseBillingStore(): BillingStore {
       if (error.code === '23505') return false;
       throw new Error(error.message);
     },
-    async markOrderPaid({ orderId, paymentIntentId, amountCents }) {
-      const { data: o } = await svc.from('orders').select('id, total_cents, payment_status, status').eq('id', orderId).maybeSingle();
-      if (!o) return 'not_found';
-      if (o.total_cents !== amountCents) {
-        console.error('[stripe-order] valor diferente do pedido', { orderId, amountCents, expected: o.total_cents });
-        return 'amount_mismatch';
-      }
-      if (o.payment_status !== 'paid') {
-        await svc.from('orders').update({ payment_status: 'paid', payment_method: 'stripe', stripe_payment_intent: paymentIntentId, paid_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', orderId);
-      }
-      return 'paid';
+    async markOrderPaid({ orderId, accountId, paymentIntentId, amountCents }) {
+      // atómico na base de dados: conta Connect do restaurante, valor igual, não pago e não cancelado
+      const { data, error } = await svc.rpc('mark_order_paid_stripe', { p_order: orderId, p_account: accountId, p_payment_intent: paymentIntentId, p_amount: amountCents });
+      if (error) throw new Error(error.message);
+      const r = String(data) as 'paid' | 'amount_mismatch' | 'not_found' | 'wrong_account' | 'cancelled';
+      if (r !== 'paid') console.error('[stripe-order] pagamento não aplicado', { orderId, result: r });
+      return r;
     },
     async markOrderPaymentFailed({ orderId, paymentIntentId }) {
       await svc.from('orders').update({ payment_status: 'failed', stripe_payment_intent: paymentIntentId, updated_at: new Date().toISOString() }).eq('id', orderId).neq('payment_status', 'paid');

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Assinatura inválida' }, { status: 400 });
   }
   try {
-    const result = await processStripeEvent(supabaseBillingStore(), event as unknown as StripeEventLite);
+    const result = await processStripeEvent(supabaseBillingStore(), event as unknown as StripeEventLite, 'connect');
     return NextResponse.json({ received: true, result });
   } catch (e) {
     console.error('[stripe-connect-webhook]', e);
