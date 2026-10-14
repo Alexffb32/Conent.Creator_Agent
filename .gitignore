@@ -29,3 +29,4 @@ __pycache__/
 .claude/skills/remotion-to-hyperframes
 .claude/skills/slideshow
 .claude/skills/talking-head-recut
+skills-lock.json
