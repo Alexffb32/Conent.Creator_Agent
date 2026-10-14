@@ -36,6 +36,7 @@ export const serverEnv = {
     return {
       secretKey: process.env.STRIPE_SECRET_KEY ?? '',
       webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? '',
+      connectWebhookSecret: process.env.STRIPE_CONNECT_WEBHOOK_SECRET ?? '',
       priceInstall: process.env.STRIPE_PRICE_INSTALL ?? '',
       priceMonthly: process.env.STRIPE_PRICE_MONTHLY ?? '',
       priceAdFree: process.env.STRIPE_PRICE_AD_FREE ?? '',

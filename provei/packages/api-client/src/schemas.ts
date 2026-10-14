@@ -215,3 +215,30 @@ export const advertiserSchema = z.object({
   email: z.string().trim().toLowerCase().email('Indica um e-mail válido'),
   vat: z.string().trim().max(32).optional().default(''),
 });
+
+// ---------- F2: pedidos ----------
+export const placeOrderSchema = z.object({
+  restaurantId: uuidSchema,
+  kind: z.enum(['table', 'pickup']),
+  tableCode: z.string().trim().toLowerCase().regex(/^[a-z0-9]{6,16}$/).optional(),
+  clientRef: z.string().uuid(),
+  items: z
+    .array(z.object({ id: uuidSchema, qty: z.number().int().min(1).max(20), note: z.string().trim().max(140).optional() }))
+    .min(1, 'O pedido está vazio')
+    .max(30),
+  note: z.string().trim().max(300).optional(),
+  customerName: z.string().trim().max(60).optional(),
+  pickupAt: z.string().datetime().optional(),
+});
+export const orderStatusSchema = z.object({
+  orderId: uuidSchema,
+  status: z.enum(['preparing', 'ready', 'delivered', 'cancelled']),
+  reason: z.string().trim().max(200).optional(),
+});
+export const closeShiftSchema = z.object({
+  restaurantId: uuidSchema,
+  from: z.string().datetime(),
+  to: z.string().datetime(),
+  countedCents: z.number().int().min(0).max(10_000_000),
+  notes: z.string().trim().max(500).optional(),
+});
