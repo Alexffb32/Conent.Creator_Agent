@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseWebServiceStore } from '@/server/wallet/stores';
 import { wsRegister, wsUnregister } from '@/server/wallet/webservice';
-import { toResponse, wsRateLimited } from '@/server/wallet/http';
+import { readCapped, toResponse, wsRateLimited } from '@/server/wallet/http';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,9 +11,11 @@ type Params = { params: Promise<{ device: string; passType: string; serial: stri
 export async function POST(req: Request, { params }: Params) {
   if (await wsRateLimited(req, 'reg')) return new NextResponse(null, { status: 429 });
   const p = await params;
+  const raw = await readCapped(req, 2048);
+  if (raw === null) return new NextResponse(null, { status: 413 });
   let body: unknown = null;
   try {
-    body = JSON.parse((await req.text()).slice(0, 2048));
+    body = JSON.parse(raw);
   } catch {
     body = null;
   }

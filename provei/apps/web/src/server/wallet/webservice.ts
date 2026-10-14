@@ -98,6 +98,6 @@ export async function wsGetPass(store: WebServiceStore, p: { passType: string; s
 /** Registos do dispositivo: só tamanho limitado e sem dados pessoais (vão para os logs do servidor). */
 export function wsLog(body: unknown): { status: number; lines: string[] } {
   const logs = (body as { logs?: unknown } | null)?.logs;
-  const lines = Array.isArray(logs) ? logs.filter((l): l is string => typeof l === 'string').slice(0, 20).map((l) => l.slice(0, 300)) : [];
+  const lines = Array.isArray(logs) ? logs.filter((l): l is string => typeof l === 'string').slice(0, 20).map((l) => l.replace(/[\u0000-\u001f\u007f]+/g, ' ').slice(0, 300)) : [];
   return { status: 200, lines };
 }

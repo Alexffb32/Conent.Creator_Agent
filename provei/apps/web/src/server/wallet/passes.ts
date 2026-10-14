@@ -8,6 +8,9 @@ import { authTokenFor, memberTokenFor, newSerial, sha256Hex } from './tokens';
 
 type Svc = ReturnType<typeof createServiceSupabase>;
 
+/** Janela em que o token do QR anterior ainda é aceite depois de rodar. */
+const PREV_TOKEN_GRACE_MS = 10 * 60_000;
+
 export interface WalletPassRow {
   id: string;
   platform: 'apple' | 'google';
@@ -113,7 +116,11 @@ export async function resolveMemberToken(token: string, svc: Svc = createService
   if (!/^[A-Za-z0-9_-]{43}$/.test(token)) return null;
   const h = sha256Hex(token);
   const { data } = await svc.from('wallet_passes').select('*').or(`member_token_hash.eq.${h},prev_member_token_hash.eq.${h}`).eq('voided', false).limit(1).maybeSingle();
-  return (data as WalletPassRow | null) ?? null;
+  const row = data as (WalletPassRow & { member_token_hash: string; prev_valid_until: string | null }) | null;
+  if (!row) return null;
+  // o token anterior só vale na janela curta depois de rodar (o telemóvel ainda não buscou o cartão novo)
+  if (row.member_token_hash !== h && !(row.prev_valid_until && new Date(row.prev_valid_until) > new Date())) return null;
+  return row;
 }
 
 /** Depois de uma leitura: roda o token do QR (só com atualizações ligadas, senão o cartão no telemóvel ficaria inválido). */
@@ -125,6 +132,7 @@ export async function afterScan(p: WalletPassRow, svc: Svc = createServiceSupaba
     patch.member_version = next;
     patch.prev_member_token_hash = sha256Hex(memberTokenFor(p.serial_number, p.member_version));
     patch.member_token_hash = sha256Hex(memberTokenFor(p.serial_number, next));
+    patch.prev_valid_until = new Date(Date.now() + PREV_TOKEN_GRACE_MS).toISOString();
   }
   await svc.from('wallet_passes').update(patch).eq('id', p.id);
 }

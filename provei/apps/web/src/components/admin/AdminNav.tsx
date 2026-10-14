@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BarChart3, BellRing, Gift, LayoutGrid, MessageSquare, QrCode, ScanLine, Settings, Star, Tag, Users, Utensils, Video, CreditCard } from 'lucide-react';
-import { ChefHat, ReceiptText, Wallet } from 'lucide-react';
+import { ChefHat, CreditCard as CardIcon, ReceiptText, Wallet } from 'lucide-react';
 import { cn } from '@/components/ui';
 import { useFlag } from '@/lib/flags-client';
 
@@ -32,10 +32,14 @@ export function AdminNav({ slug, role, extra = [] }: { slug: string; role: Role;
   const kdsOn = useFlag('kds');
   const orderingOn = useFlag('ordering');
   const kds = kdsOn && orderingOn;
+  const walletApple = useFlag('wallet_apple');
+  const walletGoogle = useFlag('wallet_google');
+  const walletOn = walletApple || walletGoogle;
   const flagged = [
     ...(orderingOn ? [{ path: '/pedidos', label: 'Pedidos', icon: ReceiptText, roles: FLOOR }] : []),
     ...(kds ? [{ path: '/cozinha', label: 'Cozinha', icon: ChefHat, roles: KITCHEN }] : []),
     ...(orderingOn ? [{ path: '/caixa', label: 'Fecho de caixa', icon: Wallet, roles: M }] : []),
+    ...(walletOn ? [{ path: '/wallet', label: 'Cartões na Wallet', icon: CardIcon, roles: M }] : []),
   ];
   const base = `/r/${slug}/admin`;
   return (

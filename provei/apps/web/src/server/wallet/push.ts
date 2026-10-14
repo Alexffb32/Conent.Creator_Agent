@@ -40,7 +40,8 @@ export async function pushPendingUpdates(store: PushStore, apns: ApnsTransport, 
   const enabled = new Map<string, boolean>();
   for (const p of passes) {
     if (!enabled.has(p.restaurantId)) enabled.set(p.restaurantId, await store.updatesEnabled(p.restaurantId));
-    if (!enabled.get(p.restaurantId)) {
+    // anulações (conta apagada) seguem sempre, mesmo com wallet_updates desligada
+    if (!enabled.get(p.restaurantId) && !p.voided) {
       report.skippedFlagOff++;
       continue;
     }

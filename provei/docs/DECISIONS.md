@@ -126,3 +126,15 @@ Tabelas `orders`/`order_items` e RLS existem; a interface está atrás da flag `
 | Recurso criado | Onde | Data |
 | --- | --- | --- |
 | Migração `20261014000016_wallet_webservice` (sequência, `pushed_tag`, gatilho, `wallet_push_events`, `profiles.wallet_points_alerts`) | Supabase `provei` | 2026-10-14 |
+
+## ADENDA 4 · Revisão de segurança W1/W2 e W3 (2026-10-14)
+| Data | Decisão | Porquê | Alternativa rejeitada |
+| --- | --- | --- | --- |
+| 2026-10-14 | Revisão independente (subagente) do W1/W2: sem falhas graves. Corrigido (migração 17 e código): máximo 10 dispositivos por cartão (sai o mais antigo); IP do limite pelos cabeçalhos da plataforma (`x-vercel-forwarded-for`/`x-real-ip`), não pelo 1.º valor de X-Forwarded-For; envios pendentes filtrados em SQL antes do limite (`wallet_pending_pushes`, anulados primeiro); anulações enviadas mesmo com `wallet_updates` desligada; token do QR anterior só vale 10 minutos após rodar; registo já não muda o push token de outros cartões do mesmo dispositivo; corpos limitados pelo Content-Length (413) e logs do dispositivo sem caracteres de controlo; descarga do `.pkpass` exige sessão do dono; clientes deixam de ler os hashes dos tokens (permissões por coluna). | Abuso de pushes, anulações perdidas, repetição de QR, redireção de pushes, memória, ligação ao portador. | — |
+| 2026-10-14 | Aceite: o `authenticationToken` é imutável (a Apple não permite mudá-lo num cartão). Quem tiver uma cópia do `.pkpass` consegue buscar o cartão atual; reemitir = cartão novo (novo número de série). | Regra da plataforma. | Rodar o token (não suportado). |
+| 2026-10-14 | Aceite: com `wallet_updates` desligada o token do QR não roda; a repetição de um QR copiado fica limitada pelas regras de visita (intervalo mínimo, limite diário, uma por sessão). | Rodar sem atualizar o telemóvel invalidava o cartão. | — |
+| 2026-10-14 | Relatório de proximidade: visitas + pedidos por cartão após a emissão, 28 dias, Welch a 95%, mínimo 30 cartões por grupo; diz "o efeito pode ser zero" quando o intervalo inclui zero. | Critério 7: dizer quando o efeito é zero e não inventar conclusões. | Mostrar só médias. |
+
+| Recurso criado | Onde | Data |
+| --- | --- | --- |
+| Migração `20261014000017_wallet_hardening` (`prev_valid_until`, `wallet_pending_pushes`, permissões por coluna) | Supabase `provei` | 2026-10-14 |

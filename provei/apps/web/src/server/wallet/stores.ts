@@ -10,6 +10,9 @@ import type { WebServiceStore, WsPass } from './webservice';
 
 type Svc = ReturnType<typeof createServiceSupabase>;
 
+/** Máximo de dispositivos registados por cartão (o mais antigo sai). */
+export const MAX_DEVICES_PER_PASS = 10;
+
 export const passTypeId = () => serverEnv.wallet.appleTypeId || 'pass.pt.provei.simulado';
 
 export function supabaseWebServiceStore(svc: Svc = createServiceSupabase()): WebServiceStore {
@@ -22,10 +25,14 @@ export function supabaseWebServiceStore(svc: Svc = createServiceSupabase()): Web
     },
     async register(deviceId, passId, pushToken) {
       const { data: existing } = await svc.from('wallet_registrations').select('pass_id').eq('device_library_id', deviceId).eq('pass_id', passId).maybeSingle();
-      const now = new Date().toISOString();
-      await svc.from('wallet_registrations').upsert({ device_library_id: deviceId, pass_id: passId, push_token: pushToken, updated_at: now }, { onConflict: 'device_library_id,pass_id' });
-      // o dispositivo tem um só push token válido: o mais recente substitui o dos outros registos
-      await svc.from('wallet_registrations').update({ push_token: pushToken, updated_at: now }).eq('device_library_id', deviceId).neq('push_token', pushToken);
+      // um registo por (dispositivo, cartão): o mais recente substitui o anterior. Nunca mexe noutros cartões.
+      await svc.from('wallet_registrations').upsert({ device_library_id: deviceId, pass_id: passId, push_token: pushToken, updated_at: new Date().toISOString() }, { onConflict: 'device_library_id,pass_id' });
+      if (!existing) {
+        // limite de dispositivos por cartão: remove os mais antigos acima de MAX_DEVICES_PER_PASS
+        const { data: regs } = await svc.from('wallet_registrations').select('device_library_id, updated_at').eq('pass_id', passId).order('updated_at', { ascending: false });
+        const extra = (regs ?? []).slice(MAX_DEVICES_PER_PASS).map((r) => r.device_library_id as string);
+        if (extra.length) await svc.from('wallet_registrations').delete().eq('pass_id', passId).in('device_library_id', extra);
+      }
       return !existing;
     },
     async unregister(deviceId, passId) {
@@ -52,13 +59,13 @@ export function supabaseWebServiceStore(svc: Svc = createServiceSupabase()): Web
 export function supabasePushStore(svc: Svc = createServiceSupabase()): PushStore {
   return {
     async pending(passIds, limit = 200) {
-      let q = svc.from('wallet_passes').select('id, restaurant_id, update_tag, pushed_tag, voided').eq('platform', 'apple');
-      if (passIds?.length) q = q.in('id', passIds);
-      const { data } = await q.order('update_tag', { ascending: true }).limit(2000);
-      return (data ?? [])
-        .filter((r) => Number(r.update_tag) > Number(r.pushed_tag))
-        .slice(0, limit)
-        .map((r) => ({ id: r.id, restaurantId: r.restaurant_id, updateTag: Number(r.update_tag), voided: r.voided }));
+      if (passIds?.length) {
+        const { data } = await svc.from('wallet_passes').select('id, restaurant_id, update_tag, pushed_tag, voided').eq('platform', 'apple').in('id', passIds);
+        return (data ?? []).filter((r) => Number(r.update_tag) > Number(r.pushed_tag)).map((r) => ({ id: r.id, restaurantId: r.restaurant_id, updateTag: Number(r.update_tag), voided: r.voided }));
+      }
+      // filtro feito em SQL antes do limite (anulados primeiro)
+      const { data } = await svc.rpc('wallet_pending_pushes', { p_limit: limit });
+      return ((data ?? []) as { id: string; restaurant_id: string; update_tag: number; voided: boolean }[]).map((r) => ({ id: r.id, restaurantId: r.restaurant_id, updateTag: Number(r.update_tag), voided: r.voided }));
     },
     async updatesEnabled(restaurantId) {
       return (await getFlags(restaurantId)).wallet_updates;

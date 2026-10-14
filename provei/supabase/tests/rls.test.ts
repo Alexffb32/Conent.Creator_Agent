@@ -554,7 +554,7 @@ describe('ADENDA 4 · W1: cartões Wallet', () => {
     expect(await as(db, auth(U.alice), 'select 1 from public.wallet_passes')).toHaveLength(1);
     expect(await as(db, auth(U.bob), 'select 1 from public.wallet_passes')).toHaveLength(0);
     expect(await as(db, auth(U.ownerA), 'select 1 from public.wallet_passes')).toHaveLength(0);
-    expect(await as(db, anon, 'select 1 from public.wallet_passes')).toHaveLength(0);
+    await rejects(as(db, anon, 'select 1 from public.wallet_passes'));
     await rejects(as(db, auth(U.alice), "update public.wallet_passes set voided = false returning id"));
     await rejects(as(db, auth(U.alice), "insert into public.wallet_passes (platform, restaurant_id, customer_id, serial_number, auth_token_hash, member_token_hash) values ('apple', $1, $2, $3, 'x', 'y')", [R.B, U.alice, 'b'.repeat(32)]));
     await rejects(as(db, auth(U.alice), 'select 1 from public.wallet_registrations'));
@@ -613,5 +613,23 @@ describe('ADENDA 4 · W2: etiqueta global e saúde do push', () => {
     expect((await as(db, authMfa(U.admin), 'select 1 from public.wallet_push_events')).length).toBe(1);
     await rejects(as(db, auth(U.alice), "insert into public.wallet_push_events (platform, status) values ('apple', 'sent')"));
     expect((await db.query<{ v: boolean }>('select wallet_points_alerts as v from public.profiles where id = $1', [U.alice])).rows[0]!.v).toBe(true);
+  });
+});
+
+describe('ADENDA 4: endurecimento da Wallet', () => {
+  it('o cliente lê o seu cartão mas não os hashes dos tokens', async () => {
+    const s = 'e'.repeat(32);
+    await db.query("insert into public.wallet_passes (platform, restaurant_id, customer_id, serial_number, auth_token_hash, member_token_hash) values ('apple', $1, $2, $3, 'he', 'me')", [R.B, U.ownerA, s]);
+    const who = auth(U.ownerA);
+    expect((await as(db, who, 'select serial_number, voided from public.wallet_passes where serial_number = $1', [s])).length).toBe(1);
+    expect(await rejects(as(db, who, 'select auth_token_hash from public.wallet_passes'))).toMatch(/permission denied/);
+    expect(await rejects(as(db, who, 'select member_token_hash from public.wallet_passes'))).toMatch(/permission denied/);
+  });
+  it('envios pendentes: filtro antes do limite, anulados primeiro, só o servidor', async () => {
+    await rejects(as(db, auth(U.alice), 'select * from public.wallet_pending_pushes(10)'));
+    const rows = (await db.query<{ voided: boolean }>('select voided from public.wallet_pending_pushes(1000)')).rows;
+    expect(rows.length).toBeGreaterThan(0);
+    const firstLive = rows.findIndex((r) => !r.voided);
+    expect(rows.slice(firstLive === -1 ? rows.length : firstLive).every((r) => !r.voided)).toBe(true);
   });
 });

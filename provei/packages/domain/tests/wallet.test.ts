@@ -102,3 +102,28 @@ describe('alerta de expiração do certificado', () => {
     expect(certAlertLevel(at(-1), now).level).toBe('expired');
   });
 });
+
+describe('relatório tratados vs controlo', () => {
+  it('poucos dados: não conclui nada', async () => {
+    const { compareLocationGroups } = await import('../src/wallet');
+    const r = compareLocationGroups([1, 2, 3], [1]);
+    expect(r.verdict).toBe('insufficient_data');
+    expect(r.ci95).toBeNull();
+  });
+  it('mesma distribuição: diz que o efeito pode ser zero', async () => {
+    const { compareLocationGroups } = await import('../src/wallet');
+    const g = Array.from({ length: 200 }, (_, i) => i % 4);
+    const r = compareLocationGroups(g, g.slice(0, 60));
+    expect(r.verdict).toBe('no_effect');
+    expect(r.message).toMatch(/pode ser zero/);
+    expect(r.ci95![0]).toBeLessThanOrEqual(0);
+    expect(r.ci95![1]).toBeGreaterThanOrEqual(0);
+  });
+  it('diferença clara: positivo ou negativo', async () => {
+    const { compareLocationGroups } = await import('../src/wallet');
+    const hi = Array.from({ length: 100 }, (_, i) => 3 + (i % 2));
+    const lo = Array.from({ length: 50 }, (_, i) => i % 2);
+    expect(compareLocationGroups(hi, lo).verdict).toBe('positive');
+    expect(compareLocationGroups(lo, hi).verdict).toBe('negative');
+  });
+});

@@ -186,3 +186,58 @@ export function certAlertLevel(notAfter: Date, now = new Date()): { level: CertA
   const level: CertAlert = daysLeft < 0 ? 'expired' : daysLeft <= 30 ? 'warn_30' : daysLeft <= 60 ? 'warn_60' : 'ok';
   return { level, daysLeft };
 }
+
+/** Mínimo de cartões por grupo para o relatório arriscar uma conclusão. */
+export const MIN_CARDS_PER_GROUP = 30;
+
+export interface GroupStats {
+  cards: number;
+  mean: number;
+}
+
+export type EffectVerdict = 'insufficient_data' | 'no_effect' | 'positive' | 'negative';
+
+export interface LocationEffectReport {
+  treated: GroupStats;
+  control: GroupStats;
+  /** Diferença de médias (tratados − controlo), em visitas por cartão no período. */
+  diff: number;
+  /** Intervalo de confiança a 95% (aproximação normal, variâncias separadas — Welch). */
+  ci95: [number, number] | null;
+  verdict: EffectVerdict;
+  message: string;
+}
+
+const mean = (xs: readonly number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
+const variance = (xs: readonly number[], m: number) => (xs.length > 1 ? xs.reduce((a, b) => a + (b - m) ** 2, 0) / (xs.length - 1) : 0);
+
+/**
+ * Compara visitas por cartão entre cartões COM localizações (tratados) e SEM (controlo, 10%).
+ * Diz explicitamente quando não há efeito detetável (o intervalo inclui zero) ou quando ainda há poucos dados.
+ * Limitação: não há contagem de vezes que a sugestão apareceu no ecrã de bloqueio (o iOS não a dá).
+ */
+export function compareLocationGroups(treatedVisits: readonly number[], controlVisits: readonly number[], minPerGroup = MIN_CARDS_PER_GROUP): LocationEffectReport {
+  const mt = mean(treatedVisits);
+  const mc = mean(controlVisits);
+  const treated = { cards: treatedVisits.length, mean: mt };
+  const control = { cards: controlVisits.length, mean: mc };
+  const diff = mt - mc;
+  if (treatedVisits.length < minPerGroup || controlVisits.length < minPerGroup) {
+    return {
+      treated,
+      control,
+      diff,
+      ci95: null,
+      verdict: 'insufficient_data',
+      message: `Ainda poucos cartões para medir (mínimo ${minPerGroup} em cada grupo; há ${treatedVisits.length} com localização e ${controlVisits.length} sem). Nenhuma conclusão.`,
+    };
+  }
+  const se = Math.sqrt(variance(treatedVisits, mt) / treatedVisits.length + variance(controlVisits, mc) / controlVisits.length);
+  const ci95: [number, number] = [diff - 1.96 * se, diff + 1.96 * se];
+  if (ci95[0] <= 0 && ci95[1] >= 0) {
+    return { treated, control, diff, ci95, verdict: 'no_effect', message: 'Sem efeito detetável: a diferença entre os grupos está dentro do que o acaso explica. O efeito pode ser zero.' };
+  }
+  return diff > 0
+    ? { treated, control, diff, ci95, verdict: 'positive', message: 'Os cartões com aviso de proximidade tiveram mais visitas do que o grupo de controlo.' }
+    : { treated, control, diff, ci95, verdict: 'negative', message: 'Os cartões com aviso de proximidade tiveram menos visitas do que o grupo de controlo.' };
+}

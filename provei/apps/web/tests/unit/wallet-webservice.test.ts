@@ -30,8 +30,10 @@ function memoryDb() {
     async register(device, passId, token) {
       const k = `${device}|${passId}`;
       const isNew = !regs.has(k);
-      regs.set(k, { device, passId, token });
-      for (const r of regs.values()) if (r.device === device) r.token = token; // só o último token do dispositivo
+      regs.delete(k);
+      regs.set(k, { device, passId, token }); // um registo por (dispositivo, cartão): o mais recente
+      const mine = [...regs.entries()].filter(([, r]) => r.passId === passId);
+      for (const [key] of mine.slice(0, Math.max(0, mine.length - 10))) regs.delete(key); // máximo 10 dispositivos por cartão
       return isNew;
     },
     async unregister(device, passId) {
@@ -126,16 +128,19 @@ describe('serviço web PassKit (dispositivo simulado)', () => {
     expect(Number((r.json as { lastUpdated: string }).lastUpdated)).toBe(db.passes.get(b.id)!.tag);
   });
 
-  it('só fica o último push token por dispositivo; desregistar remove', async () => {
+  it('o registo mais recente substitui o token desse cartão sem mexer nos outros; máximo 10 dispositivos; desregistar remove', async () => {
     const db = memoryDb();
     db.add(serialA);
     db.add(serialB);
     await device(db, 'dev-1', 'velho').register(serialA);
+    await device(db, 'dev-1', 'velho').register(serialB);
     const iphone = device(db, 'dev-1', 'novo');
-    await iphone.register(serialB);
-    expect([...db.regs.values()].map((r) => r.token)).toEqual(['novo', 'novo']);
+    await iphone.register(serialA);
+    expect([...db.regs.values()].map((r) => `${r.passId}:${r.token}`).sort()).toEqual(['id-aaaa:novo', 'id-bbbb:velho']);
+    for (let i = 0; i < 15; i++) await device(db, `extra-${i}`, `t${i}`).register(serialA);
+    expect([...db.regs.values()].filter((r) => r.passId === 'id-aaaa')).toHaveLength(10);
     expect((await iphone.unregister(serialB)).status).toBe(200);
-    expect(db.regs.size).toBe(1);
+    expect([...db.regs.values()].some((r) => r.passId === 'id-bbbb')).toBe(false);
   });
 
   it('cartão: 200 com Last-Modified; 304 se não mudou; 401 sem autorização', async () => {
@@ -187,6 +192,16 @@ describe('push de atualização (APNs simulado)', () => {
     const ok = await pushPendingUpdates(db.push, new SimulatedApnsTransport(), TYPE);
     expect(ok.sent).toBe(1);
     expect(db.passes.get(a.id)!.pushed).toBe(db.passes.get(a.id)!.tag);
+  });
+
+  it('anulação (conta apagada) segue mesmo com wallet_updates desligada', async () => {
+    const db = memoryDb();
+    const b = db.add(serialB, 'rB');
+    await device(db, 'dev-1', 't').register(serialB);
+    db.touch(b.id, { voided: true });
+    const r = await pushPendingUpdates(db.push, new SimulatedApnsTransport(), TYPE);
+    expect(r.sent).toBe(1);
+    expect(db.regs.size).toBe(0);
   });
 
   it('sem a flag wallet_updates no restaurante não envia; cartão anulado: push e depois remove registos', async () => {
