@@ -14,3 +14,6 @@ export * from './messages';
 export * from './orders';
 export * from './wallet';
 export * from './wallet-google';
+export * from './messaging';
+export * from './customers';
+export * from './coupons';
