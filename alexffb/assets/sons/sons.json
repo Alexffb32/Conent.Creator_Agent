@@ -1,0 +1,339 @@
+[
+ {
+  "dur": 4.572,
+  "inicio": 0.276,
+  "pico": 1.131,
+  "som_ate": 3.1,
+  "pico_dbfs": -5.0,
+  "lufs_m": -16.3,
+  "centroide_hz": 1818,
+  "graves_pct": 87,
+  "transientes": [
+   1.13
+  ],
+  "ficheiro": "Among Us.mp3",
+  "tipo": "boom",
+  "tipo_por": "análise (confiança baixa)",
+  "excluir": true,
+  "motivo": "som de meme ou cómico, não combina com conteúdo de autoridade"
+ },
+ {
+  "dur": 2.534,
+  "inicio": 0.079,
+  "pico": 0.095,
+  "som_ate": 1.47,
+  "pico_dbfs": -0.4,
+  "lufs_m": -6.5,
+  "centroide_hz": 633,
+  "graves_pct": 98,
+  "transientes": [
+   0.075,
+   0.735,
+   0.93
+  ],
+  "ficheiro": "Bass Impact.MP3",
+  "tipo": "boom",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 3.448,
+  "inicio": 0.763,
+  "pico": 0.768,
+  "som_ate": 1.515,
+  "pico_dbfs": -6.3,
+  "lufs_m": -12.1,
+  "centroide_hz": 5294,
+  "graves_pct": 0,
+  "transientes": [
+   0.76
+  ],
+  "ficheiro": "Bell Ding.MP3",
+  "tipo": "notif",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 6.505,
+  "inicio": 0.224,
+  "pico": 0.343,
+  "som_ate": 0.975,
+  "pico_dbfs": -0.9,
+  "lufs_m": -13.0,
+  "centroide_hz": 4397,
+  "graves_pct": 91,
+  "transientes": [
+   0.275
+  ],
+  "ficheiro": "Camera Flash.MP3",
+  "tipo": "outro",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 0.444,
+  "inicio": 0.155,
+  "pico": 0.169,
+  "som_ate": 0.265,
+  "pico_dbfs": -3.8,
+  "lufs_m": -26.1,
+  "centroide_hz": 6133,
+  "graves_pct": 14,
+  "transientes": [
+   0.155,
+   0.245
+  ],
+  "ficheiro": "Click.MP3",
+  "tipo": "click",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 0.697,
+  "inicio": 0.058,
+  "pico": 0.09,
+  "som_ate": 0.68,
+  "pico_dbfs": -9.2,
+  "lufs_m": -15.4,
+  "centroide_hz": 864,
+  "graves_pct": 92,
+  "transientes": [
+   0.055
+  ],
+  "ficheiro": "Core.mp3",
+  "tipo": "outro",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 1.927,
+  "inicio": 0.083,
+  "pico": 0.249,
+  "som_ate": 1.915,
+  "pico_dbfs": 3.3,
+  "lufs_m": 3.3,
+  "centroide_hz": 3881,
+  "graves_pct": 1,
+  "transientes": [],
+  "ficheiro": "FAHHH.mp3",
+  "tipo": "whoosh",
+  "tipo_por": "análise (confiança baixa)",
+  "excluir": true,
+  "motivo": "som de meme ou cómico, não combina com conteúdo de autoridade"
+ },
+ {
+  "dur": 0.679,
+  "inicio": 0.031,
+  "pico": 0.065,
+  "som_ate": 0.53,
+  "pico_dbfs": -7.5,
+  "lufs_m": -17.5,
+  "centroide_hz": 7572,
+  "graves_pct": 78,
+  "transientes": [
+   0.03,
+   0.155
+  ],
+  "ficheiro": "Glitch.MP3",
+  "tipo": "outro",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 3.396,
+  "inicio": 0.038,
+  "pico": 1.79,
+  "som_ate": 3.05,
+  "pico_dbfs": -6.7,
+  "lufs_m": -28.1,
+  "centroide_hz": 4502,
+  "graves_pct": 0,
+  "transientes": [
+   0.065,
+   0.17,
+   0.295,
+   0.365,
+   0.5,
+   0.75,
+   0.84,
+   0.93,
+   1.08,
+   1.16,
+   1.25,
+   1.34,
+   1.435,
+   1.545,
+   1.635,
+   1.785,
+   1.875,
+   1.985,
+   2.1,
+   2.22,
+   2.325,
+   2.395,
+   2.49,
+   2.56,
+   2.665,
+   2.795,
+   2.925,
+   3.04
+  ],
+  "ficheiro": "Keyboard Typing.MP3",
+  "tipo": "type",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 1.776,
+  "inicio": 0.432,
+  "pico": 1.716,
+  "som_ate": 1.735,
+  "pico_dbfs": -3.3,
+  "lufs_m": -12.0,
+  "centroide_hz": 2703,
+  "graves_pct": 90,
+  "transientes": [],
+  "ficheiro": "Metallic Riser.MP3",
+  "tipo": "riser",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 0.418,
+  "inicio": 0.041,
+  "pico": 0.051,
+  "som_ate": 0.075,
+  "pico_dbfs": -2.5,
+  "lufs_m": -18.8,
+  "centroide_hz": 1795,
+  "graves_pct": 0,
+  "transientes": [
+   0.04
+  ],
+  "ficheiro": "Pop.MP3",
+  "tipo": "pop",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 1.019,
+  "inicio": 0.026,
+  "pico": 0.116,
+  "som_ate": 0.49,
+  "pico_dbfs": -8.3,
+  "lufs_m": -23.4,
+  "centroide_hz": 5834,
+  "graves_pct": 0,
+  "transientes": [
+   0.025
+  ],
+  "ficheiro": "Register.MP3",
+  "tipo": "whoosh",
+  "tipo_por": "análise (confiança baixa)",
+  "excluir": true,
+  "motivo": "som de meme ou cómico, não combina com conteúdo de autoridade"
+ },
+ {
+  "dur": 1.019,
+  "inicio": 0.025,
+  "pico": 0.107,
+  "som_ate": 0.54,
+  "pico_dbfs": -3.6,
+  "lufs_m": -10.6,
+  "centroide_hz": 5215,
+  "graves_pct": 0,
+  "transientes": [
+   0.025
+  ],
+  "ficheiro": "Right.MP3",
+  "tipo": "outro",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 0.418,
+  "inicio": 0.025,
+  "pico": 0.316,
+  "som_ate": 0.395,
+  "pico_dbfs": -10.7,
+  "lufs_m": -16.3,
+  "centroide_hz": 1495,
+  "graves_pct": 0,
+  "transientes": [
+   0.025
+  ],
+  "ficheiro": "Riser 2.MP3",
+  "tipo": "riser",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 0.862,
+  "inicio": 0.06,
+  "pico": 0.159,
+  "som_ate": 0.465,
+  "pico_dbfs": -0.3,
+  "lufs_m": -13.2,
+  "centroide_hz": 1533,
+  "graves_pct": 91,
+  "transientes": [
+   0.06,
+   0.32
+  ],
+  "ficheiro": "Swish Whoosh.MP3",
+  "tipo": "whoosh",
+  "tipo_por": "nome",
+  "excluir": false,
+  "motivo": ""
+ },
+ {
+  "dur": 1.255,
+  "inicio": 0.088,
+  "pico": 0.216,
+  "som_ate": 1.235,
+  "pico_dbfs": -0.4,
+  "lufs_m": -7.9,
+  "centroide_hz": 1129,
+  "graves_pct": 96,
+  "transientes": [
+   0.085,
+   0.505,
+   1.08
+  ],
+  "ficheiro": "Vine Boom.mp3",
+  "tipo": "boom",
+  "tipo_por": "nome",
+  "excluir": true,
+  "motivo": "som de meme ou cómico, não combina com conteúdo de autoridade"
+ },
+ {
+  "dur": 1.776,
+  "inicio": 0.085,
+  "pico": 0.09,
+  "som_ate": 0.765,
+  "pico_dbfs": -0.3,
+  "lufs_m": -8.9,
+  "centroide_hz": 3302,
+  "graves_pct": 10,
+  "transientes": [
+   0.085,
+   0.24
+  ],
+  "ficheiro": "Wrong.mp3",
+  "tipo": "notif",
+  "tipo_por": "análise (confiança baixa)",
+  "excluir": true,
+  "motivo": "som de meme ou cómico, não combina com conteúdo de autoridade"
+ }
+]

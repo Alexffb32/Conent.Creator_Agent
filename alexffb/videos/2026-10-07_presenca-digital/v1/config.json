@@ -1,0 +1,222 @@
+{
+ "end_card": 2.0,
+ "corte_take": 13.2,
+ "takes": {
+  "A": {
+   "base": 1.12,
+   "cx": 0.55,
+   "eye": 0.521,
+   "fw": 0.206
+  },
+  "B": {
+   "base": 1.0,
+   "cx": 0.55,
+   "eye": 0.475,
+   "fw": 0.241
+  }
+ },
+ "zoom_ciclo": [
+  1.0,
+  1.1,
+  1.0,
+  1.15
+ ],
+ "punch": {
+  "t": 40.78,
+  "zoom": 1.25
+ },
+ "legenda_topo": 1170,
+ "cartoes_janelas": [
+  [
+   0,
+   2.6,
+   560
+  ],
+  [
+   3.5,
+   10.05,
+   580
+  ],
+  [
+   10.3,
+   13.15,
+   540
+  ],
+  [
+   17.93,
+   29.5,
+   660
+  ],
+  [
+   40.78,
+   42.45,
+   600
+  ]
+ ],
+ "correcoes": [
+  {
+   "de": [
+    "em",
+    "Melsenburg,"
+   ],
+   "para": [
+    "emails",
+    "em",
+    "bulk"
+   ]
+  },
+  {
+   "de": [
+    "tem"
+   ],
+   "para": [
+    "têm"
+   ],
+   "frase": 1
+  },
+  {
+   "de": [
+    "nos",
+    "dão"
+   ],
+   "para": [
+    "não",
+    "dão"
+   ],
+   "frase": 2
+  },
+  {
+   "de": [
+    "ghosts."
+   ],
+   "para": [
+    "ghost"
+   ]
+  },
+  {
+   "de": [
+    "dela."
+   ],
+   "para": [
+    "delas"
+   ]
+  },
+  {
+   "de": [
+    "preciso"
+   ],
+   "para": [
+    "precisas"
+   ]
+  },
+  {
+   "de": [
+    "muitos"
+   ],
+   "para": [
+    "muito"
+   ]
+  }
+ ],
+ "destaques": [
+  "outreach",
+  "resposta",
+  "ghost",
+  "acontecer",
+  "presença digital",
+  "email",
+  "responder",
+  "pesquisar",
+  "encontrar",
+  "site",
+  "personal brand",
+  "úteis",
+  "óbvio",
+  "antes",
+  "presença digital",
+  "mensagem",
+  "resultados"
+ ],
+ "graficos": {
+  "gancho": {
+   "ini": 0.0,
+   "fim": 2.6,
+   "texto": "Como fazer com que te *respondam*"
+  },
+  "lower_third": {
+   "ini": 2.6,
+   "fim": 4.6,
+   "nome": "Alex",
+   "handle": "@alexffb_"
+  },
+  "lista": {
+   "ini": 3.5,
+   "fim": 10.05,
+   "itens": [
+    {
+     "t": 3.64,
+     "texto": "Emails em bulk sem resposta"
+    },
+    {
+     "t": 6.16,
+     "texto": "Cold calls sem reuniões"
+    },
+    {
+     "t": 7.84,
+     "texto": "DMs que dão em ghost"
+    }
+   ]
+  },
+  "palavra": {
+   "ini": 10.3,
+   "fim": 13.15,
+   "texto": "Presença *digital*"
+  },
+  "pesquisa": {
+   "ini": 17.93,
+   "fim": 29.5,
+   "pesquisa": "Layout",
+   "escrever": 18.1,
+   "resultados": [
+    {
+     "t": 20.13,
+     "texto": "Site"
+    },
+    {
+     "t": 24.07,
+     "texto": "Funil"
+    },
+    {
+     "t": 24.73,
+     "texto": "Personal brand"
+    },
+    {
+     "t": 26.87,
+     "texto": "Instagram"
+    },
+    {
+     "t": 27.45,
+     "texto": "LinkedIn"
+    },
+    {
+     "t": 27.89,
+     "texto": "YouTube"
+    }
+   ],
+   "linha2": 3
+  },
+  "remate": {
+   "ini": 40.78,
+   "fim": 42.45,
+   "a": "Tratar da tua",
+   "b": "presença digital"
+  },
+  "cta": {
+   "ini": 43.2,
+   "texto": "Manda-me mensagem",
+   "sub": "ou comenta aqui em baixo",
+   "sub_t": 44.48,
+   "handle": "@alexffb_"
+  }
+ }
+}

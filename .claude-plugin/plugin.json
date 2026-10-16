@@ -1,0 +1,10 @@
+{
+  "name": "creator-agent",
+  "version": "0.2.0",
+  "description": "Agente para criadores de conteúdo: pergunta objetivos, pesquisa referências, faz estratégia de funil, guião e roteiro de gravação, edita shorts com legendas, motion graphics, música e SFX, aprende o estilo de cada criador e agenda o próximo post.",
+  "author": { "name": "Alex (alexffb)" },
+  "homepage": "https://github.com/Alexffb32/Conent.Creator_Agent",
+  "repository": "https://github.com/Alexffb32/Conent.Creator_Agent",
+  "license": "MIT",
+  "keywords": ["conteudo", "criadores", "edicao-de-video", "shorts", "reels", "motion-graphics"]
+}

@@ -1,0 +1,83 @@
+{
+ "ok": true,
+ "verificacoes": [
+  {
+   "id": "formato",
+   "ok": true,
+   "detalhe": "1080x1920 (esperado 1080x1920)",
+   "regra": ""
+  },
+  {
+   "id": "fps_constante",
+   "ok": true,
+   "detalhe": "30.00 fps (esperado 30)",
+   "regra": "licao 1"
+  },
+  {
+   "id": "audio",
+   "ok": true,
+   "detalhe": "tem faixa de áudio",
+   "regra": ""
+  },
+  {
+   "id": "duracao_reels",
+   "ok": true,
+   "detalhe": "26.7 s (o Instagram não recomenda a quem não segue mais de 90 s)",
+   "regra": ""
+  },
+  {
+   "id": "loudness",
+   "ok": true,
+   "detalhe": "-13.8 LUFS (alvo -14 ± 1,5)",
+   "regra": "licao 19"
+  },
+  {
+   "id": "pico",
+   "ok": true,
+   "detalhe": "-1.9 dBFS (máximo -1)",
+   "regra": "licao 19"
+  },
+  {
+   "id": "sem_piscar",
+   "ok": true,
+   "detalhe": "nenhum fotograma isolado a piscar",
+   "regra": ""
+  },
+  {
+   "id": "copia_chat",
+   "ok": true,
+   "detalhe": "22.8 MB (máximo 30.0)",
+   "regra": "licao 24"
+  },
+  {
+   "id": "sem_travessoes",
+   "ok": true,
+   "detalhe": "nenhum travessão no texto do ecrã",
+   "regra": "licao 26"
+  },
+  {
+   "id": "portugues_europeu",
+   "ok": true,
+   "detalhe": "sem palavras do português do Brasil",
+   "regra": ""
+  }
+ ],
+ "regras_cobertas": [
+  {
+   "nivel": "dura",
+   "regra": "Enviar sempre o vídeo no chat, além do GitHub",
+   "verificacao": "copia_chat"
+  },
+  {
+   "nivel": "dura",
+   "regra": "Sem travessões em nenhum texto do ecrã",
+   "verificacao": "sem_travessoes"
+  },
+  {
+   "nivel": "dura",
+   "regra": "Todo o texto no ecrã em português europeu",
+   "verificacao": "portugues_europeu"
+  }
+ ],
+ "regras_so_por_instrucao": []
+}
